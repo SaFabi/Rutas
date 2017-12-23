@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/Inicio"
+            android:icon="@drawable/llave"
+            android:title="Inicio" />
+        <item
+            android:id="@+id/Catalogo"
+            android:icon="@drawable/puerta"
+            android:title="Catalogo" />
+        <item
+            android:id="@+id/Reportes"
+            android:icon="@drawable/editar"
+            android:title="Reportes" />
+
+        <item
+            android:id="@+id/Clientes"
+            android:icon="@drawable/silueta"
+            android:title="Clientes" />
+
+        <item
+            android:id="@+id/Creditos"
+            android:icon="@drawable/insertar"
+            android:title="Creditos" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/Ayuda"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Ayuda" />
+            <item
+                android:id="@+id/Contacto"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Contacto" />
+        </menu>
+    </item>
+
+</menu>
