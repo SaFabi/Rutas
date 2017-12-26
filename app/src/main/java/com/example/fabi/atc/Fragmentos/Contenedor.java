@@ -14,7 +14,11 @@ import android.view.ViewGroup;
 
 import com.example.fabi.atc.Adapters.CatalogoAdapter;
 import com.example.fabi.atc.Clases.Utilidades;
+import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Contenedor extends Fragment {
 
@@ -23,6 +27,10 @@ public class Contenedor extends Fragment {
     private AppBarLayout appBAr;
     private TabLayout pestanas;
     private ViewPager viewPager;
+    rutasLib rutasObj;
+    List<Fragment> fragmentosCatalogo = new ArrayList<>();
+    List<String> titulosCatalogo = new ArrayList<>();
+
 
     public Contenedor() {
         // Required empty public constructor
@@ -51,20 +59,34 @@ public class Contenedor extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
 
         vista = inflater.inflate(R.layout.fragment_contenedor, container, false);
         if (Utilidades.rotacion == 0){
 
             View parent = (View) container.getParent();
             if (appBAr==null){
+                //asigna los elementos
                 appBAr = parent.findViewById(R.id.appBar);
                 pestanas =  new TabLayout(getActivity());
+                //color del texto de las tabs
                 pestanas.setTabTextColors(Color.parseColor("#FFFFFF"),Color.parseColor("#FFFFFF"));
+                //Agrega los titulos a las tabs
                 appBAr.addView(pestanas);
 
                 viewPager =vista.findViewById(R.id.ViewPagerInformacion);
-                llenarViewPager(viewPager);
+
+                //llena los Arrays de los fragmentos
+                fragmentosCatalogo.add(new Catalogo());
+                fragmentosCatalogo.add(new Inicio());
+                fragmentosCatalogo.add(new Clientes());
+                //Manda los titulos
+                titulosCatalogo.add("Telefonos");
+                titulosCatalogo.add("Chips");
+                titulosCatalogo.add("Accesorios");
+
+                //Pone el Adapter en el ViewPager
+                viewPager.setAdapter(rutasObj.llenarViewPager(getFragmentManager(),fragmentosCatalogo,titulosCatalogo));
+
                 viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
                     @Override
                     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -83,23 +105,6 @@ public class Contenedor extends Fragment {
 
 
         return vista;
-    }
-
-    private void llenarViewPager(ViewPager viewPager) {
-        CatalogoAdapter adapter = new CatalogoAdapter(getFragmentManager());
-        adapter.addFragment(new Catalogo(),"Telefonos");
-        adapter.addFragment(new Clientes(),"Chips");
-        adapter.addFragment(new Inicio(),"Accesorios");
-        viewPager.setAdapter(adapter);
-
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     public void onDestroyView() {
