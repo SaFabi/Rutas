@@ -29,6 +29,8 @@ import java.util.List;
 
 public class Inicio extends Fragment {
 
+    //Frgmento para los chips
+
     private static final String ARG_POSITION= "POSITION";
     private int mPosition;
     ListView listView;

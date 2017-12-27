@@ -66,13 +66,13 @@ public class ClientesContenedor extends Fragment {
                 viewPagerClientes =vista.findViewById(R.id.ViewPagerClientes);
 
                 //llena los Arrays de los fragmentos
-                fragmentos.add(new Catalogo());
+                fragmentos.add(new RegistroClientes());
                 fragmentos.add(new Inicio());
                 fragmentos.add(new Clientes());
                 //Manda los titulos
-                titulos.add("Agregar");
-                titulos.add("Editar");
-                titulos.add("Eliminar");
+                titulos.add("Registrar");
+                titulos.add("Activos");
+                titulos.add("Inactivos");
                 viewPagerClientes.setAdapter(rutasObj.llenarViewPager(getFragmentManager(),fragmentos,titulos));
 
                 viewPagerClientes.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
