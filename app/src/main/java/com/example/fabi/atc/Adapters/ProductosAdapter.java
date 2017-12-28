@@ -72,4 +72,13 @@ public class ProductosAdapter extends BaseAdapter {
                 .into(imageView);
         return view;
     }
+
+
+    public void setFilter(ArrayList<Modelo>listamodelos){
+        this.modelo= new ArrayList<>();
+        this.modelo.addAll(listamodelos);
+        notifyDataSetChanged();
+
+    }
+
 }
