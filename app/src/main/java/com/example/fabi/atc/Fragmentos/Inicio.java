@@ -18,6 +18,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.fabi.atc.Adapters.ProductosAdapter;
 import com.example.fabi.atc.Clases.Modelo;
+import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
 
 import org.json.JSONArray;
@@ -28,9 +29,12 @@ import java.util.List;
 
 public class Inicio extends Fragment {
 
+    //Frgmento para los chips
+
     private static final String ARG_POSITION= "POSITION";
     private int mPosition;
     ListView listView;
+    rutasLib rutasObj;
 
     private OnFragmentInteractionListener mListener;
 
@@ -61,8 +65,7 @@ public class Inicio extends Fragment {
         View view = inflater.inflate(R.layout.fragment_inicio, container, false);
 
         listView= (ListView)view.findViewById(R.id.lvInicio);
-        String consulta = "http://192.168.1.71/CatalogoATC/consultaAccesorios.php";
-        EnviarRecibirDatos(consulta);
+        EnviarRecibirDatos(rutasObj.Consulta+"consultaAccesorios.php");
         return view;
     }
 

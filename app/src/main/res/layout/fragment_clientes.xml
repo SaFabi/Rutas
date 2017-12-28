@@ -5,7 +5,7 @@
     tools:context="com.example.fabi.atc.Fragmentos.Clientes">
 
  <ListView
-     android:id="@+id/lvClientes"
+     android:id="@+id/lvFClientes"
      android:layout_width="match_parent"
      android:layout_height="match_parent"></ListView>
 

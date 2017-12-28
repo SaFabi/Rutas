@@ -18,6 +18,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.fabi.atc.Adapters.ProductosAdapter;
 import com.example.fabi.atc.Clases.Modelo;
+import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
 
 import org.json.JSONArray;
@@ -34,11 +35,11 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class Catalogo extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    //Fragmento para los telefonos
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     ListView listView;
+    rutasLib rutasObj;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -50,14 +51,6 @@ public class Catalogo extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Catalogo.
-     */
     // TODO: Rename and change types and number of parameters
     public static Catalogo newInstance(String param1, String param2) {
         Catalogo fragment = new Catalogo();
@@ -84,8 +77,7 @@ public class Catalogo extends Fragment {
         View view= inflater.inflate(R.layout.fragment_catalogo, container, false);
 
         listView= (ListView)view.findViewById(R.id.lvCatalogo);
-        String consulta = "http://192.168.1.71/CatalogoATC/consultaTelefonos.php";
-        EnviarRecibirDatos(consulta);
+        EnviarRecibirDatos(rutasObj.Consulta+"consultaTelefonos.php");
         return view;
     }
     public void EnviarRecibirDatos(String URL){

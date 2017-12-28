@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.fabi.atc.Clases.Modelo;
+import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
 
 import java.util.ArrayList;
@@ -23,8 +24,8 @@ public class ProductosAdapter extends BaseAdapter {
     private ArrayList<Modelo> modelo;
     private Context context;
     TextView titulo, subtitulo;
+    rutasLib rutasObj;
     ImageView imageView;
-    String url = "http://192.168.1.71/CatalogoATC/img/";
     public ProductosAdapter(ArrayList<Modelo> modelo, Context context) {
         this.modelo = modelo;
         this.context = context;
@@ -63,7 +64,7 @@ public class ProductosAdapter extends BaseAdapter {
 
 
         Glide.with(viewGroup.getContext())
-                .load(url+http)
+                .load(rutasObj.URL+http)
                 .crossFade()
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -71,4 +72,13 @@ public class ProductosAdapter extends BaseAdapter {
                 .into(imageView);
         return view;
     }
+
+
+    public void setFilter(ArrayList<Modelo>listamodelos){
+        this.modelo= new ArrayList<>();
+        this.modelo.addAll(listamodelos);
+        notifyDataSetChanged();
+
+    }
+
 }
