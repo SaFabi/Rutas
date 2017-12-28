@@ -14,6 +14,10 @@ import com.example.fabi.atc.Clases.Modelo;
 import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 /**
@@ -22,24 +26,36 @@ import java.util.ArrayList;
 
 public class ProductosAdapter extends BaseAdapter {
     private ArrayList<Modelo> modelo;
+    private JSONArray array;
     private Context context;
     TextView titulo, subtitulo;
     rutasLib rutasObj;
     ImageView imageView;
-    public ProductosAdapter(ArrayList<Modelo> modelo, Context context) {
-        this.modelo = modelo;
+    public ProductosAdapter(JSONArray array, Context context) {
+        this.array= array;
         this.context = context;
     }
 
 
     @Override
     public int getCount() {
-        return modelo.size();
+        return array.length();
     }
 
     @Override
-    public Modelo getItem(int i) {
-        return modelo.get(i);
+    public JSONObject getItem(int i) {
+        JSONObject jsonObject;
+
+        try
+        {
+            jsonObject = array.getJSONObject(i);
+        }
+        catch (JSONException e)
+        {
+            jsonObject = null;
+        }
+
+        return jsonObject;
     }
 
     @Override
@@ -57,19 +73,33 @@ public class ProductosAdapter extends BaseAdapter {
         titulo=(TextView)view.findViewById(R.id.titulocard);
         subtitulo = (TextView)view.findViewById(R.id.subtitulocard);
         imageView = (ImageView)view.findViewById(R.id.imagencard);
+        String titulo2, subtitulo2, imagen;
+        try
+        {
+            titulo2= getItem(i).getString("0");
+            subtitulo2 = getItem(i).getString("1");
+            imagen = getItem(i).getString("2");
+        }
+        catch (JSONException e)
+        {
+            titulo2= null;
+            subtitulo2 = null;
+            imagen= null;
+        }
+        if (titulo2 != null) {
+            titulo.setText(titulo2);
+            subtitulo.setText(subtitulo2);
+            String http = imagen;
 
-        titulo.setText(getItem(i).getCorreo());
-        subtitulo.setText(getItem(i).getPass());
-        String http = getItem(i).getImagen();
 
-
-        Glide.with(viewGroup.getContext())
-                .load(rutasObj.URL+http)
-                .crossFade()
-                .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .thumbnail(0.5f)
-                .into(imageView);
+            Glide.with(viewGroup.getContext())
+                    .load(rutasObj.URL + http)
+                    .crossFade()
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .thumbnail(0.5f)
+                    .into(imageView);
+        }
         return view;
     }
 

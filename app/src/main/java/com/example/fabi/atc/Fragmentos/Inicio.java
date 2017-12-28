@@ -1,5 +1,6 @@
 package com.example.fabi.atc.Fragmentos;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,14 +10,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.fabi.atc.Adapters.ProductosAdapter;
+import com.example.fabi.atc.Clases.Basic;
 import com.example.fabi.atc.Clases.Modelo;
 import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
@@ -27,7 +31,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Inicio extends Fragment {
+public class Inicio extends Fragment  implements Basic, Response.Listener<JSONArray>, Response.ErrorListener {
 
     //Frgmento para los chips
 
@@ -35,6 +39,7 @@ public class Inicio extends Fragment {
     private int mPosition;
     ListView listView;
     rutasLib rutasObj;
+    private ProgressDialog progressDialog;
 
     private OnFragmentInteractionListener mListener;
 
@@ -65,49 +70,27 @@ public class Inicio extends Fragment {
         View view = inflater.inflate(R.layout.fragment_inicio, container, false);
 
         listView= (ListView)view.findViewById(R.id.lvInicio);
-        EnviarRecibirDatos(rutasObj.Consulta+"consultaAccesorios.php");
-        return view;
-    }
 
-    public void EnviarRecibirDatos(String URL){
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setTitle("En Proceso");
+        progressDialog.setMessage("Un momento...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
+
+        //Inicia la peticion
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                response = response.replace("][",",");
-                if (response.length() > 0){
-                    try {
-                        JSONArray ja = new JSONArray(response);
-                        Log.i("SizeJson",""+ja.length());
-                        CargarListView(ja);
-                    }catch (JSONException e){
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i("error",""+error.getMessage());
-            }
-        });
-        queue.add(stringRequest);
-    }
+        String consulta = "SELECT marca, precio, imagen FROM `productos` WHERE tipoarticulo_id = 2";
+        consulta = consulta.replace(" ", "%20");
+        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+        String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+        Log.i("info", url);
 
-    public void CargarListView(JSONArray ja){
-        ArrayList<Modelo> lista = new ArrayList<>();
+        //Hace la petición String
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, this, this);
 
-        for (int i = 0; i<ja.length();i+=3){
-            try {
-                lista.add(new Modelo(ja.getString(i),ja.getString(i+1),ja.getString(i+2)));
-
-            }catch(JSONException e){
-                e.printStackTrace();
-            }
-
-        }
-        ProductosAdapter adapter= new ProductosAdapter(lista,getContext());
-        listView.setAdapter(adapter);
+        //Agrega y ejecuta la cola
+        queue.add(request);
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -125,7 +108,7 @@ public class Inicio extends Fragment {
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
-        }
+
     }
 
     @Override
@@ -145,6 +128,24 @@ public class Inicio extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        progressDialog.hide();
+        Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void onResponse(JSONArray response) {
+        progressDialog.hide();
+
+        ProductosAdapter adapter = new ProductosAdapter(response,getContext());
+        listView.setAdapter(adapter);
+
+    }
+
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

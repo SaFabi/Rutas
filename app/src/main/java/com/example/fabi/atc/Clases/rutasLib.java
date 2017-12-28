@@ -32,10 +32,10 @@ import java.util.List;
 public class rutasLib {
 
     //URL de la ubicacion de las imagenes en el servidor
-      public static  String URL = "http://192.168.1.79/CatalogoATC/img/";
+      public static  String URL = "http://192.168.1.91/CatalogoATC/img/";
 
     //Ruta para las consultas
-    public static String Consulta = "http://192.168.1.79/CatalogoATC/";
+    public static String Consulta = "http://192.168.1.91/CatalogoATC/";
 
     //Metodo para llenar un ViewPager con los titulos y los fragmentos
     public  static CatalogoAdapter llenarViewPager(FragmentManager fragmentManager, List<Fragment> fragments,List<String> titulos) {
@@ -43,7 +43,7 @@ public class rutasLib {
             adapter.agregarFragmentos(fragments,titulos);
         return adapter;
     }
-
+/*
     //Metodo para ejecutar la consulta  con Volley y poner el resultado en un listView
     public void EnviarRecibirDatos(final Context context, String URL, final ArrayList<Modelo>lista){
         RequestQueue queue = Volley.newRequestQueue(context);
@@ -69,6 +69,7 @@ public class rutasLib {
         });
         queue.add(stringRequest);
     }
+    /*
     //Metodo para generar adapters con el resultado de las consultas
     public ProductosAdapter CargarListView(JSONArray ja, Context context, ArrayList<Modelo>lista ){
         //ArrayList<Modelo> lista = new ArrayList<>();
@@ -87,4 +88,5 @@ public class rutasLib {
 
         return adapter;
     }
+    */
 }
