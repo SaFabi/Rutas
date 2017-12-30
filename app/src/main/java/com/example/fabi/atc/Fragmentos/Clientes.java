@@ -31,13 +31,14 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class Clientes extends Fragment    implements Basic, Response.Listener<JSONArray>, Response.ErrorListener{
+public class Clientes extends Fragment implements Basic, Response.Listener<JSONArray>, Response.ErrorListener{
 
     //Fragmento para los accesorios
     private static final String ARG_POSITION= "POSITION";
 
     ListView listView;
     rutasLib rutasObj;
+    String url;
     private ProgressDialog progressDialog;
 
     private int  mPosition;
@@ -81,7 +82,7 @@ public class Clientes extends Fragment    implements Basic, Response.Listener<JS
         String consulta = "SELECT marca,precio,imagen FROM `productos` where tipoarticulo_id = 3";
         consulta = consulta.replace(" ", "%20");
         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
-        String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+        url= SERVER + RUTA + "consultaGeneral.php" + cadena;
         Log.i("info", url);
 
         //Hace la petición String
@@ -104,13 +105,14 @@ public class Clientes extends Fragment    implements Basic, Response.Listener<JS
     @Override
     public void onErrorResponse(VolleyError error) {
         progressDialog.hide();
-        Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), url, Toast.LENGTH_SHORT).show();
 
     }
 
     @Override
     public void onResponse(JSONArray response) {
         progressDialog.hide();
+        Toast.makeText(getContext(), url, Toast.LENGTH_SHORT).show();
 
         ProductosAdapter adapter = new ProductosAdapter(response,getContext());
         listView.setAdapter(adapter);

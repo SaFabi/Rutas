@@ -14,17 +14,11 @@
         android:background="@color/colorGris"
         android:paddingBottom="4dp">
 
-        <ImageView
-            android:id="@+id/imagencard"
-            android:layout_width="100dp"
-            android:layout_height="80dp"
-            android:src="@drawable/ic_menu_camera"
-            android:scaleType="fitStart"/>
+
 
         <TextView
             android:id="@+id/titulocard"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-            android:layout_toRightOf="@id/imagencard"
             android:text="Titulo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -32,8 +26,16 @@
             android:id="@+id/subtitulocard"
             android:textSize="15dp"
             android:layout_marginTop="10dp"
-            android:layout_toRightOf="@id/imagencard"
             android:layout_below="@id/titulocard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Subtitulo"
+            />
+        <TextView
+            android:id="@+id/precio"
+            android:textSize="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/subtitulocard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Subtitulo"

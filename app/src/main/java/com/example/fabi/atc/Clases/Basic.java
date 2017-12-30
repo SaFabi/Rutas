@@ -5,10 +5,10 @@ package com.example.fabi.atc.Clases;
  */
 
 public interface Basic {
-    String SERVER = "http://192.168.1.91/";
-    String RUTA = "CatalogoATC/";
+    String SERVER = "http://atc.mx/";
+    String RUTA = "Android/test/ejercicioApp/";
     String HOST = "localhost";
     String USER = "root";
     String PASS = "";
-    String DB = "catalogoatc";
+    String DB = "marquesada";
 }

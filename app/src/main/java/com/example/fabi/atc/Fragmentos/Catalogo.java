@@ -84,7 +84,14 @@ public class Catalogo extends Fragment  implements Basic, Response.Listener<JSON
 
         //Inicia la peticion
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String consulta = "SELECT marca, precio, imagen FROM `productos` WHERE tipoarticulo_id = 1";
+        String consulta = "select ma.nombre, mo.nombre,a.precio " +
+                "from marca ma, modelo mo, articulo a, punto_venta pv, cantidad ca, tipo_articulo ta " +
+                "where a.modelo_id = mo.id " +
+                "and mo.marca_id = ma.id " +
+                "and ca.puntoVenta_id = pv.id " +
+                "and ca.articulo_id = a.id " +
+                "and a.tipoArticulo_id = ta.id " +
+                "and pv.id = 2 and ta.nombre = 'Chip'";
         consulta = consulta.replace(" ", "%20");
         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
         String url = SERVER + RUTA + "consultaGeneral.php" + cadena;

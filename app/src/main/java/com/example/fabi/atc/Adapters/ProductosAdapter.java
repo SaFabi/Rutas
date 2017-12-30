@@ -25,12 +25,12 @@ import java.util.ArrayList;
  */
 
 public class ProductosAdapter extends BaseAdapter {
-    private ArrayList<Modelo> modelo;
+   // private ArrayList<Modelo> modelo;
     private JSONArray array;
     private Context context;
-    TextView titulo, subtitulo;
+    TextView titulo, subtitulo,precio;
     rutasLib rutasObj;
-    ImageView imageView;
+    //ImageView imageView;
     public ProductosAdapter(JSONArray array, Context context) {
         this.array= array;
         this.context = context;
@@ -72,7 +72,8 @@ public class ProductosAdapter extends BaseAdapter {
         }
         titulo=(TextView)view.findViewById(R.id.titulocard);
         subtitulo = (TextView)view.findViewById(R.id.subtitulocard);
-        imageView = (ImageView)view.findViewById(R.id.imagencard);
+        precio = (TextView)view.findViewById(R.id.precio);
+      //  imageView = (ImageView)view.findViewById(R.id.imagencard);
         String titulo2, subtitulo2, imagen;
         try
         {
@@ -89,8 +90,9 @@ public class ProductosAdapter extends BaseAdapter {
         if (titulo2 != null) {
             titulo.setText(titulo2);
             subtitulo.setText(subtitulo2);
-            String http = imagen;
-
+            precio.setText(imagen);
+            // String http = imagen;
+/*
 
             Glide.with(viewGroup.getContext())
                     .load(rutasObj.URL + http)
@@ -99,16 +101,20 @@ public class ProductosAdapter extends BaseAdapter {
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .thumbnail(0.5f)
                     .into(imageView);
+        */
         }
         return view;
     }
 
-
+/*
     public void setFilter(ArrayList<Modelo>listamodelos){
         this.modelo= new ArrayList<>();
         this.modelo.addAll(listamodelos);
         notifyDataSetChanged();
 
+
     }
+    */
 
 }
+
