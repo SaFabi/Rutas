@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.fabi.atc.Adapters.CatalogoAdapter;
 import com.example.fabi.atc.Clases.Utilidades;
 import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
@@ -20,27 +19,33 @@ import com.example.fabi.atc.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientesContenedor extends Fragment {
-
+/**
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link ContenedorInventarioGeneral.OnFragmentInteractionListener} interface
+ * to handle interaction events.
+ * Use the {@link ContenedorInventarioGeneral#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class ContenedorInventarioGeneral extends Fragment {
     private OnFragmentInteractionListener mListener;
     View vista;
-    private AppBarLayout appBArClientes;
-    private TabLayout pestanasClientes;
-    private ViewPager viewPagerClientes;
+    private AppBarLayout appBArInventario;
+    private TabLayout pestanasInventario;
+    private ViewPager viewPagerINventario;
     rutasLib rutasObj;
-    List<Fragment> fragmentos = new ArrayList<>();
-    List<String> titulos = new ArrayList<>();
+    List<Fragment> fragmentosInventario = new ArrayList<>();
+    List<String> titulosInventario = new ArrayList<>();
 
+    public ContenedorInventarioGeneral() {
 
-    public ClientesContenedor() {
-        // Required empty public constructor
     }
 
 
-    // TODO: Rename and change types and number of parameters
-    public static ClientesContenedor newInstance(String param1, String param2) {
-        ClientesContenedor fragment = new ClientesContenedor();
+    public static ContenedorInventarioGeneral newInstance(String param1, String param2) {
+        ContenedorInventarioGeneral fragment = new ContenedorInventarioGeneral();
         Bundle args = new Bundle();
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -54,41 +59,49 @@ public class ClientesContenedor extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       vista =  inflater.inflate(R.layout.fragment_clientes_contenedor, container, false);
+      vista =  inflater.inflate(R.layout.fragment_contenedor_inventario_general, container, false);
         if (Utilidades.rotacion == 0){
-            View parent = (View) container.getParent();
-            if (appBArClientes==null){
-                appBArClientes = parent.findViewById(R.id.appBar);
-                pestanasClientes =  new TabLayout(getActivity());
-                pestanasClientes.setTabTextColors(Color.parseColor("#FFFFFF"),Color.parseColor("#FFFFFF"));
-                appBArClientes.addView(pestanasClientes);
 
-                viewPagerClientes =vista.findViewById(R.id.ViewPagerClientes);
+            View parent = (View) container.getParent();
+            if (appBArInventario==null){
+                //asigna los elementos
+                appBArInventario = parent.findViewById(R.id.appBar);
+                pestanasInventario =  new TabLayout(getActivity());
+                //color del texto de las tabs
+                pestanasInventario.setTabTextColors(Color.parseColor("#FFFFFF"),Color.parseColor("#FFFFFF"));
+                //Agrega los titulos a las tabs
+                appBArInventario.addView(pestanasInventario);
+
+                viewPagerINventario =vista.findViewById(R.id.ViewPagerInventario);
 
                 //llena los Arrays de los fragmentos
-                fragmentos.add(new RegistroClientes());
-                fragmentos.add(new ClientesActivos());
-                fragmentos.add(new ClientesInactivos());
-                //Manda los titulos
-                titulos.add("Registrar");
-                titulos.add("Activos");
-                titulos.add("Inactivos");
-                viewPagerClientes.setAdapter(rutasObj.llenarViewPager(getFragmentManager(),fragmentos,titulos));
 
-                viewPagerClientes.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+                fragmentosInventario.add(new TelefonosGeneral());
+                fragmentosInventario.add(new Inicio());
+                fragmentosInventario.add(new AccesoriosGeneral());
+                //Manda los titulos
+                titulosInventario.add("Telefonos");
+                titulosInventario.add("Chips");
+                titulosInventario.add("Accesorios");
+
+                //Pone el Adapter en el ViewPager
+                viewPagerINventario.setAdapter(rutasObj.llenarViewPager(getFragmentManager(),fragmentosInventario,titulosInventario));
+
+                viewPagerINventario.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
                     @Override
                     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                         super.onPageScrolled(position, positionOffset, positionOffsetPixels);
                     }
                 });
-                pestanasClientes.setupWithViewPager(viewPagerClientes);
+                pestanasInventario.setupWithViewPager(viewPagerINventario);
 
             }
-            pestanasClientes.setTabGravity(TabLayout.GRAVITY_FILL);
+            pestanasInventario.setTabGravity(TabLayout.GRAVITY_FILL);
+
+
         }else {
             Utilidades.rotacion = 1;
         }
-
 
 
         return vista;
@@ -103,9 +116,10 @@ public class ClientesContenedor extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         if (Utilidades.rotacion == 0){
-            appBArClientes.removeView(pestanasClientes);
+            appBArInventario.removeView(pestanasInventario);
         }
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

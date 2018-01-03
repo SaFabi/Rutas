@@ -24,6 +24,10 @@
             android:id="@+id/Creditos"
             android:icon="@drawable/insertar"
             android:title="Creditos" />
+        <item
+            android:id="@+id/InventarioG"
+            android:icon="@drawable/insertar"
+            android:title="Inventario General" />
     </group>
 
     <item android:title="Communicate">

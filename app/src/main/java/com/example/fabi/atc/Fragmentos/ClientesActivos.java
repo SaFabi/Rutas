@@ -1,32 +1,38 @@
 package com.example.fabi.atc.Fragmentos;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.fabi.atc.Adapters.ClientesAdapter;
+import com.example.fabi.atc.Clases.Basic;
 import com.example.fabi.atc.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ClientesActivos.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ClientesActivos#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ClientesActivos extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import org.json.JSONArray;
+
+public class ClientesActivos extends Fragment implements Basic , Response.Listener<JSONArray>, Response.ErrorListener {
+
+    private static final String ARG_POSITION = "param1";
+    String url;
+    ListView listView;
+    private ProgressDialog progressDialog;
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private int mPosition;
 
     private OnFragmentInteractionListener mListener;
 
@@ -34,20 +40,12 @@ public class ClientesActivos extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ClientesActivos.
-     */
+
     // TODO: Rename and change types and number of parameters
-    public static ClientesActivos newInstance(String param1, String param2) {
+    public static ClientesActivos newInstance(int position) {
         ClientesActivos fragment = new ClientesActivos();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(ARG_POSITION, position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,8 +54,7 @@ public class ClientesActivos extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mPosition = getArguments().getInt(ARG_POSITION);
         }
     }
 
@@ -65,7 +62,38 @@ public class ClientesActivos extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_clientes_activos, container, false);
+        //Crea la vista
+        View view = inflater.inflate(R.layout.fragment_clientes_inactivos, container, false);
+        //Se declaran los elementos con su id
+        listView = (ListView)view.findViewById(R.id.clientesInactivos);
+
+        //Se declara el progress dialog para ejecutar despues la consulta
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setTitle("En Proceso");
+        progressDialog.setMessage("Un momento...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
+
+        //Inicia la peticion
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String consulta = "select cl.nombre, cl.direccion,cl.telefono,CONCAT(pv.tipo,'-',cc.numero) " +
+                "from cliente cl, clave_cliente cc, punto_venta pv " +
+                "where cc.puntoVenta_id = pv.id " +
+                "and cc.cliente_id = cl.id " +
+                " and pv.id="+usuarioID+" and cc.activo = true";
+        consulta = consulta.replace(" ", "%20");
+        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+        url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+        Log.i("info", url);
+
+        //Hace la petición String
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, this, this);
+
+        //Agrega y ejecuta la cola
+        queue.add(request);
+
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -74,7 +102,7 @@ public class ClientesActivos extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
-
+/*
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -91,17 +119,24 @@ public class ClientesActivos extends Fragment {
         super.onDetach();
         mListener = null;
     }
+*/
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        progressDialog.hide();
+        Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(),  "Activos   "+url, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onResponse(JSONArray response) {
+        progressDialog.hide();
+        // Toast.makeText(getContext(), "Telefonos    "+url, Toast.LENGTH_SHORT).show();
+        ClientesAdapter adapter = new ClientesAdapter(response,getContext());
+        listView.setAdapter(adapter);
+
+    }
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

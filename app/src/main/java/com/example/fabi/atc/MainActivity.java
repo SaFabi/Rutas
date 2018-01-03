@@ -23,13 +23,15 @@ import com.example.fabi.atc.Fragmentos.Catalogo;
 import com.example.fabi.atc.Fragmentos.Clientes;
 import com.example.fabi.atc.Fragmentos.ClientesContenedor;
 import com.example.fabi.atc.Fragmentos.Contenedor;
+import com.example.fabi.atc.Fragmentos.ContenedorInventarioGeneral;
 import com.example.fabi.atc.Fragmentos.Inicio;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         Inicio.OnFragmentInteractionListener,Catalogo.OnFragmentInteractionListener,
         Clientes.OnFragmentInteractionListener,
-        Contenedor.OnFragmentInteractionListener, ClientesContenedor.OnFragmentInteractionListener {
+        Contenedor.OnFragmentInteractionListener, ClientesContenedor.OnFragmentInteractionListener,
+        ContenedorInventarioGeneral.OnFragmentInteractionListener {
     MenuItem itemBuscar;
     MenuItem itemCarrito;
 
@@ -118,6 +120,9 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.Contacto) {
 
+        }else if (id == R.id.InventarioG) {
+            miFragment = new ContenedorInventarioGeneral();
+            fragmentSeleccionado = true;
 
         }
 

@@ -4,6 +4,7 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:textAlignment="center"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:text="Ciudad"
         android:id="@+id/spinnerCiudad"
