@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -29,6 +30,8 @@ public class MainActivity extends AppCompatActivity
         Inicio.OnFragmentInteractionListener,Catalogo.OnFragmentInteractionListener,
         Clientes.OnFragmentInteractionListener,
         Contenedor.OnFragmentInteractionListener, ClientesContenedor.OnFragmentInteractionListener {
+    MenuItem itemBuscar;
+    MenuItem itemCarrito;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,14 +40,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -70,20 +65,30 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        getMenuInflater().inflate(R.menu.menu_buscador,menu);
-        MenuItem menuItem =menu.findItem(R.id.buscador2);
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_settings:
+                return true;
+            case R.id.buscador2:
+                return true;
+            case R.id.carrito:
+                return true;
+        }
+
+
+        /*
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
+*/
         return super.onOptionsItemSelected(item);
     }
 
@@ -101,7 +106,6 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.Catalogo) {
             miFragment = new Contenedor();
             fragmentSeleccionado=true;
-
         } else if (id == R.id.Clientes) {
             miFragment = new ClientesContenedor();
             fragmentSeleccionado = true;

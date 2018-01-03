@@ -40,9 +40,7 @@ public class Clientes extends Fragment implements Basic, Response.Listener<JSONA
     rutasLib rutasObj;
     String url;
     private ProgressDialog progressDialog;
-
     private int  mPosition;
-
     private OnFragmentInteractionListener mListener;
 
     public Clientes() {
@@ -69,8 +67,11 @@ public class Clientes extends Fragment implements Basic, Response.Listener<JSONA
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_clientes, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_clientes, container, false);
+
         listView= (ListView)view.findViewById(R.id.lvFClientes);
+
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
         progressDialog.setMessage("Un momento...");
@@ -79,10 +80,19 @@ public class Clientes extends Fragment implements Basic, Response.Listener<JSONA
 
         //Inicia la peticion
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String consulta = "SELECT marca,precio,imagen FROM `productos` where tipoarticulo_id = 3";
+        String consulta = "select ta.nombre, ma.nombre,a.precio " +
+                "from marca ma, modelo mo, articulo a, punto_venta pv, cantidad ca, tipo_articulo ta " +
+                "where a.modelo_id = mo.id " +
+                "and mo.marca_id = ma.id " +
+                "and ca.puntoVenta_id = pv.id " +
+                "and ca.articulo_id = a.id " +
+                "and a.tipoArticulo_id = ta.id " +
+                "and pv.id = "+usuarioID+" and ta.nombre !='Teléfono'" +
+                "and ta.nombre !='Chip'" +
+                "and ca.valor > 0;";
         consulta = consulta.replace(" ", "%20");
         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
-        url= SERVER + RUTA + "consultaGeneral.php" + cadena;
+        url = SERVER + RUTA + "consultaGeneral.php" + cadena;
         Log.i("info", url);
 
         //Hace la petición String
@@ -90,8 +100,6 @@ public class Clientes extends Fragment implements Basic, Response.Listener<JSONA
 
         //Agrega y ejecuta la cola
         queue.add(request);
-
-
         return view;
     }
 
@@ -105,15 +113,15 @@ public class Clientes extends Fragment implements Basic, Response.Listener<JSONA
     @Override
     public void onErrorResponse(VolleyError error) {
         progressDialog.hide();
-        Toast.makeText(getContext(), url, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(),"Error en el webservice", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(), "Accesorios  "+url, Toast.LENGTH_SHORT).show();
 
     }
 
     @Override
     public void onResponse(JSONArray response) {
         progressDialog.hide();
-        Toast.makeText(getContext(), url, Toast.LENGTH_SHORT).show();
-
+        //Toast.makeText(getContext(), "Accesorios  "+url, Toast.LENGTH_SHORT).show();
         ProductosAdapter adapter = new ProductosAdapter(response,getContext());
         listView.setAdapter(adapter);
 

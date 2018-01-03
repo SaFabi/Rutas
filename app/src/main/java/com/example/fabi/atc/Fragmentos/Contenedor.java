@@ -9,6 +9,8 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -50,9 +52,14 @@ public class Contenedor extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_buscador,menu);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         vista = inflater.inflate(R.layout.fragment_contenedor, container, false);
         if (Utilidades.rotacion == 0){
 
@@ -69,7 +76,8 @@ public class Contenedor extends Fragment {
                 viewPager =vista.findViewById(R.id.ViewPagerInformacion);
 
                 //llena los Arrays de los fragmentos
-                fragmentosCatalogo.add(new Catalogo());
+
+               fragmentosCatalogo.add(new Catalogo());
                 fragmentosCatalogo.add(new Inicio());
                 fragmentosCatalogo.add(new Clientes());
                 //Manda los titulos
@@ -128,4 +136,6 @@ public class Contenedor extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+
 }

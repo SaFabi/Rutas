@@ -33,15 +33,13 @@ import java.util.ArrayList;
 public class Catalogo extends Fragment  implements Basic, Response.Listener<JSONArray>, Response.ErrorListener{
 
     //Fragmento para los telefonos
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_POSITION = "POSITION";
+    String url;
     ListView listView;
-    rutasLib rutasObj;
     private ProgressDialog progressDialog;
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private int mPosition;
 
     private OnFragmentInteractionListener mListener;
 
@@ -50,11 +48,10 @@ public class Catalogo extends Fragment  implements Basic, Response.Listener<JSON
     }
 
     // TODO: Rename and change types and number of parameters
-    public static Catalogo newInstance(String param1, String param2) {
+    public static Catalogo newInstance(int position) {
         Catalogo fragment = new Catalogo();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(ARG_POSITION, position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -63,8 +60,7 @@ public class Catalogo extends Fragment  implements Basic, Response.Listener<JSON
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mPosition = getArguments().getInt(ARG_POSITION);
         }
     }
 
@@ -72,7 +68,8 @@ public class Catalogo extends Fragment  implements Basic, Response.Listener<JSON
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_catalogo, container, false);
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_catalogo, container, false);
 
         listView= (ListView)view.findViewById(R.id.lvCatalogo);
 
@@ -84,17 +81,17 @@ public class Catalogo extends Fragment  implements Basic, Response.Listener<JSON
 
         //Inicia la peticion
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String consulta = "select ma.nombre, mo.nombre,a.precio " +
+        String consulta = "select ma.nombre,mo.nombre,a.precio " +
                 "from marca ma, modelo mo, articulo a, punto_venta pv, cantidad ca, tipo_articulo ta " +
-                "where a.modelo_id = mo.id " +
-                "and mo.marca_id = ma.id " +
-                "and ca.puntoVenta_id = pv.id " +
-                "and ca.articulo_id = a.id " +
-                "and a.tipoArticulo_id = ta.id " +
-                "and pv.id = 2 and ta.nombre = 'Chip'";
+                "where a.modelo_id=mo.id " +
+                "and mo.marca_id=ma.id " +
+                "and ca.puntoVenta_id=pv.id " +
+                "and ca.articulo_id=a.id " +
+                "and a.tipoArticulo_id=ta.id " +
+                "and pv.id = "+usuarioID+" and ta.nombre='Teléfono'";
         consulta = consulta.replace(" ", "%20");
         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
-        String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+        url = SERVER + RUTA + "consultaGeneral.php" + cadena;
         Log.i("info", url);
 
         //Hace la petición String
@@ -102,8 +99,6 @@ public class Catalogo extends Fragment  implements Basic, Response.Listener<JSON
 
         //Agrega y ejecuta la cola
         queue.add(request);
-
-       // EnviarRecibirDatos(rutasObj.Consulta+"consultaTelefonos.php");
         return view;
     }
 
@@ -114,6 +109,7 @@ public class Catalogo extends Fragment  implements Basic, Response.Listener<JSON
             mListener.onFragmentInteraction(uri);
         }
     }
+    /*
 
     @Override
     public void onAttach(Context context) {
@@ -131,17 +127,19 @@ public class Catalogo extends Fragment  implements Basic, Response.Listener<JSON
         super.onDetach();
         mListener = null;
     }
+    */
 
     @Override
     public void onErrorResponse(VolleyError error) {
         progressDialog.hide();
         Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(),  "Telefonos    "+url, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onResponse(JSONArray response) {
         progressDialog.hide();
-
+       // Toast.makeText(getContext(), "Telefonos    "+url, Toast.LENGTH_SHORT).show();
         ProductosAdapter adapter = new ProductosAdapter(response,getContext());
         listView.setAdapter(adapter);
 

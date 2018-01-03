@@ -7,6 +7,7 @@ package com.example.fabi.atc.Clases;
 public interface Basic {
     String SERVER = "http://atc.mx/";
     String RUTA = "Android/test/ejercicioApp/";
+    int usuarioID = 2;
     String HOST = "localhost";
     String USER = "root";
     String PASS = "";

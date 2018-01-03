@@ -7,5 +7,10 @@
         android:title="Buscar"
         android:icon="@android:drawable/ic_menu_search"
         app:actionViewClass="android.widget.SearchView" />
+    <item
+        android:id="@+id/carrito"
+        app:showAsAction="always"
+        android:title="Buscar"
+        android:icon="@drawable/ic_carrito"/>
 
 </menu>

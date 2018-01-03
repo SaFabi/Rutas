@@ -33,10 +33,11 @@ import java.util.List;
 
 public class Inicio extends Fragment  implements Basic, Response.Listener<JSONArray>, Response.ErrorListener {
 
-    //Frgmento para los chips
+    //Fragmento para los chips
 
     private static final String ARG_POSITION= "POSITION";
     private int mPosition;
+    String url;
     ListView listView;
     rutasLib rutasObj;
     private ProgressDialog progressDialog;
@@ -79,10 +80,17 @@ public class Inicio extends Fragment  implements Basic, Response.Listener<JSONAr
 
         //Inicia la peticion
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String consulta = "SELECT marca, precio, imagen FROM `productos` WHERE tipoarticulo_id = 2";
+        String consulta = "select ma.nombre,mo.nombre,a.precio " +
+                "from marca ma, modelo mo, articulo a, punto_venta pv, cantidad ca, tipo_articulo ta " +
+                "where a.modelo_id = mo.id " +
+                "and mo.marca_id = ma.id " +
+                "and ca.puntoVenta_id = pv.id " +
+                "and ca.articulo_id = a.id " +
+                "and a.tipoArticulo_id = ta.id " +
+                "and pv.id = "+usuarioID+" and ta.nombre = 'Chip'";
         consulta = consulta.replace(" ", "%20");
         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
-        String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+        url= SERVER + RUTA + "consultaGeneral.php" + cadena;
         Log.i("info", url);
 
         //Hace la petición String
@@ -133,13 +141,14 @@ public class Inicio extends Fragment  implements Basic, Response.Listener<JSONAr
     public void onErrorResponse(VolleyError error) {
         progressDialog.hide();
         Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(),"Chips   "+ url, Toast.LENGTH_SHORT).show();
 
     }
 
     @Override
     public void onResponse(JSONArray response) {
         progressDialog.hide();
-
+       // Toast.makeText(getContext(),"Chips   "+ url, Toast.LENGTH_SHORT).show();
         ProductosAdapter adapter = new ProductosAdapter(response,getContext());
         listView.setAdapter(adapter);
 
