@@ -11,6 +11,8 @@ import java.util.List;
  */
 
 public class CatalogoAdapter extends FragmentStatePagerAdapter {
+    //Adaptador para fragmentos con TABS
+
     private  List<Fragment> listaFragments = new ArrayList<>();
     private  List<String> listaTitulos=new ArrayList<>();
 

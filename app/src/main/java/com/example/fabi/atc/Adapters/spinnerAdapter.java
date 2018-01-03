@@ -7,25 +7,22 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.example.fabi.atc.Clases.ModeloClientes;
 import com.example.fabi.atc.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 /**
- * Created by Fabi on 02/01/2018.
+ * Created by Fabi on 03/01/2018.
  */
 
-public class ClientesAdapter extends BaseAdapter {
+public class spinnerAdapter extends BaseAdapter {
     private JSONArray array;
     private Context context;
-    TextView Nombre, Ciudad,Telefono, claveR;
+    TextView ciudad;
 
-
-    public ClientesAdapter(JSONArray array, Context context) {
+    public spinnerAdapter(JSONArray array, Context context) {
         this.array = array;
         this.context = context;
     }
@@ -50,6 +47,7 @@ public class ClientesAdapter extends BaseAdapter {
 
         return jsonObject;
     }
+
     @Override
     public long getItemId(int i) {
         return i;
@@ -60,34 +58,24 @@ public class ClientesAdapter extends BaseAdapter {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         View view = convertView;
         if (convertView == null){
-            view = inflater.inflate(R.layout.modelo_clientes,null);
+            view = inflater.inflate(R.layout.modelo_spinner,null);
         }
-        Nombre = (TextView)view.findViewById(R.id.nombreCliente);
-        Telefono = (TextView)view.findViewById(R.id.telefonoCliente);
-        Ciudad = (TextView)view.findViewById(R.id.ciudadCliente);
-        claveR = (TextView)view.findViewById(R.id.claveR);
+        ciudad=(TextView)view.findViewById(R.id.spinnerCiudad);
 
-        String titulo2, subtitulo2, imagen, claveRuta;
+        String ciudadtxt;
         try
         {
-            titulo2= getItem(i).getString("0");//Nombre del cliente
-            subtitulo2 = getItem(i).getString("1");//Direccion
-            imagen = getItem(i).getString("2");//Telefono
-            claveRuta= getItem(i).getString("3");//Clave del cliente
+            ciudadtxt= getItem(i).getString("0");
         }
         catch (JSONException e)
         {
-            titulo2= null;
-            subtitulo2 = null;
-            imagen= null;
-            claveRuta = null;
+            ciudadtxt = null;
         }
-        if (titulo2 != null) {
-            Nombre.setText(titulo2);
-            Ciudad.setText(subtitulo2);
-            Telefono.setText(imagen);
-            claveR.setText(claveRuta);
+        if (ciudadtxt != null) {
+            ciudad.setText(ciudadtxt);
+
         }
         return view;
+
     }
 }

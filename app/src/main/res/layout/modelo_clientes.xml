@@ -4,6 +4,13 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:layout_alignParentRight="true"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        android:text="R1-001"
+        android:id="@+id/claveR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:id="@+id/nombreCliente"
         android:layout_width="wrap_content"

@@ -67,7 +67,7 @@ public class ClientesContenedor extends Fragment {
 
                 //llena los Arrays de los fragmentos
                 fragmentos.add(new RegistroClientes());
-                fragmentos.add(new Inicio());
+                fragmentos.add(new ClientesInactivos());
                 fragmentos.add(new Clientes());
                 //Manda los titulos
                 titulos.add("Registrar");

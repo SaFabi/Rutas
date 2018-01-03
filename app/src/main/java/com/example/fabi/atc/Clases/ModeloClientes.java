@@ -5,12 +5,13 @@ package com.example.fabi.atc.Clases;
  */
 
 public class ModeloClientes {
-    String nombre, ciudad, telefono;
+    String nombre, ciudad, telefono,claveR;
 
-    public ModeloClientes(String nombre, String ciudad, String telefono) {
+    public ModeloClientes(String nombre, String ciudad, String telefono, String claveR) {
         this.nombre = nombre;
         this.ciudad = ciudad;
         this.telefono = telefono;
+        this.claveR = claveR;
     }
 
     public String getNombre() {
@@ -35,5 +36,13 @@ public class ModeloClientes {
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+
+    public String getClaveR() {
+        return claveR;
+    }
+
+    public void setClaveR(String claveR) {
+        this.claveR = claveR;
     }
 }

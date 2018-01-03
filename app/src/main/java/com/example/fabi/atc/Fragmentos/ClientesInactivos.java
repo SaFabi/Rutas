@@ -1,6 +1,5 @@
 package com.example.fabi.atc.Fragmentos;
 
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
@@ -10,7 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Spinner;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -19,30 +18,30 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.fabi.atc.Adapters.ClientesAdapter;
 import com.example.fabi.atc.Adapters.ProductosAdapter;
-import com.example.fabi.atc.Adapters.spinnerAdapter;
 import com.example.fabi.atc.Clases.Basic;
 import com.example.fabi.atc.R;
 
 import org.json.JSONArray;
 
-public class RegistroClientes extends Fragment implements Basic, Response.Listener<JSONArray>, Response.ErrorListener{
+public class ClientesInactivos extends Fragment implements Basic , Response.Listener<JSONArray>, Response.ErrorListener{
 
-    Spinner spinner;
-    String url;
     private static final String ARG_POSITION = "POSITION";
+    String url;
+    ListView listView;
     private ProgressDialog progressDialog;
 
+    // TODO: Rename and change types of parameters
     private int mPosition;
 
     private OnFragmentInteractionListener mListener;
 
-    public RegistroClientes() {
+    public ClientesInactivos() {
         // Required empty public constructor
     }
-
-    public static RegistroClientes newInstance(int position) {
-        RegistroClientes fragment = new RegistroClientes();
+    public static ClientesInactivos newInstance(int position) {
+        ClientesInactivos fragment = new ClientesInactivos();
         Bundle args = new Bundle();
         args.putInt(ARG_POSITION, position);
         fragment.setArguments(args);
@@ -53,15 +52,17 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mPosition= getArguments().getInt(ARG_POSITION);
+            mPosition = getArguments().getInt(ARG_POSITION);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-       View view= inflater.inflate(R.layout.fragment_registro_clientes, container, false);
-        spinner = (Spinner)view.findViewById(R.id.Ciudades);
+        //Crea la vista
+       View view = inflater.inflate(R.layout.fragment_clientes_inactivos, container, false);
+        //Se declaran los elementos con su id
+        listView = (ListView)view.findViewById(R.id.clientesInactivos);
 
         //Se declara el progress dialog para ejecutar despues la consulta
         progressDialog = new ProgressDialog(getContext());
@@ -72,7 +73,11 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
 
         //Inicia la peticion
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String consulta = "select nombre from ciudad";
+        String consulta = "select cl.nombre, cl.direccion,cl.telefono,CONCAT(pv.tipo,'-',cc.numero) " +
+                "from cliente cl, clave_cliente cc, punto_venta pv " +
+                "where cc.puntoVenta_id = pv.id " +
+                "and cc.cliente_id = cl.id " +
+                " and pv.id="+usuarioID+" and cc.activo = true";
         consulta = consulta.replace(" ", "%20");
         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
         url = SERVER + RUTA + "consultaGeneral.php" + cadena;
@@ -85,6 +90,8 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
         queue.add(request);
 
 
+
+
         return view;
     }
 
@@ -94,51 +101,42 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
             mListener.onFragmentInteraction(uri);
         }
     }
+    /*
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+    */
 
     @Override
     public void onErrorResponse(VolleyError error) {
         progressDialog.hide();
         Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
-        //Toast.makeText(getContext(),  "Telefonos    "+url, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(),  "Inactivos   "+url, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onResponse(JSONArray response) {
         progressDialog.hide();
         // Toast.makeText(getContext(), "Telefonos    "+url, Toast.LENGTH_SHORT).show();
-        spinnerAdapter adapter = new spinnerAdapter(response,getContext());
-        spinner.setAdapter(adapter);
+       ClientesAdapter adapter = new ClientesAdapter(response,getContext());
+        listView.setAdapter(adapter);
 
     }
 
-    /*
-        @Override
-        public void onAttach(Context context) {
-            super.onAttach(context);
-            if (context instanceof OnFragmentInteractionListener) {
-                mListener = (OnFragmentInteractionListener) context;
-            } else {
-                throw new RuntimeException(context.toString()
-                        + " must implement OnFragmentInteractionListener");
-            }
-        }
-
-        @Override
-        public void onDetach() {
-            super.onDetach();
-            mListener = null;
-        }
-
-        /**
-         * This interface must be implemented by activities that contain this
-         * fragment to allow an interaction in this fragment to be communicated
-         * to the activity and potentially other fragments contained in that
-         * activity.
-         * <p>
-         * See the Android Training lesson <a href=
-         * "http://developer.android.com/training/basics/fragments/communicating.html"
-         * >Communicating with Other Fragments</a> for more information.
-         */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
