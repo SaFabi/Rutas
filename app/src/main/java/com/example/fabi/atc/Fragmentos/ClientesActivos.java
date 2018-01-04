@@ -1,7 +1,9 @@
 package com.example.fabi.atc.Fragmentos;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -66,6 +69,65 @@ public class ClientesActivos extends Fragment implements Basic , Response.Listen
         View view = inflater.inflate(R.layout.fragment_clientes_inactivos, container, false);
         //Se declaran los elementos con su id
         listView = (ListView)view.findViewById(R.id.clientesInactivos);
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+               //Hace la consulta para sacar el id del cliente que se va a eliminar
+
+
+                AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
+                dialogo1.setTitle("Importante");
+                dialogo1.setMessage("¿Desea eliminar este elemento?");
+                dialogo1.setCancelable(false);
+                dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+                    //
+                    public void onClick(DialogInterface dialogo1, int id) {
+                        /*
+                        //Inicia la peticion para actualizar el estado del cliente a inactivo
+                        RequestQueue queueUpdate = Volley.newRequestQueue(getContext());
+
+                        //Asigna a la variable la consulta que se va a ejecutar
+                        String consultaUpdate = "select cl.nombre, cl.direccion,cl.telefono,CONCAT(pv.tipo,'-',cc.numero) " +
+                                "from cliente cl, clave_cliente cc, punto_venta pv " +
+                                "where cc.puntoVenta_id = pv.id " +
+                                "and cc.cliente_id = cl.id " +
+                                " and pv.id="+usuarioID+" and cc.activo = true";
+
+                        //Reemplaza los espacios de a consulta por %20
+                        consultaUpdate = consultaUpdate.replace(" ", "%20");
+
+                        //Arma la cadena que se va a mandar al navegador
+                        String cadenaUpdate = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaUpdate;
+
+                        //Asigna la url que se ejecutara en el navegador
+                        url = SERVER + RUTA + "consultaGeneral.php" + cadenaUpdate;
+                        //Para obtener la respuesta de la consulta anterior
+                        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                            @Override
+                            public void onResponse(JSONArray response) {
+
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+
+                            }
+                        });
+                        queueUpdate.add(request);
+                        //Log.i("info", url);  */
+                        Toast.makeText(getContext(),"Se elimino correctamente",Toast.LENGTH_SHORT).show();
+                    }
+                });
+                dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogo1, int id) {
+                    }
+                });
+                dialogo1.show();
+
+                return false;
+            }
+        });
+
 
         //Se declara el progress dialog para ejecutar despues la consulta
         progressDialog = new ProgressDialog(getContext());

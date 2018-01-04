@@ -67,7 +67,7 @@ public class TelefonosGeneral extends Fragment implements Basic, Response.Listen
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_telefonos_general, container, false);
 
-        listView= (ListView)view.findViewById(R.id.accesoriosGeneral);
+        listView= (ListView)view.findViewById(R.id.telefonosGeneral);
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
@@ -77,7 +77,7 @@ public class TelefonosGeneral extends Fragment implements Basic, Response.Listen
 
         //Inicia la peticion
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String consulta = "select distinct ma.nombre,ma.nombre,a.precio " +
+        String consulta = "select distinct ma.nombre,mo.nombre,a.precio " +
                 "from marca ma,modelo mo,articulo a,punto_venta pv,cantidad ca,tipo_articulo ta,colocacion co,puntoventa_colocacion pvc "+
                 "where a.modelo_id=mo.id " +
                 "and mo.marca_id=ma.id " +
@@ -87,7 +87,8 @@ public class TelefonosGeneral extends Fragment implements Basic, Response.Listen
                 "and pvc.colocacion_id=co.id " +
                 "and co.tipo!='Local' " +
                 "and ta.nombre='Teléfono' " +
-                "and ca.valor>0";
+                "and ca.valor>0 "+
+                "order by ma.nombre asc ";
         consulta = consulta.replace(" ", "%20");
         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
         url= SERVER + RUTA + "consultaGeneral.php" + cadena;
@@ -108,6 +109,7 @@ public class TelefonosGeneral extends Fragment implements Basic, Response.Listen
             mListener.onFragmentInteraction(uri);
         }
     }
+    /*
 
     @Override
     public void onAttach(Context context) {
@@ -119,6 +121,7 @@ public class TelefonosGeneral extends Fragment implements Basic, Response.Listen
                     + " must implement OnFragmentInteractionListener");
         }
     }
+    */
 
     @Override
     public void onDetach() {

@@ -30,6 +30,7 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
 
     Spinner spinner;
     String url;
+    String urlClave;
     private static final String ARG_POSITION = "POSITION";
     private ProgressDialog progressDialog;
 
@@ -78,11 +79,21 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
         url = SERVER + RUTA + "consultaGeneral.php" + cadena;
         Log.i("info", url);
 
+        //Inicia la peticion para llenar el Spinner  con las ciudades
+        RequestQueue queueClave = Volley.newRequestQueue(getContext());
+        String consultaClave = "select nombre from ciudad";
+        consultaClave = consultaClave.replace(" ", "%20");
+        String cadenaClave = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+        urlClave = SERVER + RUTA + "consultaGeneral.php" + cadenaClave;
+        Log.i("info", urlClave);
+
         //Hace la petición String
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, this, this);
+        JsonArrayRequest requestClave = new JsonArrayRequest(Request.Method.GET, urlClave, null, this, this);
 
         //Agrega y ejecuta la cola
         queue.add(request);
+        queueClave.add(requestClave);
 
 
         return view;

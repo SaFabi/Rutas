@@ -77,7 +77,7 @@ public class ContenedorInventarioGeneral extends Fragment {
                 //llena los Arrays de los fragmentos
 
                 fragmentosInventario.add(new TelefonosGeneral());
-                fragmentosInventario.add(new Inicio());
+                fragmentosInventario.add(new ChipsGeneral());
                 fragmentosInventario.add(new AccesoriosGeneral());
                 //Manda los titulos
                 titulosInventario.add("Telefonos");

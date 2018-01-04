@@ -1,7 +1,9 @@
 package com.example.fabi.atc.Fragmentos;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -87,7 +90,8 @@ public class Inicio extends Fragment  implements Basic, Response.Listener<JSONAr
                 "and ca.puntoVenta_id = pv.id " +
                 "and ca.articulo_id = a.id " +
                 "and a.tipoArticulo_id = ta.id " +
-                "and pv.id = "+usuarioID+" and ta.nombre = 'Chip'";
+                "and pv.id = "+usuarioID+" and ta.nombre = 'Chip' "+
+                "order by ma.nombre asc ";
         consulta = consulta.replace(" ", "%20");
         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
         url= SERVER + RUTA + "consultaGeneral.php" + cadena;

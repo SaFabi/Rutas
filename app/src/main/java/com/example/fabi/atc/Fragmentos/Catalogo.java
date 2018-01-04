@@ -88,7 +88,8 @@ public class Catalogo extends Fragment  implements Basic, Response.Listener<JSON
                 "and ca.puntoVenta_id=pv.id " +
                 "and ca.articulo_id=a.id " +
                 "and a.tipoArticulo_id=ta.id " +
-                "and pv.id = "+usuarioID+" and ta.nombre='Teléfono'";
+                "and pv.id = "+usuarioID+" and ta.nombre='Teléfono' "+
+                "order by ma.nombre asc ";
         consulta = consulta.replace(" ", "%20");
         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
         url = SERVER + RUTA + "consultaGeneral.php" + cadena;

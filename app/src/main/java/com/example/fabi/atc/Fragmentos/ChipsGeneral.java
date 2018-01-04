@@ -1,32 +1,37 @@
 package com.example.fabi.atc.Fragmentos;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.fabi.atc.Adapters.ProductosAdapter;
+import com.example.fabi.atc.Clases.Basic;
 import com.example.fabi.atc.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ChipsGeneral.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ChipsGeneral#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ChipsGeneral extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import org.json.JSONArray;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
+public class ChipsGeneral extends Fragment  implements Basic, Response.Listener<JSONArray>, Response.ErrorListener {
+
+    private static final String ARG_POSITION = "position";
+    private int mPosition;
+    String url;
+    ListView listView;
+    private ProgressDialog progressDialog;
 
     private OnFragmentInteractionListener mListener;
 
@@ -34,20 +39,10 @@ public class ChipsGeneral extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ChipsGeneral.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ChipsGeneral newInstance(String param1, String param2) {
+    public static ChipsGeneral newInstance(int position) {
         ChipsGeneral fragment = new ChipsGeneral();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(ARG_POSITION, position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,8 +51,7 @@ public class ChipsGeneral extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mPosition = getArguments().getInt(ARG_POSITION);
         }
     }
 
@@ -65,7 +59,48 @@ public class ChipsGeneral extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chips_general, container, false);
+        View view =  inflater.inflate(R.layout.fragment_chips_general, container, false);
+
+        listView= (ListView)view.findViewById(R.id.chipsGeneral);
+
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setTitle("En Proceso");
+        progressDialog.setMessage("Un momento...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
+
+        //Inicia la peticion
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String consulta = "select distinct ma.nombre,mo.nombre,a.precio " +
+                "from marca ma,modelo mo,articulo a,punto_venta pv,cantidad ca,tipo_articulo ta,colocacion co,puntoventa_colocacion pvc "+
+                "where a.modelo_id=mo.id " +
+                "and mo.marca_id=ma.id " +
+                "and ca.puntoVenta_id=pv.id " +
+                "and ca.articulo_id =a.id " +
+                "and a.tipoArticulo_id=ta.id " +
+                "and pvc.colocacion_id=co.id " +
+                "and co.tipo!='Local' " +
+                "and ta.nombre='Chip' " +
+                "and ca.valor>0 "+
+                "order by ma.nombre asc;";
+        consulta = consulta.replace(" ", "%20");
+        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+        url= SERVER + RUTA + "consultaGeneral.php" + cadena;
+        Log.i("info", url);
+
+        //Hace la petición String
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, this, this);
+
+        //Agrega y ejecuta la cola
+        queue.add(request);
+
+
+
+
+
+
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -74,7 +109,7 @@ public class ChipsGeneral extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
-
+/*
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -85,23 +120,31 @@ public class ChipsGeneral extends Fragment {
                     + " must implement OnFragmentInteractionListener");
         }
     }
-
+*/
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        progressDialog.hide();
+        Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(),"Chips   "+ url, Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void onResponse(JSONArray response) {
+        progressDialog.hide();
+        // Toast.makeText(getContext(),"Chips   "+ url, Toast.LENGTH_SHORT).show();
+        ProductosAdapter adapter = new ProductosAdapter(response,getContext());
+        listView.setAdapter(adapter);
+
+    }
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

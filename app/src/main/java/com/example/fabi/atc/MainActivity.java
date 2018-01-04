@@ -25,13 +25,14 @@ import com.example.fabi.atc.Fragmentos.ClientesContenedor;
 import com.example.fabi.atc.Fragmentos.Contenedor;
 import com.example.fabi.atc.Fragmentos.ContenedorInventarioGeneral;
 import com.example.fabi.atc.Fragmentos.Inicio;
+import com.example.fabi.atc.Fragmentos.Reportes;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         Inicio.OnFragmentInteractionListener,Catalogo.OnFragmentInteractionListener,
         Clientes.OnFragmentInteractionListener,
         Contenedor.OnFragmentInteractionListener, ClientesContenedor.OnFragmentInteractionListener,
-        ContenedorInventarioGeneral.OnFragmentInteractionListener {
+        ContenedorInventarioGeneral.OnFragmentInteractionListener, Reportes.OnFragmentInteractionListener {
     MenuItem itemBuscar;
     MenuItem itemCarrito;
 
@@ -67,6 +68,9 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_buscador,menu);
+        itemBuscar =menu.findItem(R.id.buscador2);
+        itemCarrito = menu.findItem(R.id.carrito);
 
         return true;
     }
@@ -105,24 +109,47 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.Inicio){
             miFragment = new Inicio();
             fragmentSeleccionado = true;
+            itemBuscar.setVisible(false);
+            itemCarrito.setVisible(false);
         } else if (id == R.id.Catalogo) {
             miFragment = new Contenedor();
             fragmentSeleccionado=true;
+            itemBuscar.setVisible(true);
+            itemCarrito.setVisible(true);
         } else if (id == R.id.Clientes) {
             miFragment = new ClientesContenedor();
             fragmentSeleccionado = true;
+            itemCarrito.setVisible(false);
+            itemBuscar.setVisible(true);
 
         } else if (id == R.id.Creditos) {
+            itemCarrito.setVisible(false);
+            itemBuscar.setVisible(true);
+
 
         } else if (id == R.id.Reportes) {
+            itemCarrito.setVisible(false);
+            itemBuscar.setVisible(true);
+            miFragment = new Reportes();
+            fragmentSeleccionado = true;
+
 
         } else if (id == R.id.Ayuda) {
+            itemCarrito.setVisible(false);
+            itemBuscar.setVisible(false);
+
 
         } else if (id == R.id.Contacto) {
+            itemCarrito.setVisible(false);
+            itemBuscar.setVisible(false);
+
 
         }else if (id == R.id.InventarioG) {
             miFragment = new ContenedorInventarioGeneral();
             fragmentSeleccionado = true;
+            itemCarrito.setVisible(false);
+            itemBuscar.setVisible(true);
+
 
         }
 

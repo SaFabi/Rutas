@@ -2,12 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:visible="false"
         android:id="@+id/buscador2"
         app:showAsAction="always"
         android:title="Buscar"
         android:icon="@android:drawable/ic_menu_search"
         app:actionViewClass="android.widget.SearchView" />
     <item
+        android:visible="false"
         android:id="@+id/carrito"
         app:showAsAction="always"
         android:title="Buscar"
