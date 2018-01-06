@@ -50,7 +50,7 @@ public class spinnerAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int i) {
-        return i;
+        return  i;
     }
 
     @Override
@@ -65,7 +65,7 @@ public class spinnerAdapter extends BaseAdapter {
         String ciudadtxt;
         try
         {
-            ciudadtxt= getItem(i).getString("0");
+            ciudadtxt= getItem(i).getString("1");
         }
         catch (JSONException e)
         {

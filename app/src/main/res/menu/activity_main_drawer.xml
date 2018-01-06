@@ -4,29 +4,29 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/Inicio"
-            android:icon="@drawable/llave"
+            android:icon="@drawable/inicio"
             android:title="Inicio" />
         <item
             android:id="@+id/Catalogo"
-            android:icon="@drawable/puerta"
+            android:icon="@drawable/catalogo"
             android:title="Catalogo" />
         <item
             android:id="@+id/Reportes"
-            android:icon="@drawable/editar"
+            android:icon="@drawable/reporte"
             android:title="Reportes" />
 
         <item
             android:id="@+id/Clientes"
-            android:icon="@drawable/silueta"
+            android:icon="@drawable/usuario"
             android:title="Clientes" />
 
         <item
             android:id="@+id/Creditos"
-            android:icon="@drawable/insertar"
+            android:icon="@drawable/historial"
             android:title="Creditos" />
         <item
             android:id="@+id/InventarioG"
-            android:icon="@drawable/insertar"
+            android:icon="@drawable/catalogo"
             android:title="Inventario General" />
     </group>
 
@@ -34,11 +34,11 @@
         <menu>
             <item
                 android:id="@+id/Ayuda"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/ayuda"
                 android:title="Ayuda" />
             <item
                 android:id="@+id/Contacto"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/consultas"
                 android:title="Contacto" />
         </menu>
     </item>

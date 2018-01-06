@@ -1,12 +1,20 @@
 package com.example.fabi.atc.Adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -25,11 +33,11 @@ import java.util.ArrayList;
  */
 
 public class ProductosAdapter extends BaseAdapter {
-   // private ArrayList<Modelo> modelo;
     private JSONArray array;
     private Context context;
     TextView titulo, subtitulo,precio;
     rutasLib rutasObj;
+    Button carrito;
     //ImageView imageView;
     public ProductosAdapter(JSONArray array, Context context) {
         this.array= array;
@@ -64,7 +72,7 @@ public class ProductosAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View convertView, ViewGroup viewGroup) {
+    public View getView(int i, final View convertView, final ViewGroup viewGroup) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         View view = convertView;
         if (convertView == null){
@@ -73,6 +81,30 @@ public class ProductosAdapter extends BaseAdapter {
         titulo=(TextView)view.findViewById(R.id.titulocard);
         subtitulo = (TextView)view.findViewById(R.id.subtitulocard);
         precio = (TextView)view.findViewById(R.id.precio);
+        carrito = (Button)view.findViewById(R.id.btnCarrito);
+        carrito.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                final EditText textoBusqueda = new EditText(context);
+                textoBusqueda.setInputType(1);
+                builder.setTitle("Cantidad");   // Título
+                builder.setView(textoBusqueda);
+                builder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        Toast.makeText(context,"Se agregaron al carrito",Toast.LENGTH_SHORT).show();
+                       // Log.i("Algo", textoBusqueda.getText().toString());
+                    }
+                });
+                builder .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogo1, int id) {
+                    }
+                });
+                builder.show();
+
+            }
+        });
       //  imageView = (ImageView)view.findViewById(R.id.imagencard);
         String titulo2, subtitulo2, imagen;
         try
@@ -90,7 +122,7 @@ public class ProductosAdapter extends BaseAdapter {
         if (titulo2 != null) {
             titulo.setText(titulo2);
             subtitulo.setText(subtitulo2);
-            precio.setText(imagen);
+            precio.setText("$"+imagen);
             // String http = imagen;
 /*
 

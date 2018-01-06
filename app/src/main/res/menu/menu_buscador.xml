@@ -6,13 +6,13 @@
         android:id="@+id/buscador2"
         app:showAsAction="always"
         android:title="Buscar"
-        android:icon="@android:drawable/ic_menu_search"
+        android:icon="@drawable/buscar"
         app:actionViewClass="android.widget.SearchView" />
     <item
         android:visible="false"
         android:id="@+id/carrito"
         app:showAsAction="always"
         android:title="Buscar"
-        android:icon="@drawable/ic_carrito"/>
+        android:icon="@drawable/carrito_blanco"/>
 
 </menu>

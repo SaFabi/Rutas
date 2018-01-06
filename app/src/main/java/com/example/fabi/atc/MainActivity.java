@@ -2,13 +2,7 @@ package com.example.fabi.atc;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -17,13 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import com.example.fabi.atc.Adapters.CatalogoAdapter;
 import com.example.fabi.atc.Fragmentos.Catalogo;
 import com.example.fabi.atc.Fragmentos.Clientes;
 import com.example.fabi.atc.Fragmentos.ClientesContenedor;
 import com.example.fabi.atc.Fragmentos.Contenedor;
 import com.example.fabi.atc.Fragmentos.ContenedorInventarioGeneral;
+import com.example.fabi.atc.Fragmentos.Creditos;
 import com.example.fabi.atc.Fragmentos.Inicio;
 import com.example.fabi.atc.Fragmentos.Reportes;
 
@@ -32,7 +25,8 @@ public class MainActivity extends AppCompatActivity
         Inicio.OnFragmentInteractionListener,Catalogo.OnFragmentInteractionListener,
         Clientes.OnFragmentInteractionListener,
         Contenedor.OnFragmentInteractionListener, ClientesContenedor.OnFragmentInteractionListener,
-        ContenedorInventarioGeneral.OnFragmentInteractionListener, Reportes.OnFragmentInteractionListener {
+        ContenedorInventarioGeneral.OnFragmentInteractionListener, Reportes.OnFragmentInteractionListener,
+        Creditos.OnFragmentInteractionListener {
     MenuItem itemBuscar;
     MenuItem itemCarrito;
 
@@ -52,6 +46,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setItemIconTintList(null);
     }
 
     @Override
@@ -124,7 +119,9 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.Creditos) {
             itemCarrito.setVisible(false);
-            itemBuscar.setVisible(true);
+            itemBuscar.setVisible(false);
+            miFragment = new Creditos();
+            fragmentSeleccionado = true;
 
 
         } else if (id == R.id.Reportes) {

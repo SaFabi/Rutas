@@ -46,13 +46,25 @@
             android:layout_height="wrap_content"
             android:text="Subtitulo"
             />
-     <!-- <ImageButton
+        <Button
+            android:focusableInTouchMode="false"
+            android:focusable="false"
+            android:id="@+id/btnCarrito"
+            android:layout_centerInParent="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/agregar"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+  <!--   <ImageButton
+         android:clickable="true"
+         android:id="@+id/btnCarrito"
           android:background="@android:color/transparent"
           android:layout_centerInParent="true"
           android:layout_alignParentRight="true"
           android:layout_width="60dp"
           android:layout_height="60dp"
-          android:src="@drawable/ic_carrito_mas"/> -->
+          android:src="@drawable/ic_carrito_mas"/>-->
 
 
 

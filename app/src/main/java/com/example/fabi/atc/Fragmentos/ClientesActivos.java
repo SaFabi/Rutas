@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,7 @@ public class ClientesActivos extends Fragment implements Basic , Response.Listen
     String url;
     ListView listView;
     private ProgressDialog progressDialog;
+
 
     // TODO: Rename and change types of parameters
     private int mPosition;
@@ -66,9 +68,9 @@ public class ClientesActivos extends Fragment implements Basic , Response.Listen
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         //Crea la vista
-        View view = inflater.inflate(R.layout.fragment_clientes_inactivos, container, false);
+        View view = inflater.inflate(R.layout.fragment_clientes_activos, container, false);
         //Se declaran los elementos con su id
-        listView = (ListView)view.findViewById(R.id.clientesInactivos);
+        listView = (ListView)view.findViewById(R.id.clientesActivos);
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -82,6 +84,13 @@ public class ClientesActivos extends Fragment implements Basic , Response.Listen
                 dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
                     //
                     public void onClick(DialogInterface dialogo1, int id) {
+                        Fragment nuevoFragmento = new ClientesInactivos();
+                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                        transaction.replace(R.id.content_main, nuevoFragmento);
+                        transaction.addToBackStack(null);
+
+                        // Commit a la transacción
+                        transaction.commit();
                         /*
                         //Inicia la peticion para actualizar el estado del cliente a inactivo
                         RequestQueue queueUpdate = Volley.newRequestQueue(getContext());

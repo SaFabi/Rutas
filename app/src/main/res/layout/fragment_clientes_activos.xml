@@ -3,5 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.fabi.atc.Fragmentos.ClientesActivos">
+    <ListView
+        android:id="@+id/clientesActivos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </RelativeLayout>
