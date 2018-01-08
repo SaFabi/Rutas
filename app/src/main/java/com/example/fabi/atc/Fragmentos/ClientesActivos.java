@@ -24,15 +24,17 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.fabi.atc.Adapters.ClientesAdapter;
 import com.example.fabi.atc.Clases.Basic;
+import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
 
 import org.json.JSONArray;
 
-public class ClientesActivos extends Fragment implements Basic , Response.Listener<JSONArray>, Response.ErrorListener {
+public class ClientesActivos extends Fragment implements Basic{
 
     private static final String ARG_POSITION = "param1";
     String url;
     ListView listView;
+    rutasLib rutasObj;
     private ProgressDialog progressDialog;
 
 
@@ -71,6 +73,7 @@ public class ClientesActivos extends Fragment implements Basic , Response.Listen
         View view = inflater.inflate(R.layout.fragment_clientes_activos, container, false);
         //Se declaran los elementos con su id
         listView = (ListView)view.findViewById(R.id.clientesActivos);
+        listView.setAdapter(rutasObj.ConsultaClientesActivos(getContext()));
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -137,7 +140,7 @@ public class ClientesActivos extends Fragment implements Basic , Response.Listen
             }
         });
 
-
+/*
         //Se declara el progress dialog para ejecutar despues la consulta
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
@@ -163,7 +166,7 @@ public class ClientesActivos extends Fragment implements Basic , Response.Listen
         //Agrega y ejecuta la cola
         queue.add(request);
 
-
+*/
         return view;
     }
 
@@ -191,7 +194,7 @@ public class ClientesActivos extends Fragment implements Basic , Response.Listen
         mListener = null;
     }
 */
-
+/*
     @Override
     public void onErrorResponse(VolleyError error) {
         progressDialog.hide();
@@ -207,7 +210,7 @@ public class ClientesActivos extends Fragment implements Basic , Response.Listen
         listView.setAdapter(adapter);
 
     }
-
+*/
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

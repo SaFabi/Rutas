@@ -1,5 +1,9 @@
 package com.example.fabi.atc.Clases;
 
+import android.app.ProgressDialog;
+
+import com.example.fabi.atc.Adapters.ClientesAdapter;
+
 /**
  * Created by Fabi on 28/12/2017.
  */
