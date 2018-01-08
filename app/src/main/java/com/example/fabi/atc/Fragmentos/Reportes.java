@@ -1,12 +1,15 @@
 package com.example.fabi.atc.Fragmentos;
 
 import android.content.Context;
+import android.icu.util.Calendar;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.example.fabi.atc.R;
 
@@ -14,6 +17,9 @@ public class Reportes extends Fragment {
 
     private static final String ARG_POSITION = "position";
     private int mPosition;
+    Button btnFechaInicio, btnFechaFin;
+    EditText edtFechaInicio, edtFechaFin;
+    private int day, month, year;
 
     private OnFragmentInteractionListener mListener;
 
@@ -43,6 +49,27 @@ public class Reportes extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_reportes, container, false);
+        edtFechaFin = (EditText)view.findViewById(R.id.edtFechaInicial);
+        edtFechaInicio= (EditText)view.findViewById(R.id.edtFechaFinal);
+        btnFechaFin = (Button)view.findViewById(R.id.btnFechaFinal);
+        btnFechaInicio = (Button)view.findViewById(R.id.btnFechaInicial);
+
+        btnFechaFin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+            }
+        });
+        btnFechaInicio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+
+
         return view;
     }
 

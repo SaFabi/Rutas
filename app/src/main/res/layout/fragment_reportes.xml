@@ -4,11 +4,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.fabi.atc.Fragmentos.Reportes">
-    <TextView
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:text="Reportes"
-        android:layout_centerInParent="true"
+  <Spinner
+      android:id="@+id/spinnerReportes"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"/>
+
+   <Button
+       android:layout_below="@id/spinnerReportes"
+       android:id="@+id/btnFechaInicial"
+       android:text="DE:"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/edtFechaInicial"
+        android:layout_toEndOf="@id/btnFechaInicial"
+        android:layout_below="@id/spinnerReportes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:layout_below="@id/btnFechaInicial"
+        android:id="@+id/btnFechaFinal"
+        android:text="HASTA:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/edtFechaFinal"
+        android:layout_toEndOf="@id/btnFechaInicial"
+        android:layout_below="@id/edtFechaInicial"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ListView
+        android:layout_below="@id/btnFechaFinal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </RelativeLayout>
