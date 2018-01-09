@@ -1,17 +1,30 @@
 package com.example.fabi.atc.Fragmentos;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.icu.util.Calendar;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
 
+import com.example.fabi.atc.Adapters.spinnerSencilloAdapter;
+import com.example.fabi.atc.Clases.Modelo;
+import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
+
+import java.util.ArrayList;
+
+import static java.util.Calendar.getInstance;
 
 public class Reportes extends Fragment {
 
@@ -19,8 +32,10 @@ public class Reportes extends Fragment {
     private int mPosition;
     Button btnFechaInicio, btnFechaFin;
     EditText edtFechaInicio, edtFechaFin;
-    private int day, month, year;
-
+    private int dia,mes, ano,dayI, monthI, yearI,dayF, monthF, yearF;
+    Spinner spinner;
+     rutasLib rutasObj;
+    ArrayList<Modelo> modelo;
     private OnFragmentInteractionListener mListener;
 
     public Reportes() {
@@ -44,26 +59,60 @@ public class Reportes extends Fragment {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_reportes, container, false);
-        edtFechaFin = (EditText)view.findViewById(R.id.edtFechaInicial);
-        edtFechaInicio= (EditText)view.findViewById(R.id.edtFechaFinal);
+        edtFechaFin = (EditText)view.findViewById(R.id.edtFechaFinal);
+        edtFechaInicio= (EditText)view.findViewById(R.id.edtFechaInicial);
         btnFechaFin = (Button)view.findViewById(R.id.btnFechaFinal);
         btnFechaInicio = (Button)view.findViewById(R.id.btnFechaInicial);
+        spinner = (Spinner)view.findViewById(R.id.spinnerReportes);
+        spinnerSencilloAdapter spinnerSencilloAdapter = new spinnerSencilloAdapter(listaReportes(),getContext());
+
+        spinner.setAdapter(spinnerSencilloAdapter);
+        final Calendar c = Calendar.getInstance();
+        dia=c.get(Calendar.DAY_OF_MONTH);
+        mes = c.get(Calendar.MONTH);
+        ano=c.get(Calendar.YEAR);
 
         btnFechaFin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                        dayF = datePicker.getDayOfMonth();
+                        monthF = datePicker.getMonth();
+                        yearF = datePicker.getYear();
+
+                        edtFechaFin.setText(String.valueOf(yearF)+"/"+String.valueOf(monthF)+"/"+String.valueOf(dayF));
+
+                    }
+                },ano,mes,dia);
+                datePickerDialog.show();
 
 
             }
         });
+
         btnFechaInicio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                        dayI = datePicker.getDayOfMonth();
+                        monthI = datePicker.getMonth();
+                        yearI = datePicker.getYear();
+
+                        edtFechaInicio.setText(String.valueOf(yearI)+"/"+String.valueOf(monthI)+"/"+String.valueOf(dayI));
+
+                    }
+                },ano,mes,dia);
+                datePickerDialog.show();
 
             }
         });
@@ -73,13 +122,22 @@ public class Reportes extends Fragment {
         return view;
     }
 
+    public ArrayList<Modelo>listaReportes(){
+        ArrayList<Modelo>lista = new ArrayList<>();
+        String[] nombre = getResources().getStringArray(R.array.opcionesReportes);
+
+        for (int i = 0; i <nombre.length; i++){
+            lista.add(new Modelo(nombre[i]));
+        }
+        return lista;
+    }
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
     }
-
+/*
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

@@ -16,7 +16,10 @@
        android:layout_width="wrap_content"
        android:layout_height="wrap_content" />
     <EditText
+        android:textAlignment="center"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:id="@+id/edtFechaInicial"
+        android:enabled="false"
         android:layout_toEndOf="@id/btnFechaInicial"
         android:layout_below="@id/spinnerReportes"
         android:layout_width="match_parent"
@@ -29,7 +32,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <EditText
+        android:textAlignment="center"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:id="@+id/edtFechaFinal"
+        android:enabled="false"
         android:layout_toEndOf="@id/btnFechaInicial"
         android:layout_below="@id/edtFechaInicial"
         android:layout_width="match_parent"

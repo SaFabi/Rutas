@@ -2,10 +2,12 @@ package com.example.fabi.atc.Clases;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.Toast;
 
@@ -23,6 +25,7 @@ import com.example.fabi.atc.Fragmentos.Catalogo;
 import com.example.fabi.atc.Fragmentos.Clientes;
 import com.example.fabi.atc.Fragmentos.Contenedor;
 import com.example.fabi.atc.Fragmentos.Inicio;
+import com.example.fabi.atc.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -97,6 +100,15 @@ public class rutasLib implements  Basic {
         //Agrega y ejecuta la cola
         queue.add(request);
         return adapter;
+    }
+    public ArrayList<Modelo>listaReportes(Context context) {
+        ArrayList<Modelo>lista = new ArrayList<>();
+        String[] nombre = context.getResources().getStringArray(R.array.opcionesReportes);
+
+        for (int i = 0; i <nombre.length; i++){
+            lista.add(new Modelo(nombre[i]));
+        }
+        return lista;
     }
 
 }

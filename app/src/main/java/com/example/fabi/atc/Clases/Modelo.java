@@ -5,35 +5,17 @@ package com.example.fabi.atc.Clases;
  */
 
 public class Modelo {
-    String correo, pass, imagen;
+    String ciudad;
 
-    public Modelo(String correo, String pass, String imagen) {
-        this.correo = correo;
-        this.pass = pass;
-        this.imagen = imagen;
+    public Modelo(String ciudad) {
+        this.ciudad = ciudad;
     }
 
-    public String getCorreo() {
-        return correo;
+    public String getCiudad() {
+        return ciudad;
     }
 
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
-
-    public String getPass() {
-        return pass;
-    }
-
-    public void setPass(String pass) {
-        this.pass = pass;
-    }
-
-    public String getImagen() {
-        return imagen;
-    }
-
-    public void setImagen(String imagen) {
-        this.imagen = imagen;
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
     }
 }
