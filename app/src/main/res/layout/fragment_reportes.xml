@@ -3,11 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBlanco"
     tools:context="com.example.fabi.atc.Fragmentos.Reportes">
   <Spinner
       android:id="@+id/spinnerReportes"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"/>
+    <Button
+        android:background="@drawable/buscar"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/spinnerReportes"
+        android:id="@+id/btnConsultar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"/>
 
    <Button
        android:layout_below="@id/spinnerReportes"
@@ -16,6 +24,7 @@
        android:layout_width="wrap_content"
        android:layout_height="wrap_content" />
     <EditText
+        android:layout_toStartOf="@id/btnConsultar"
         android:textAlignment="center"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:id="@+id/edtFechaInicial"
@@ -32,6 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <EditText
+        android:layout_toStartOf="@id/btnConsultar"
         android:textAlignment="center"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:id="@+id/edtFechaFinal"
@@ -40,6 +50,7 @@
         android:layout_below="@id/edtFechaInicial"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
 
     <ListView
         android:layout_below="@id/btnFechaFinal"

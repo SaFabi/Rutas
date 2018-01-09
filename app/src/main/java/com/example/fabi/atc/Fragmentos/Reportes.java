@@ -1,7 +1,7 @@
 package com.example.fabi.atc.Fragmentos;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
+ import android.content.Context;
 import android.icu.util.Calendar;
 import android.net.Uri;
 import android.os.Build;
@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -24,18 +25,18 @@ import com.example.fabi.atc.R;
 
 import java.util.ArrayList;
 
-import static java.util.Calendar.getInstance;
 
 public class Reportes extends Fragment {
 
     private static final String ARG_POSITION = "position";
     private int mPosition;
-    Button btnFechaInicio, btnFechaFin;
+    Button btnFechaInicio, btnFechaFin, btnConsultar;
     EditText edtFechaInicio, edtFechaFin;
     private int dia,mes, ano,dayI, monthI, yearI,dayF, monthF, yearF;
     Spinner spinner;
      rutasLib rutasObj;
     ArrayList<Modelo> modelo;
+    String fechaActual;
     private OnFragmentInteractionListener mListener;
 
     public Reportes() {
@@ -69,14 +70,37 @@ public class Reportes extends Fragment {
         edtFechaInicio= (EditText)view.findViewById(R.id.edtFechaInicial);
         btnFechaFin = (Button)view.findViewById(R.id.btnFechaFinal);
         btnFechaInicio = (Button)view.findViewById(R.id.btnFechaInicial);
+        btnConsultar = (Button)view.findViewById(R.id.btnConsultar);
         spinner = (Spinner)view.findViewById(R.id.spinnerReportes);
         spinnerSencilloAdapter spinnerSencilloAdapter = new spinnerSencilloAdapter(listaReportes(),getContext());
 
         spinner.setAdapter(spinnerSencilloAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                switch (i){
+                    case 0:
+                        break;
+                    case 1:
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+
         final Calendar c = Calendar.getInstance();
         dia=c.get(Calendar.DAY_OF_MONTH);
-        mes = c.get(Calendar.MONTH);
+        mes = c.get(Calendar.MONTH) +1;
         ano=c.get(Calendar.YEAR);
+
+        fechaActual = ano+"/"+mes+"/"+dia;
 
         btnFechaFin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +109,7 @@ public class Reportes extends Fragment {
                     @Override
                     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
                         dayF = datePicker.getDayOfMonth();
-                        monthF = datePicker.getMonth();
+                        monthF = datePicker.getMonth()+1;
                         yearF = datePicker.getYear();
 
                         edtFechaFin.setText(String.valueOf(yearF)+"/"+String.valueOf(monthF)+"/"+String.valueOf(dayF));
@@ -105,7 +129,7 @@ public class Reportes extends Fragment {
                     @Override
                     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
                         dayI = datePicker.getDayOfMonth();
-                        monthI = datePicker.getMonth();
+                        monthI = datePicker.getMonth()+1;
                         yearI = datePicker.getYear();
 
                         edtFechaInicio.setText(String.valueOf(yearI)+"/"+String.valueOf(monthI)+"/"+String.valueOf(dayI));
@@ -114,6 +138,13 @@ public class Reportes extends Fragment {
                 },ano,mes,dia);
                 datePickerDialog.show();
 
+            }
+        });
+
+        btnConsultar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(),"Fecha de hoy  "+fechaActual, Toast.LENGTH_SHORT).show();
             }
         });
 

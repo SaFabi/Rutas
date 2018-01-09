@@ -101,6 +101,53 @@ public class rutasLib implements  Basic {
         queue.add(request);
         return adapter;
     }
+    //Consulta para regresar los clientes que estan activos de una ruta en especifico
+    public static ClientesAdapter ReporteComisionesFechaActual(final Context context) {
+
+        //Inicializa el progres dialog
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle("En Proceso");
+        progressDialog.setMessage("Un momento...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
+
+        //Inicia la peticion
+        RequestQueue queue = Volley.newRequestQueue(context);
+        String consulta = "select cl.nombre, cl.direccion,cl.telefono,CONCAT(pv.tipo,'-',cc.numero) " +
+                "from cliente cl, clave_cliente cc, punto_venta pv " +
+                "where cc.puntoVenta_id = pv.id " +
+                "and cc.cliente_id = cl.id " +
+                " and pv.id="+usuarioID+" and cc.activo = true";
+        consulta = consulta.replace(" ", "%20");
+        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+        final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+        Log.i("info", url);
+
+        //Hace la petición String
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                progressDialog.hide();
+                //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
+                adapter = new ClientesAdapter(response,context);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.hide();
+                Toast.makeText(context, "Error en el WebService", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,  "Activos   "+url, Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        //Agrega y ejecuta la cola
+        queue.add(request);
+        return adapter;
+    }
+
+
     public ArrayList<Modelo>listaReportes(Context context) {
         ArrayList<Modelo>lista = new ArrayList<>();
         String[] nombre = context.getResources().getStringArray(R.array.opcionesReportes);

@@ -9,34 +9,4 @@
     tools:context="com.example.fabi.atc.MainActivity"
     android:background="@drawable/fondo_app_02"
     tools:showIn="@layout/app_bar_main">
-
-
-
-    <!--<TextView
-        android:layout_marginTop="17dp"
-        android:id="@+id/txtBienvenido"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:text="!BIENVENIDO!"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-    <ImageView
-        android:id="@+id/imgPrincipal"
-        android:src="@drawable/atc1"
-        android:layout_width="200dp"
-        android:layout_height="300dp"
-        android:layout_below="@+id/txtBienvenido"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="23dp" />
-
-    <TextView
-        android:layout_marginTop="20dp"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:text="RUTAS"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/imgPrincipal"
-        android:id="@+id/txtRutas"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" /> -->
 </RelativeLayout>
