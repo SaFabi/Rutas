@@ -12,13 +12,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.fabi.atc.Adapters.spinnerSencilloAdapter;
+import com.example.fabi.atc.Clases.Basic;
 import com.example.fabi.atc.Clases.Modelo;
 import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
@@ -26,7 +29,7 @@ import com.example.fabi.atc.R;
 import java.util.ArrayList;
 
 
-public class Reportes extends Fragment {
+public class Reportes extends Fragment implements Basic {
 
     private static final String ARG_POSITION = "position";
     private int mPosition;
@@ -37,6 +40,10 @@ public class Reportes extends Fragment {
      rutasLib rutasObj;
     ArrayList<Modelo> modelo;
     String fechaActual;
+    ListView listView;
+    String fechaInicial ="2017-08-12";
+    String fechaFinal = fechaActual;
+    String opcionSeleccionada;
     private OnFragmentInteractionListener mListener;
 
     public Reportes() {
@@ -66,22 +73,30 @@ public class Reportes extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_reportes, container, false);
+        //SE ASIGNAN LAS VARIABLES CON LOS CONTROLES DEL LAYOUT
         edtFechaFin = (EditText)view.findViewById(R.id.edtFechaFinal);
         edtFechaInicio= (EditText)view.findViewById(R.id.edtFechaInicial);
         btnFechaFin = (Button)view.findViewById(R.id.btnFechaFinal);
         btnFechaInicio = (Button)view.findViewById(R.id.btnFechaInicial);
         btnConsultar = (Button)view.findViewById(R.id.btnConsultar);
         spinner = (Spinner)view.findViewById(R.id.spinnerReportes);
-        spinnerSencilloAdapter spinnerSencilloAdapter = new spinnerSencilloAdapter(listaReportes(),getContext());
+        listView = (ListView)view.findViewById(R.id.listReportes);
 
+        //ADAPTER DEL MENU DEL OPCIONES DEL SPINNER
+        spinnerSencilloAdapter spinnerSencilloAdapter = new spinnerSencilloAdapter(listaReportes(),getContext());
         spinner.setAdapter(spinnerSencilloAdapter);
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 switch (i){
                     case 0:
+                        opcionSeleccionada = "Comisiones";
+                        listView.setAdapter(rutasObj.ReporteComisiones(getContext(),fechaInicial,fechaFinal,usuarioID));
                         break;
                     case 1:
+                        opcionSeleccionada="Ventas";
+                        listView.setAdapter(rutasObj.ReporteVentas(getContext(),fechaInicial,fechaFinal,usuarioID));
                         break;
                 }
 
@@ -94,14 +109,13 @@ public class Reportes extends Fragment {
         });
 
 
-
+        //PARA OBTENER LA FECHA ACTUAL
         final Calendar c = Calendar.getInstance();
         dia=c.get(Calendar.DAY_OF_MONTH);
         mes = c.get(Calendar.MONTH) +1;
         ano=c.get(Calendar.YEAR);
-
         fechaActual = ano+"/"+mes+"/"+dia;
-
+        //BOTONES PARA EL DATETIMEPICKER
         btnFechaFin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,8 +125,8 @@ public class Reportes extends Fragment {
                         dayF = datePicker.getDayOfMonth();
                         monthF = datePicker.getMonth()+1;
                         yearF = datePicker.getYear();
-
-                        edtFechaFin.setText(String.valueOf(yearF)+"/"+String.valueOf(monthF)+"/"+String.valueOf(dayF));
+                        fechaFinal = String.valueOf(yearF)+"/"+String.valueOf(monthF)+"/"+String.valueOf(dayF);
+                        edtFechaFin.setText(fechaFinal);
 
                     }
                 },ano,mes,dia);
@@ -131,8 +145,8 @@ public class Reportes extends Fragment {
                         dayI = datePicker.getDayOfMonth();
                         monthI = datePicker.getMonth()+1;
                         yearI = datePicker.getYear();
-
-                        edtFechaInicio.setText(String.valueOf(yearI)+"/"+String.valueOf(monthI)+"/"+String.valueOf(dayI));
+                        fechaInicial= String.valueOf(yearI)+"/"+String.valueOf(monthI)+"/"+String.valueOf(dayI);
+                         edtFechaInicio.setText(fechaInicial);
 
                     }
                 },ano,mes,dia);
@@ -145,6 +159,11 @@ public class Reportes extends Fragment {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getContext(),"Fecha de hoy  "+fechaActual, Toast.LENGTH_SHORT).show();
+                if (opcionSeleccionada.equals("Comisiones")){
+                    listView.setAdapter(rutasObj.ReporteComisiones(getContext(),fechaInicial,fechaFinal,usuarioID));
+                }else if (opcionSeleccionada.equals("Ventas")){
+                    listView.setAdapter(rutasObj.ReporteVentas(getContext(),fechaInicial,fechaFinal,usuarioID));
+                }
             }
         });
 
