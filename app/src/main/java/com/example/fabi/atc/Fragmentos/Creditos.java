@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
@@ -25,6 +26,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.fabi.atc.Adapters.ClientesAdapter;
 import com.example.fabi.atc.Adapters.spinnerAdapter;
 import com.example.fabi.atc.Clases.Basic;
+import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
 
 import org.json.JSONArray;
@@ -39,6 +41,9 @@ public class Creditos extends Fragment implements Basic,  Response.Listener<JSON
     TextView txtPuntoVenta;
     String puntoVenta;
     Spinner spinnerCreditos;
+    Button btnConsultar;
+    rutasLib rutasObj;
+    String claveCliente ="034";
     private ProgressDialog progressDialog;
 
 
@@ -71,11 +76,17 @@ public class Creditos extends Fragment implements Basic,  Response.Listener<JSON
         listView = (ListView)view.findViewById(R.id.CreditoClientes);
         txtPuntoVenta = (TextView)view.findViewById(R.id.puntoVenta);
         spinnerCreditos = (Spinner)view.findViewById(R.id.spinnerClaves);
+        btnConsultar = (Button)view.findViewById(R.id.buscarCreditos);
+        btnConsultar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                     listView.setAdapter(rutasObj.ReporteCreditos(getContext(), claveCliente,usuarioID));
+            }
+        });
         spinnerCreditos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                //String posicion = (String) spinnerCreditos.getSelectedItem();
             }
 
             @Override
