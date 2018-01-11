@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -18,9 +19,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.fabi.atc.Adapters.AdapterClientes;
 import com.example.fabi.atc.Adapters.ClientesAdapter;
 import com.example.fabi.atc.Adapters.ProductosAdapter;
 import com.example.fabi.atc.Clases.Basic;
+import com.example.fabi.atc.Clases.ModeloClientes;
 import com.example.fabi.atc.R;
 
 import org.json.JSONArray;
@@ -30,6 +33,7 @@ public class ClientesInactivos extends Fragment implements Basic , Response.List
     private static final String ARG_POSITION = "POSITION";
     String url;
     ListView listView;
+    AdapterClientes adapter;
     private ProgressDialog progressDialog;
 
     // TODO: Rename and change types of parameters
@@ -63,6 +67,14 @@ public class ClientesInactivos extends Fragment implements Basic , Response.List
        View view = inflater.inflate(R.layout.fragment_clientes_inactivos, container, false);
         //Se declaran los elementos con su id
         listView = (ListView)view.findViewById(R.id.clientesInactivos);
+       listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+           @Override
+           public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+               int id = (int)adapter.getItemId(i);
+               Toast.makeText(getContext(), "ID: " + String.valueOf(id), Toast.LENGTH_SHORT).show();
+               return false;
+           }
+       });
 
         //Se declara el progress dialog para ejecutar despues la consulta
         progressDialog = new ProgressDialog(getContext());
@@ -73,7 +85,7 @@ public class ClientesInactivos extends Fragment implements Basic , Response.List
 
         //Inicia la peticion
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String consulta = "select cl.nombre, cl.direccion,cl.telefono,CONCAT(pv.tipo,'-',cc.numero) " +
+        String consulta = "select cl.id,cl.nombre, cl.direccion,cl.telefono,CONCAT(pv.tipo,'-',cc.numero) " +
                 "from cliente cl, clave_cliente cc, punto_venta pv " +
                 "where cc.puntoVenta_id = pv.id " +
                 "and cc.cliente_id = cl.id " +
@@ -132,7 +144,7 @@ public class ClientesInactivos extends Fragment implements Basic , Response.List
     public void onResponse(JSONArray response) {
         progressDialog.hide();
         // Toast.makeText(getContext(), "Telefonos    "+url, Toast.LENGTH_SHORT).show();
-       ClientesAdapter adapter = new ClientesAdapter(response,getContext());
+       adapter= new AdapterClientes(getContext(),ModeloClientes.sacarListaClientes(response));
         listView.setAdapter(adapter);
 
     }

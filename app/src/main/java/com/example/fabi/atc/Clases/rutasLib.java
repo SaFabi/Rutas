@@ -21,10 +21,12 @@ import com.android.volley.toolbox.Volley;
 import com.example.fabi.atc.Adapters.CatalogoAdapter;
 import com.example.fabi.atc.Adapters.ClientesAdapter;
 import com.example.fabi.atc.Adapters.ProductosAdapter;
+import com.example.fabi.atc.Adapters.ReportesAdapter;
 import com.example.fabi.atc.Fragmentos.Catalogo;
 import com.example.fabi.atc.Fragmentos.Clientes;
 import com.example.fabi.atc.Fragmentos.Contenedor;
 import com.example.fabi.atc.Fragmentos.Inicio;
+import com.example.fabi.atc.Fragmentos.Reportes;
 import com.example.fabi.atc.R;
 
 import org.json.JSONArray;
@@ -46,7 +48,7 @@ public class rutasLib implements  Basic {
     public static String Consulta = "http://192.168.1.91/CatalogoATC/";
 
     //Declaracion de Variables
-     private static ClientesAdapter adapter ;
+     private static ReportesAdapter adapter ;
      private static  ProgressDialog progressDialog;
 
 
@@ -57,7 +59,7 @@ public class rutasLib implements  Basic {
         return adapter;
     }
     //Consulta para regresar los clientes que estan activos de una ruta en especifico
-    public static ClientesAdapter ConsultaClientesActivos(final Context context) {
+    public static ReportesAdapter ConsultaClientesActivos(final Context context) {
 
         //Inicializa el progres dialog
         progressDialog = new ProgressDialog(context);
@@ -68,7 +70,7 @@ public class rutasLib implements  Basic {
 
         //Inicia la peticion
         RequestQueue queue = Volley.newRequestQueue(context);
-         String consulta = "select cl.nombre, cl.direccion,cl.telefono,CONCAT(pv.tipo,'-',cc.numero) " +
+         String consulta = "select cl.id,cl.nombre, cl.direccion,cl.telefono,CONCAT(pv.tipo,'-',cc.numero) " +
                 "from cliente cl, clave_cliente cc, punto_venta pv " +
                 "where cc.puntoVenta_id = pv.id " +
                 "and cc.cliente_id = cl.id " +
@@ -84,7 +86,7 @@ public class rutasLib implements  Basic {
             public void onResponse(JSONArray response) {
                 progressDialog.hide();
                  //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
-               adapter = new ClientesAdapter(response,context);
+               adapter = new ReportesAdapter(response,context);
 
             }
         }, new Response.ErrorListener() {
@@ -102,7 +104,7 @@ public class rutasLib implements  Basic {
         return adapter;
     }
     //Consulta para regresar los clientes que estan activos de una ruta en especifico
-    public static ClientesAdapter ReporteComisiones(final Context context, String fechaInicial, String fechaFinal, int idPuntoVenta) {
+    public static ReportesAdapter ReporteComisiones(final Context context, String fechaInicial, String fechaFinal, int idPuntoVenta) {
 
         //Inicializa el progres dialog
         progressDialog = new ProgressDialog(context);
@@ -132,7 +134,7 @@ public class rutasLib implements  Basic {
             public void onResponse(JSONArray response) {
                 progressDialog.hide();
                 //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
-                adapter = new ClientesAdapter(response,context);
+                adapter = new ReportesAdapter(response,context);
 
             }
         }, new Response.ErrorListener() {
@@ -151,7 +153,7 @@ public class rutasLib implements  Basic {
     }
 
     //Consulta para regresar los clientes que estan activos de una ruta en especifico
-    public static ClientesAdapter ReporteVentas(final Context context, String fechaInicial, String fechaFinal, int idPuntoVenta) {
+    public static ReportesAdapter ReporteVentas(final Context context, String fechaInicial, String fechaFinal, int idPuntoVenta) {
 
         //Inicializa el progres dialog
         progressDialog = new ProgressDialog(context);
@@ -183,7 +185,7 @@ public class rutasLib implements  Basic {
             public void onResponse(JSONArray response) {
                 progressDialog.hide();
                 //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
-                adapter = new ClientesAdapter(response,context);
+                adapter = new ReportesAdapter(response,context);
 
             }
         }, new Response.ErrorListener() {
@@ -202,7 +204,7 @@ public class rutasLib implements  Basic {
     }
 
     //Consulta para regresar los clientes que estan activos de una ruta en especifico
-    public static ClientesAdapter ReporteCreditos(final Context context,String claveCliente, int idPuntoVenta) {
+    public static ReportesAdapter ReporteCreditos(final Context context,String claveCliente, int idPuntoVenta) {
 
         //Inicializa el progres dialog
         progressDialog = new ProgressDialog(context);
@@ -233,7 +235,7 @@ public class rutasLib implements  Basic {
             public void onResponse(JSONArray response) {
                 progressDialog.hide();
                 //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
-                adapter = new ClientesAdapter(response,context);
+                adapter = new ReportesAdapter(response,context);
 
             }
         }, new Response.ErrorListener() {

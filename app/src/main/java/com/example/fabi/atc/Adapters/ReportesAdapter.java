@@ -7,27 +7,22 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.example.fabi.atc.Clases.ModeloClientes;
 import com.example.fabi.atc.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 /**
- * Created by Fabi on 02/01/2018.
+ * Created by Fabi on 11/01/2018.
  */
-//ADAPTER PARA TODOS LOS TIPOS DE REPORTES
-public class ClientesAdapter {
-
-}/* extends BaseAdapter {
+//ADAPTER PARA LOS REPORTES EN GENERAL
+public class ReportesAdapter extends BaseAdapter {
     private JSONArray array;
     private Context context;
-    TextView Nombre, Ciudad,Telefono, claveR;
+    TextView folio,total,fecha,otros;
 
-
-    public ClientesAdapter(JSONArray array, Context context) {
+    public ReportesAdapter(JSONArray array, Context context) {
         this.array = array;
         this.context = context;
     }
@@ -64,10 +59,10 @@ public class ClientesAdapter {
         if (convertView == null){
             view = inflater.inflate(R.layout.modelo_clientes,null);
         }
-        Nombre = (TextView)view.findViewById(R.id.nombreCliente);
-        Telefono = (TextView)view.findViewById(R.id.telefonoCliente);
-        Ciudad = (TextView)view.findViewById(R.id.ciudadCliente);
-        claveR = (TextView)view.findViewById(R.id.claveR);
+        folio = (TextView)view.findViewById(R.id.nombreCliente);
+       total = (TextView)view.findViewById(R.id.telefonoCliente);
+        fecha = (TextView)view.findViewById(R.id.ciudadCliente);
+        otros = (TextView)view.findViewById(R.id.claveR);
 
         String titulo2, subtitulo2, imagen, claveRuta;
         try
@@ -85,12 +80,11 @@ public class ClientesAdapter {
             claveRuta = null;
         }
         if (titulo2 != null) {
-            Nombre.setText(titulo2);
-            Ciudad.setText(subtitulo2);
-            Telefono.setText(imagen);
-            claveR.setText(claveRuta);
+            folio.setText(titulo2);
+            total.setText(subtitulo2);
+            fecha.setText(imagen);
+            otros.setText(claveRuta);
         }
         return view;
     }
 }
-*/

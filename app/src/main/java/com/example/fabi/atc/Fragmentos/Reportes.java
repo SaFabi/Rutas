@@ -1,13 +1,15 @@
 package com.example.fabi.atc.Fragmentos;
 
 import android.app.DatePickerDialog;
- import android.content.Context;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.icu.util.Calendar;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +22,21 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.fabi.atc.Adapters.ClientesAdapter;
+import com.example.fabi.atc.Adapters.ReportesAdapter;
 import com.example.fabi.atc.Adapters.spinnerSencilloAdapter;
 import com.example.fabi.atc.Clases.Basic;
 import com.example.fabi.atc.Clases.Modelo;
 import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 
@@ -44,6 +56,8 @@ public class Reportes extends Fragment implements Basic {
     String fechaInicial ="2017-08-12";
     String fechaFinal = fechaActual;
     String opcionSeleccionada;
+    ProgressDialog progressDialog;
+    ReportesAdapter adapter;
     private OnFragmentInteractionListener mListener;
 
     public Reportes() {
@@ -88,15 +102,58 @@ public class Reportes extends Fragment implements Basic {
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemSelected(final AdapterView<?> adapterView, View view, int i, long l) {
                 switch (i){
                     case 0:
                         opcionSeleccionada = "Comisiones";
-                        listView.setAdapter(rutasObj.ReporteComisiones(getContext(),fechaInicial,fechaFinal,usuarioID));
+                        //Inicializa el progres dialog
+                        progressDialog = new ProgressDialog(getContext());
+                        progressDialog.setTitle("En Proceso");
+                        progressDialog.setMessage("Un momento...");
+                        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                        progressDialog.show();
+
+                        //Inicia la peticion
+                        RequestQueue queue = Volley.newRequestQueue(getContext());
+                        String consulta = "select ord.folio,CONCAT('$',tac.total),DATE(ord.fecha),pv.tipo " +
+                                "from totalarticulo_comision tac,orden ord,punto_venta pv " +
+                                "where tac.orden_id=ord.id " +
+                                "and ord.puntoVenta_id=pv.id " +
+                                "and pv.id="+usuarioID+
+                                " and tac.total>0"+
+                                " and DATE(ord.fecha)>"+"'"+fechaInicial+"'"+
+                                " and DATE(ord.fecha)<"+"'"+fechaFinal+"'";
+                        consulta = consulta.replace(" ", "%20");
+                        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+                        final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+                        Log.i("info", url);
+
+                        //Hace la petición String
+                        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                            @Override
+                            public void onResponse(JSONArray response) {
+                                progressDialog.hide();
+                                //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
+                                adapter = new ReportesAdapter(response,getContext());
+                                listView.setAdapter(adapter);
+
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                progressDialog.hide();
+                                Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(),  "Activos   "+url, Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+
+                        //Agrega y ejecuta la cola
+                        queue.add(request);
                         break;
                     case 1:
                         opcionSeleccionada="Ventas";
-                        listView.setAdapter(rutasObj.ReporteVentas(getContext(),fechaInicial,fechaFinal,usuarioID));
+                        listView.setAdapter(ReporteVentas(getContext(),fechaInicial,fechaFinal,usuarioID));
                         break;
                 }
 
@@ -158,11 +215,98 @@ public class Reportes extends Fragment implements Basic {
         btnConsultar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(),"Fecha de hoy  "+fechaActual, Toast.LENGTH_SHORT).show();
-                if (opcionSeleccionada.equals("Comisiones")){
-                    listView.setAdapter(rutasObj.ReporteComisiones(getContext(),fechaInicial,fechaFinal,usuarioID));
+                Toast.makeText(getContext(),fechaInicial+ "    "+fechaFinal, Toast.LENGTH_SHORT).show();
+                if (opcionSeleccionada.equals("Comisiones")) {
+                    //Inicializa el progres dialog
+                    progressDialog = new ProgressDialog(getContext());
+                    progressDialog.setTitle("En Proceso");
+                    progressDialog.setMessage("Un momento...");
+                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    progressDialog.show();
+
+                    //Inicia la peticion
+                    RequestQueue queue = Volley.newRequestQueue(getContext());
+                    String consulta = "select ord.folio,CONCAT('$',tac.total),DATE(ord.fecha),pv.tipo " +
+                            "from totalarticulo_comision tac,orden ord,punto_venta pv " +
+                            "where tac.orden_id=ord.id " +
+                            "and ord.puntoVenta_id=pv.id " +
+                            "and pv.id="+usuarioID+
+                            " and tac.total>0"+
+                            " and DATE(ord.fecha)>"+"'"+fechaInicial+"'"+
+                            " and DATE(ord.fecha)<"+"'"+fechaFinal+"'";
+                    consulta = consulta.replace(" ", "%20");
+                    String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+                    final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+                    Log.i("info", url);
+
+                    //Hace la petición String
+                    JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            progressDialog.hide();
+                            //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
+                            adapter = new ReportesAdapter(response,getContext());
+                            listView.setAdapter(adapter);
+
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            progressDialog.hide();
+                            Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(),  "Activos   "+url, Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+
+                    //Agrega y ejecuta la cola
+                    queue.add(request);
                 }else if (opcionSeleccionada.equals("Ventas")){
-                    listView.setAdapter(rutasObj.ReporteVentas(getContext(),fechaInicial,fechaFinal,usuarioID));
+                    //Inicializa el progres dialog
+                    progressDialog = new ProgressDialog(getContext());
+                    progressDialog.setTitle("En Proceso");
+                    progressDialog.setMessage("Un momento...");
+                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    progressDialog.show();
+
+                    //Inicia la peticion
+                    RequestQueue queue = Volley.newRequestQueue(getContext());
+                    String consulta = "select distinct ord.folio, CONCAT('$',ordc.total),DATE(ord.fecha),CONCAT(pv.tipo,'-',cc.numero) " +
+                            "from orden ord, orden_completa ordc, punto_venta pv, cliente cli, clave_cliente cc " +
+                            "where ordc.orden_id = ord.id " +
+                            "and ord.puntoVenta_id = pv.id " +
+                            "and ord.cliente_id = cli.id " +
+                            "and cc.cliente_id =cli.id " +
+                            " and pv.id="+usuarioID+
+                            " and ordc.total>0"+
+                            " and DATE(ord.fecha)>"+"'"+fechaInicial+"'"+
+                            " and DATE(ord.fecha)<"+"'"+fechaFinal+"'";
+                    consulta = consulta.replace(" ", "%20");
+                    String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+                    final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+                    Log.i("info", url);
+
+                    //Hace la petición String
+                    JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            progressDialog.hide();
+                            //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
+                            adapter = new ReportesAdapter(response,getContext());
+
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            progressDialog.hide();
+                            Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(),  "Activos   "+url, Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+
+                    //Agrega y ejecuta la cola
+                    queue.add(request);
                 }
             }
         });
@@ -170,6 +314,154 @@ public class Reportes extends Fragment implements Basic {
 
 
         return view;
+    }
+    //Consulta para regresar los clientes que estan activos de una ruta en especifico
+    public ReportesAdapter ReporteVentas(final Context context, String fechaInicial, String fechaFinal, int idPuntoVenta) {
+
+        //Inicializa el progres dialog
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle("En Proceso");
+        progressDialog.setMessage("Un momento...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
+
+        //Inicia la peticion
+        RequestQueue queue = Volley.newRequestQueue(context);
+        String consulta = "select distinct ord.folio, CONCAT('$',ordc.total),DATE(ord.fecha),CONCAT(pv.tipo,'-',cc.numero) " +
+                "from orden ord, orden_completa ordc, punto_venta pv, cliente cli, clave_cliente cc " +
+                "where ordc.orden_id = ord.id " +
+                "and ord.puntoVenta_id = pv.id " +
+                "and ord.cliente_id = cli.id " +
+                "and cc.cliente_id =cli.id " +
+                " and pv.id="+idPuntoVenta+
+                " and ordc.total>0"+
+                " and DATE(ord.fecha)>"+"'"+fechaInicial+"'"+
+                " and DATE(ord.fecha)<"+"'"+fechaFinal+"'";
+        consulta = consulta.replace(" ", "%20");
+        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+        final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+        Log.i("info", url);
+
+        //Hace la petición String
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                progressDialog.hide();
+                //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
+                adapter = new ReportesAdapter(response,context);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.hide();
+                Toast.makeText(context, "Error en el WebService", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,  "Activos   "+url, Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        //Agrega y ejecuta la cola
+        queue.add(request);
+        return adapter;
+    }
+
+    //Consulta para regresar los clientes que estan activos de una ruta en especifico
+    public  ReportesAdapter ReporteCreditos(final Context context,String claveCliente, int idPuntoVenta) {
+
+        //Inicializa el progres dialog
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle("En Proceso");
+        progressDialog.setMessage("Un momento...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
+
+        //Inicia la peticion
+        RequestQueue queue = Volley.newRequestQueue(context);
+        String consulta = "select distinct ord.folio, CONCAT('$',cre.total),DATE(ord.fecha),CONCAT(pv.tipo,'-',cc.numero) " +
+                "from orden ord,credito cre, punto_venta pv, cliente cli, clave_cliente cc " +
+                "where cre.orden_id = ord.id " +
+                "and ord.puntoVenta_id = pv.id  " +
+                "and ord.cliente_id = cli.id  " +
+                "and cc.cliente_id =cli.id  " +
+                "and pv.id=" +idPuntoVenta+
+                " and cre.total>0 " +
+                "and cc.numero ="+claveCliente;
+        consulta = consulta.replace(" ", "%20");
+        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+        final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+        Log.i("info", url);
+
+        //Hace la petición String
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                progressDialog.hide();
+                //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
+                adapter = new ReportesAdapter(response,context);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.hide();
+                Toast.makeText(context, "Error en el WebService", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,  "Activos   "+url, Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        //Agrega y ejecuta la cola
+        queue.add(request);
+        return adapter;
+    }
+    //Consulta para regresar los clientes que estan activos de una ruta en especifico
+    public  ReportesAdapter ReporteComisiones(final Context context, String fechaInicial, String fechaFinal, int idPuntoVenta) {
+
+        //Inicializa el progres dialog
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle("En Proceso");
+        progressDialog.setMessage("Un momento...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
+
+        //Inicia la peticion
+        RequestQueue queue = Volley.newRequestQueue(context);
+        String consulta = "select ord.folio,CONCAT('$',tac.total),DATE(ord.fecha),pv.tipo " +
+                "from totalarticulo_comision tac,orden ord,punto_venta pv " +
+                "where tac.orden_id=ord.id " +
+                "and ord.puntoVenta_id=pv.id " +
+                "and pv.id="+idPuntoVenta+
+                " and tac.total>0"+
+                " and DATE(ord.fecha)>"+"'"+fechaInicial+"'"+
+                " and DATE(ord.fecha)<"+"'"+fechaFinal+"'";
+        consulta = consulta.replace(" ", "%20");
+        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+        final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+        Log.i("info", url);
+
+        //Hace la petición String
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                progressDialog.hide();
+                //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
+                adapter = new ReportesAdapter(response,context);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.hide();
+                Toast.makeText(context, "Error en el WebService", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,  "Activos   "+url, Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        //Agrega y ejecuta la cola
+        queue.add(request);
+        return adapter;
     }
 
     public ArrayList<Modelo>listaReportes(){
