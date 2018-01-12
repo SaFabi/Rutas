@@ -26,6 +26,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.fabi.atc.Adapters.ClientesAdapter;
 import com.example.fabi.atc.Adapters.spinnerAdapter;
 import com.example.fabi.atc.Clases.Basic;
+import com.example.fabi.atc.Clases.Modelo;
 import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
 
@@ -102,9 +103,8 @@ public class Creditos extends Fragment implements Basic,  Response.Listener<JSON
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.show();
 
-
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String consulta = "select pv.tipo, cc.numero "+
+        String consulta = "select pv.tipo,cc.id,cc.numero "+
         "from punto_venta pv, clave_cliente cc "+
         "where cc.puntoVenta_id = pv.id "+
         "and pv.id="+usuarioID;
@@ -112,6 +112,33 @@ public class Creditos extends Fragment implements Basic,  Response.Listener<JSON
         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
         url = SERVER + RUTA + "consultaGeneral.php" + cadena;
         Log.i("info", url);
+
+        //PARA LA CONSULTA DE LAS CLAVES DE LOS CLIENTES EN EL SPINNER
+        RequestQueue queueClaveCliente = Volley.newRequestQueue(getContext());
+        String consultaClaveCliente = "select cl.id, cc.numero "+
+        " from cliente cl, clave_cliente cc, punto_venta "+
+        " where cc.cliente_id = cl.id"+
+        " and  cc.puntoVenta_id = pv.id"+
+        " and pv.id ="+usuarioID;
+        consultaClaveCliente = consultaClaveCliente.replace(" ", "%20");
+        String cadenaClaveCliente = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaClaveCliente;
+        url = SERVER + RUTA + "consultaGeneral.php" + cadenaClaveCliente;
+        Log.i("info", url);
+        JsonArrayRequest requestClaveCliente = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                progressDialog.hide();
+                spinnerAdapter spinnerAdapter= new spinnerAdapter(getContext(), Modelo.ListaSpinner(response));
+                spinnerCreditos.setAdapter(spinnerAdapter);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        queueClaveCliente.add(requestClaveCliente);
 
         //Hace la petición String
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, this, this);
@@ -124,8 +151,7 @@ public class Creditos extends Fragment implements Basic,  Response.Listener<JSON
 
         return view;
     }
-
-
+//PARA LA CONSULTA DEL TIPO DE PUNTO DE VENTA
     @Override
     public void onErrorResponse(VolleyError error) {
         progressDialog.hide();
@@ -135,8 +161,6 @@ public class Creditos extends Fragment implements Basic,  Response.Listener<JSON
     @Override
     public void onResponse(JSONArray response) {
         progressDialog.hide();
-        //spinnerAdapter spinnerAdapter= new spinnerAdapter(response,getContext());
-        //spinnerCreditos.setAdapter(spinnerAdapter);
 
         JSONObject jsonObject;
         try {

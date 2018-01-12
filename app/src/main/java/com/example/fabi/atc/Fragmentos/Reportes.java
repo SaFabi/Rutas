@@ -33,6 +33,7 @@ import com.example.fabi.atc.Adapters.ReportesAdapter;
 import com.example.fabi.atc.Adapters.spinnerSencilloAdapter;
 import com.example.fabi.atc.Clases.Basic;
 import com.example.fabi.atc.Clases.Modelo;
+import com.example.fabi.atc.Clases.ModeloSpinnerGeneral;
 import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
 
@@ -97,9 +98,9 @@ public class Reportes extends Fragment implements Basic {
         listView = (ListView)view.findViewById(R.id.listReportes);
 
         //ADAPTER DEL MENU DEL OPCIONES DEL SPINNER
-        //spinnerSencilloAdapter spinnerSencilloAdapter = new spinnerSencilloAdapter(listaReportes(),getContext());
+        spinnerSencilloAdapter spinnerSencilloAdapter = new spinnerSencilloAdapter(listaReportes(),getContext());
 
-        //spinner.setAdapter(spinnerSencilloAdapter);
+        spinner.setAdapter(spinnerSencilloAdapter);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -464,13 +465,13 @@ public class Reportes extends Fragment implements Basic {
         queue.add(request);
         return adapter;
     }
-/*
-    public ArrayList<Modelo>listaReportes(){
-        ArrayList<Modelo>lista = new ArrayList<>();
+
+    public ArrayList<ModeloSpinnerGeneral>listaReportes(){
+        ArrayList<ModeloSpinnerGeneral>lista = new ArrayList<>();
         String[] nombre = getResources().getStringArray(R.array.opcionesReportes);
 
         for (int i = 0; i <nombre.length; i++){
-            lista.add(new Modelo(nombre[i]));
+            lista.add(new ModeloSpinnerGeneral(nombre[i]));
         }
         return lista;
     }

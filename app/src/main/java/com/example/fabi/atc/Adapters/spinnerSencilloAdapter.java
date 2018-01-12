@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.fabi.atc.Clases.Modelo;
+import com.example.fabi.atc.Clases.ModeloSpinnerGeneral;
 import com.example.fabi.atc.R;
 
 import org.w3c.dom.Text;
@@ -19,10 +20,10 @@ import java.util.ArrayList;
  */
 
 public class spinnerSencilloAdapter extends BaseAdapter {
-    ArrayList<Modelo> elementos;
+    ArrayList<ModeloSpinnerGeneral> elementos;
     Context context;
 
-    public spinnerSencilloAdapter(ArrayList<Modelo> elementos, Context context) {
+    public spinnerSencilloAdapter(ArrayList<ModeloSpinnerGeneral> elementos, Context context) {
         this.elementos = elementos;
         this.context = context;
     }
@@ -33,7 +34,7 @@ public class spinnerSencilloAdapter extends BaseAdapter {
     }
 
     @Override
-    public Modelo getItem(int i) {
+    public ModeloSpinnerGeneral getItem(int i) {
         return elementos.get(i);
     }
 
@@ -52,7 +53,7 @@ public class spinnerSencilloAdapter extends BaseAdapter {
         }
 
         TextView opcion = (TextView)view.findViewById(R.id.spinnerCiudad);
-        opcion.setText(getItem(i).getCiudad());
+        opcion.setText(getItem(i).getOpcion());
 
 
         return view;
@@ -69,7 +70,7 @@ public class spinnerSencilloAdapter extends BaseAdapter {
 
 
         //Coloca los valores de cada elemento
-        titulo.setText(getItem(position).getCiudad());
+        titulo.setText(getItem(position).getOpcion());
 
         return view;
     }

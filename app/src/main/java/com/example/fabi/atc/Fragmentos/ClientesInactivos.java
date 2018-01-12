@@ -175,7 +175,7 @@ public class ClientesInactivos extends Fragment implements SwipeRefreshLayout.On
                 // Toast.makeText(getContext(), "Telefonos    "+url, Toast.LENGTH_SHORT).show();
                 adapter= new AdapterClientes(getContext(),ModeloClientes.sacarListaClientes(response));
                 listView.setAdapter(adapter);
-
+                contenedorClientesI.setRefreshing(false);
             }
         }, new Response.ErrorListener() {
             @Override

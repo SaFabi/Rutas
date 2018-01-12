@@ -150,8 +150,55 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
                                         @Override
                                         public void onResponse(JSONArray response) {
                                             // Toast.makeText(getContext(), urlClave, Toast.LENGTH_SHORT).show();
-                                            Toast.makeText(getContext(), url, Toast.LENGTH_SHORT).show();
+                                            //Toast.makeText(getContext(), url, Toast.LENGTH_SHORT).show();
                                             Toast.makeText(getContext(), "Se agrego correctamente", Toast.LENGTH_SHORT).show();
+
+                                            //INICIA LA PETICION PARA OBTENER LA ULTIMA CLAVE DEL CLIENTE
+                                            RequestQueue queueClave = Volley.newRequestQueue(getContext());
+                                            String consultaClave ="select pv.tipo,cc.numero%2B1 "+
+                                                    "from clave_cliente cc, punto_Venta pv "+
+                                                    "where cc.puntoVenta_id  = pv.id "+
+                                                    "and pv.id ="+usuarioID+
+                                                    " order by cc.numero DESC limit 1";
+                                            consultaClave = consultaClave.replace(" ", "%20");
+                                            String cadenaClave = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaClave;
+                                            urlClave = SERVER + RUTA + "consultaGeneral.php" + cadenaClave;
+                                            Log.i("info", urlClave);
+
+                                            //Para el proceso de obtencion de la ultima clave del cliente
+                                            JsonArrayRequest requestClave = new JsonArrayRequest(Request.Method.GET, urlClave, null, new Response.Listener<JSONArray>() {
+                                                @Override
+                                                public void onResponse(JSONArray response) {
+                                                    // Toast.makeText(getContext(), urlClave, Toast.LENGTH_SHORT).show();
+                                                    JSONObject jsonObject;
+                                                    try {
+                                                        jsonObject =response.getJSONObject(0);
+                                                    }catch (Exception e){
+                                                        jsonObject = new JSONObject();
+                                                    }
+
+
+                                                    try {
+                                                        puntoVenta = jsonObject.getString("0");
+                                                        Nuevaclave = jsonObject.getString("1");
+
+                                                    }catch (Exception e){
+                                                        Nuevaclave = null;
+                                                        puntoVenta = null;
+                                                    }
+                                                    if (Nuevaclave != null){
+                                                        edtClave.setText(puntoVenta + "-" + Nuevaclave);
+                                                    }
+
+                                                }
+                                            }, new Response.ErrorListener() {
+                                                @Override
+                                                public void onErrorResponse(VolleyError error) {
+                                                    Toast.makeText(getContext(), urlClave, Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                            queueClave.add(requestClave);
                                         }
                                     }, new Response.ErrorListener() {
                                         @Override
@@ -178,53 +225,6 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
                         //Agrega y ejecuta la cola
                         queue.add(request);
 
-                        //INICIA LA PETICION PARA OBTENER LA ULTIMA CLAVE DEL CLIENTE
-                        RequestQueue queueClave = Volley.newRequestQueue(getContext());
-                        String consultaClave ="select pv.tipo,cc.numero%2B1 "+
-                                "from clave_cliente cc, punto_Venta pv "+
-                                "where cc.puntoVenta_id  = pv.id "+
-                                "and pv.id ="+usuarioID+
-                                " order by cc.numero DESC limit 1";
-                        consultaClave = consultaClave.replace(" ", "%20");
-                        String cadenaClave = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaClave;
-                        urlClave = SERVER + RUTA + "consultaGeneral.php" + cadenaClave;
-                        Log.i("info", urlClave);
-
-                        //Para el proceso de obtencion de la ultima clave del cliente
-                        JsonArrayRequest requestClave = new JsonArrayRequest(Request.Method.GET, urlClave, null, new Response.Listener<JSONArray>() {
-                            @Override
-                            public void onResponse(JSONArray response) {
-                                // Toast.makeText(getContext(), urlClave, Toast.LENGTH_SHORT).show();
-                                JSONObject jsonObject;
-                                try {
-                                    jsonObject =response.getJSONObject(0);
-                                }catch (Exception e){
-                                    jsonObject = new JSONObject();
-                                }
-
-
-                                try {
-                                    puntoVenta = jsonObject.getString("0");
-                                    Nuevaclave = jsonObject.getString("1");
-
-                                }catch (Exception e){
-                                    Nuevaclave = null;
-                                    puntoVenta = null;
-                                }
-                                if (Nuevaclave != null){
-                                    edtClave.setText(puntoVenta + "-" + Nuevaclave);
-                                }
-
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Toast.makeText(getContext(), urlClave, Toast.LENGTH_SHORT).show();
-                                Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        queue.add(requestClave);
-
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -247,7 +247,7 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
            @Override
            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                ciudadID = (int)adapter.getItemId(i);
-               Toast.makeText(getContext(), "ID: " + String.valueOf(ciudadID), Toast.LENGTH_SHORT).show();
+               //Toast.makeText(getContext(), "ID: " + String.valueOf(ciudadID), Toast.LENGTH_SHORT).show();
            }
            @Override
            public void onNothingSelected(AdapterView<?> adapterView) {
