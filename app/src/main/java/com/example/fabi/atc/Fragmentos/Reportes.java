@@ -97,8 +97,9 @@ public class Reportes extends Fragment implements Basic {
         listView = (ListView)view.findViewById(R.id.listReportes);
 
         //ADAPTER DEL MENU DEL OPCIONES DEL SPINNER
-        spinnerSencilloAdapter spinnerSencilloAdapter = new spinnerSencilloAdapter(listaReportes(),getContext());
-        spinner.setAdapter(spinnerSencilloAdapter);
+        //spinnerSencilloAdapter spinnerSencilloAdapter = new spinnerSencilloAdapter(listaReportes(),getContext());
+
+        //spinner.setAdapter(spinnerSencilloAdapter);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -463,7 +464,7 @@ public class Reportes extends Fragment implements Basic {
         queue.add(request);
         return adapter;
     }
-
+/*
     public ArrayList<Modelo>listaReportes(){
         ArrayList<Modelo>lista = new ArrayList<>();
         String[] nombre = getResources().getStringArray(R.array.opcionesReportes);

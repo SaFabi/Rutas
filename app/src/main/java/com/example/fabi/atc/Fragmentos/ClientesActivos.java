@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,14 +32,16 @@ import com.example.fabi.atc.R;
 
 import org.json.JSONArray;
 
-public class ClientesActivos extends Fragment implements Basic{
+public class ClientesActivos extends Fragment implements SwipeRefreshLayout.OnRefreshListener,Basic{
 
     private static final String ARG_POSITION = "param1";
     String url;
     ListView listView;
     rutasLib rutasObj;
+    int clienteID;
     private ProgressDialog progressDialog;
     AdapterClientes adapter;
+    SwipeRefreshLayout contenedorClientesA;
 
 
     // TODO: Rename and change types of parameters
@@ -76,6 +79,8 @@ public class ClientesActivos extends Fragment implements Basic{
         View view = inflater.inflate(R.layout.fragment_clientes_activos, container, false);
         //Se declaran los elementos con su id
         listView = (ListView) view.findViewById(R.id.clientesActivos);
+        contenedorClientesA = (SwipeRefreshLayout)view.findViewById(R.id.contenedorClientesActivos);
+        contenedorClientesA.setOnRefreshListener(this);
         //Inicializa el progres dialog
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
@@ -85,7 +90,7 @@ public class ClientesActivos extends Fragment implements Basic{
 
         //Inicia la peticion
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String consulta = "select cl.id,cl.nombre, cl.direccion,cl.telefono,CONCAT(pv.tipo,'-',cc.numero) " +
+        String consulta = "select cc.id,cl.nombre, cl.direccion,cl.telefono,CONCAT(pv.tipo,'-',cc.numero) " +
                 "from cliente cl, clave_cliente cc, punto_venta pv " +
                 "where cc.puntoVenta_id = pv.id " +
                 "and cc.cliente_id = cl.id " +
@@ -123,8 +128,8 @@ public class ClientesActivos extends Fragment implements Basic{
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                //Hace la consulta para sacar el id del cliente que se va a eliminar
 
-                int id = (int)adapter.getItemId(i);
-                Toast.makeText(getContext(), "ID: " + String.valueOf(id), Toast.LENGTH_SHORT).show();
+               clienteID = (int)adapter.getItemId(i);
+                Toast.makeText(getContext(), "ID: " + String.valueOf(clienteID), Toast.LENGTH_SHORT).show();
 
 
                 AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
@@ -134,47 +139,87 @@ public class ClientesActivos extends Fragment implements Basic{
                 dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
                     //
                     public void onClick(DialogInterface dialogo1, int id) {
-                        Fragment nuevoFragmento = new ClientesInactivos();
+
+                        //Inicializa el progres dialog
+                        progressDialog = new ProgressDialog(getContext());
+                        progressDialog.setTitle("En Proceso");
+                        progressDialog.setMessage("Un momento...");
+                        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                        progressDialog.show();
+
+                        //Inicia la peticion
+                        RequestQueue queue = Volley.newRequestQueue(getContext());
+                        String consulta = "update clave_cliente set activo=0 where id="+clienteID;
+                        consulta = consulta.replace(" ", "%20");
+                        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+                        final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+                        Log.i("info", url);
+
+                        //Hace la petición String
+                        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                            @Override
+                            public void onResponse(JSONArray response) {
+                                //Inicia la peticion
+                                RequestQueue queue = Volley.newRequestQueue(getContext());
+                                String consulta = "select cc.id,cl.nombre, cl.direccion,cl.telefono,CONCAT(pv.tipo,'-',cc.numero) " +
+                                        "from cliente cl, clave_cliente cc, punto_venta pv " +
+                                        "where cc.puntoVenta_id = pv.id " +
+                                        "and cc.cliente_id = cl.id " +
+                                        " and pv.id="+usuarioID+" and cc.activo = true";
+                                consulta = consulta.replace(" ", "%20");
+                                String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+                                final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+                                Log.i("info", url);
+
+                                //Hace la petición String
+                                JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                                    @Override
+                                    public void onResponse(JSONArray response) {
+                                        progressDialog.hide();
+                                        //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
+                                        adapter = new AdapterClientes(getContext(),ModeloClientes.sacarListaClientes(response));
+                                        listView.setAdapter(adapter);
+
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        progressDialog.hide();
+                                        Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(),  "Activos   "+url, Toast.LENGTH_SHORT).show();
+
+                                    }
+                                });
+
+                                //Agrega y ejecuta la cola
+                                queue.add(request);
+                                progressDialog.hide();
+                                Toast.makeText(getContext(),"Se elimino correctamente",Toast.LENGTH_SHORT).show();
+
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                progressDialog.hide();
+                                Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(),  "Activos   "+url, Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+
+                        //Agrega y ejecuta la cola
+                        queue.add(request);
+
+                        //PARA PASAR A OTRO FRAGMENTO
+                        /*Fragment nuevoFragmento = new ClientesInactivos();
                         FragmentTransaction transaction = getFragmentManager().beginTransaction();
                         transaction.replace(R.id.content_main, nuevoFragmento);
                         transaction.addToBackStack(null);
 
                         // Commit a la transacción
                         transaction.commit();
-                        /*
-                        //Inicia la peticion para actualizar el estado del cliente a inactivo
-                        RequestQueue queueUpdate = Volley.newRequestQueue(getContext());
+                        */
 
-                        //Asigna a la variable la consulta que se va a ejecutar
-                        String consultaUpdate = "select cl.nombre, cl.direccion,cl.telefono,CONCAT(pv.tipo,'-',cc.numero) " +
-                                "from cliente cl, clave_cliente cc, punto_venta pv " +
-                                "where cc.puntoVenta_id = pv.id " +
-                                "and cc.cliente_id = cl.id " +
-                                " and pv.id="+usuarioID+" and cc.activo = true";
-
-                        //Reemplaza los espacios de a consulta por %20
-                        consultaUpdate = consultaUpdate.replace(" ", "%20");
-
-                        //Arma la cadena que se va a mandar al navegador
-                        String cadenaUpdate = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaUpdate;
-
-                        //Asigna la url que se ejecutara en el navegador
-                        url = SERVER + RUTA + "consultaGeneral.php" + cadenaUpdate;
-                        //Para obtener la respuesta de la consulta anterior
-                        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-                            @Override
-                            public void onResponse(JSONArray response) {
-
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-
-                            }
-                        });
-                        queueUpdate.add(request);
-                        //Log.i("info", url);  */
-                        Toast.makeText(getContext(),"Se elimino correctamente",Toast.LENGTH_SHORT).show();
                     }
                 });
                 dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -187,33 +232,6 @@ public class ClientesActivos extends Fragment implements Basic{
             }
         });
 
-/*
-        //Se declara el progress dialog para ejecutar despues la consulta
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setTitle("En Proceso");
-        progressDialog.setMessage("Un momento...");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.show();
-
-        //Inicia la peticion
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-        String consulta = "select cl.nombre, cl.direccion,cl.telefono,CONCAT(pv.tipo,'-',cc.numero) " +
-                "from cliente cl, clave_cliente cc, punto_venta pv " +
-                "where cc.puntoVenta_id = pv.id " +
-                "and cc.cliente_id = cl.id " +
-                " and pv.id="+usuarioID+" and cc.activo = true";
-        consulta = consulta.replace(" ", "%20");
-        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
-        url = SERVER + RUTA + "consultaGeneral.php" + cadena;
-        Log.i("info", url);
-
-        //Hace la petición String
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, this, this);
-
-        //Agrega y ejecuta la cola
-        queue.add(request);
-
-*/
         return view;
     }
 
@@ -223,24 +241,64 @@ public class ClientesActivos extends Fragment implements Basic{
             mListener.onFragmentInteraction(uri);
         }
     }
-/*
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    public void onRefresh() {
+        //Inicia la peticion
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String consulta = "select cc.id,cl.nombre, cl.direccion,cl.telefono,CONCAT(pv.tipo,'-',cc.numero) " +
+                "from cliente cl, clave_cliente cc, punto_venta pv " +
+                "where cc.puntoVenta_id = pv.id " +
+                "and cc.cliente_id = cl.id " +
+                " and pv.id="+usuarioID+" and cc.activo = true";
+        consulta = consulta.replace(" ", "%20");
+        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+        final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+        Log.i("info", url);
+
+        //Hace la petición String
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                progressDialog.hide();
+                //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
+                adapter = new AdapterClientes(getContext(),ModeloClientes.sacarListaClientes(response));
+                listView.setAdapter(adapter);
+                contenedorClientesA.setRefreshing(false);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.hide();
+                Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),  "Activos   "+url, Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        //Agrega y ejecuta la cola
+        queue.add(request);
     }
-*/
+
+    /*
+        @Override
+        public void onAttach(Context context) {
+            super.onAttach(context);
+            if (context instanceof OnFragmentInteractionListener) {
+                mListener = (OnFragmentInteractionListener) context;
+            } else {
+                throw new RuntimeException(context.toString()
+                        + " must implement OnFragmentInteractionListener");
+            }
+        }
+
+        @Override
+        public void onDetach() {
+            super.onDetach();
+            mListener = null;
+        }
+    */
 /*
     @Override
     public void onErrorResponse(VolleyError error) {

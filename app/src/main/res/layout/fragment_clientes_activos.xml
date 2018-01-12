@@ -1,12 +1,19 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout
+    android:id="@+id/contenedorClientesActivos"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBlanco"
     tools:context="com.example.fabi.atc.Fragmentos.ClientesActivos">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <ListView
         android:id="@+id/clientesActivos"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
 </RelativeLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

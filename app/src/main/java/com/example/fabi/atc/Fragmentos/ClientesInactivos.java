@@ -5,11 +5,13 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -27,14 +29,16 @@ import com.example.fabi.atc.Clases.ModeloClientes;
 import com.example.fabi.atc.R;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
-public class ClientesInactivos extends Fragment implements Basic , Response.Listener<JSONArray>, Response.ErrorListener{
+public class ClientesInactivos extends Fragment implements SwipeRefreshLayout.OnRefreshListener,Basic , Response.Listener<JSONArray>, Response.ErrorListener{
 
     private static final String ARG_POSITION = "POSITION";
     String url;
     ListView listView;
     AdapterClientes adapter;
     private ProgressDialog progressDialog;
+    private SwipeRefreshLayout contenedorClientesI;
 
     // TODO: Rename and change types of parameters
     private int mPosition;
@@ -66,6 +70,8 @@ public class ClientesInactivos extends Fragment implements Basic , Response.List
         //Crea la vista
        View view = inflater.inflate(R.layout.fragment_clientes_inactivos, container, false);
         //Se declaran los elementos con su id
+        contenedorClientesI = (SwipeRefreshLayout)view.findViewById(R.id.contenedorClientesInactivos);
+        contenedorClientesI.setOnRefreshListener(this);
         listView = (ListView)view.findViewById(R.id.clientesInactivos);
        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
            @Override
@@ -85,7 +91,7 @@ public class ClientesInactivos extends Fragment implements Basic , Response.List
 
         //Inicia la peticion
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String consulta = "select cl.id,cl.nombre, cl.direccion,cl.telefono,CONCAT(pv.tipo,'-',cc.numero) " +
+        String consulta = "select cc.id,cl.nombre, cl.direccion,cl.telefono,CONCAT(pv.tipo,'-',cc.numero) " +
                 "from cliente cl, clave_cliente cc, punto_venta pv " +
                 "where cc.puntoVenta_id = pv.id " +
                 "and cc.cliente_id = cl.id " +
@@ -146,6 +152,41 @@ public class ClientesInactivos extends Fragment implements Basic , Response.List
         // Toast.makeText(getContext(), "Telefonos    "+url, Toast.LENGTH_SHORT).show();
        adapter= new AdapterClientes(getContext(),ModeloClientes.sacarListaClientes(response));
         listView.setAdapter(adapter);
+        contenedorClientesI.setRefreshing(false);
+
+    }
+
+    @Override
+    public void onRefresh() {
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String consulta = "select cc.id,cl.nombre, cl.direccion,cl.telefono,CONCAT(pv.tipo,'-',cc.numero) " +
+                "from cliente cl, clave_cliente cc, punto_venta pv " +
+                "where cc.puntoVenta_id = pv.id " +
+                "and cc.cliente_id = cl.id " +
+                " and pv.id="+usuarioID+" and cc.activo = false";
+        consulta = consulta.replace(" ", "%20");
+        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+        url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+        Log.i("info", url);
+        //Para el proceso de obtencion de la ultima clave del cliente
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                // Toast.makeText(getContext(), "Telefonos    "+url, Toast.LENGTH_SHORT).show();
+                adapter= new AdapterClientes(getContext(),ModeloClientes.sacarListaClientes(response));
+                listView.setAdapter(adapter);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getContext(), url, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //Agrega y ejecuta la cola
+        queue.add(request);
 
     }
 

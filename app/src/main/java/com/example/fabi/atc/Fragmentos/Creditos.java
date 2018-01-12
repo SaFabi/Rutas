@@ -135,8 +135,8 @@ public class Creditos extends Fragment implements Basic,  Response.Listener<JSON
     @Override
     public void onResponse(JSONArray response) {
         progressDialog.hide();
-        spinnerAdapter spinnerAdapter= new spinnerAdapter(response,getContext());
-        spinnerCreditos.setAdapter(spinnerAdapter);
+        //spinnerAdapter spinnerAdapter= new spinnerAdapter(response,getContext());
+        //spinnerCreditos.setAdapter(spinnerAdapter);
 
         JSONObject jsonObject;
         try {

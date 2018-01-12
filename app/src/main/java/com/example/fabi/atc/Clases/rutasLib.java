@@ -253,14 +253,4 @@ public class rutasLib implements  Basic {
         return adapter;
     }
 
-    public ArrayList<Modelo>listaReportes(Context context) {
-        ArrayList<Modelo>lista = new ArrayList<>();
-        String[] nombre = context.getResources().getStringArray(R.array.opcionesReportes);
-
-        for (int i = 0; i <nombre.length; i++){
-            lista.add(new Modelo(nombre[i]));
-        }
-        return lista;
-    }
-
 }
