@@ -8,8 +8,8 @@
     <!--Menu para las opciones de los reportes-->
 
     <string-array name="opcionesReportes">
-    <item>Comisiones</item>
-    <item>Ventas</item>
+        <item>Comisiones</item>
+        <item>Ventas</item>
     </string-array>
 
 </resources>
