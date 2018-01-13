@@ -3,32 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBlanco"
-    tools:context="com.example.fabi.atc.Fragmentos.Creditos">
-
+    tools:context="com.example.fabi.atc.Fragmentos.CreditosPendientes">
     <TextView
         android:layout_marginTop="10dp"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:id="@+id/puntoVenta"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-    <Button
-        android:layout_marginTop="10dp"
-        android:background="@drawable/buscar"
-        android:id="@+id/buscarCreditos"
-        android:layout_alignParentRight="true"
-        android:layout_width="30dp"
-        android:layout_height="30dp" />
-
     <Spinner
         android:layout_marginTop="10dp"
-        android:layout_toStartOf="@id/buscarCreditos"
        android:paddingLeft="50dp"
         android:layout_toEndOf="@id/puntoVenta"
         android:id="@+id/spinnerClaves"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-
-
     <ListView
         android:id="@+id/CreditoClientes"
         android:layout_below="@id/spinnerClaves"

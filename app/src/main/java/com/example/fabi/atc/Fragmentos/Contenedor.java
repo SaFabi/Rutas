@@ -107,7 +107,7 @@ public class Contenedor extends Fragment {
         if (Utilidades.rotacion == 0){
             appBAr.removeView(pestanas);
         }
-        }
+    }
 //Guardar informaccion cuando interactua con otro fragmento
     @Override
     public void onAttach(Context context) {

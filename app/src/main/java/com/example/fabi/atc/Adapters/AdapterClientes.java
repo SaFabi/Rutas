@@ -40,6 +40,10 @@ public class AdapterClientes extends BaseAdapter {
         return elementos.get(i).getId();
     }
 
+    public long getTotal(int i) {
+        return elementos.get(i).getId();
+    }
+
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());

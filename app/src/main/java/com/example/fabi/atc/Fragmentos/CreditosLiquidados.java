@@ -10,10 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,53 +20,47 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.fabi.atc.Adapters.AdapterClientes;
-import com.example.fabi.atc.Adapters.ClientesAdapter;
 import com.example.fabi.atc.Adapters.spinnerAdapter;
 import com.example.fabi.atc.Clases.Basic;
 import com.example.fabi.atc.Clases.Modelo;
 import com.example.fabi.atc.Clases.ModeloClientes;
-import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
-public class Creditos extends Fragment implements Basic{
+public class CreditosLiquidados extends Fragment implements Basic {
     private static final String ARG_POSITION = "position";
     private int mPosition;
-    //URL DE LA CONSULTA DEL PUNTO DE VENTA
-    String url;
 
-    //ASIGNACION DE VARIABLES CON SUS CONTROLES
+    //CONTROLES
+    TextView txtPunVenta;
+    Spinner spinnerClaves;
     ListView listView;
-    TextView txtPuntoVenta;
-    Spinner spinnerCreditos;
-    Button btnConsultar;
     private ProgressDialog progressDialog;
 
-    //VARIBALES NORMALES
-    String puntoVenta;
-    int claveCliente;
-
     //ADAPTERS
-    rutasLib rutasObj;
     spinnerAdapter spinnerAdapter;
     AdapterClientes adapterClientes;
 
+    //VARIABLES
+    int claveCliente;
+    String puntoVenta;
+    int ordenID;
+
     private OnFragmentInteractionListener mListener;
 
-    public Creditos() {
+    public CreditosLiquidados() {
         // Required empty public constructor
     }
 
-    public static Creditos newInstance(int position) {
-        Creditos fragment = new Creditos();
+    public static CreditosLiquidados newInstance(int position) {
+        CreditosLiquidados fragment = new CreditosLiquidados();
         Bundle args = new Bundle();
-        args.putInt(ARG_POSITION,position);
+        args.putInt(ARG_POSITION, position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -84,24 +76,26 @@ public class Creditos extends Fragment implements Basic{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view= inflater.inflate(R.layout.fragment_creditos, container, false);
-        listView = (ListView)view.findViewById(R.id.CreditoClientes);
-        txtPuntoVenta = (TextView)view.findViewById(R.id.puntoVenta);
-        spinnerCreditos = (Spinner)view.findViewById(R.id.spinnerClaves);
-        btnConsultar = (Button)view.findViewById(R.id.buscarCreditos);
-        btnConsultar.setOnClickListener(new View.OnClickListener() {
+        // Inflate the layout for this fragment
+       View vista = inflater.inflate(R.layout.fragment_creditos_liquidados, container, false);
+        txtPunVenta = (TextView)vista.findViewById(R.id.puntoVentaCreditosLiquidados);
+        spinnerClaves = (Spinner)vista.findViewById(R.id.spinnerClavesCreditosLiquidados);
+        listView = (ListView)vista.findViewById(R.id.CreditoClientesCreditosLiquidados);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View view) {
-                     listView.setAdapter(rutasObj.ReporteCreditos(getContext(),String.valueOf(claveCliente),usuarioID));
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ordenID = (int)adapterClientes.getItemId(i);
+                Toast.makeText(getContext(),String.valueOf(ordenID),Toast.LENGTH_SHORT).show();
             }
         });
 
-        //PARA SACAR EL ID DEL CLIENTE
-        spinnerCreditos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+        spinnerClaves.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 claveCliente = (int)spinnerAdapter.getItemId(i);
-                //Toast.makeText(getContext(),String.valueOf(claveCliente),Toast.LENGTH_SHORT).show();
+                //CONSULTA PARA OBTENER LOS CREDITOS DE CIERTO CLIENTE
                 progressDialog = new ProgressDialog(getContext());
                 progressDialog.setTitle("En Proceso");
                 progressDialog.setMessage("Un momento...");
@@ -110,19 +104,21 @@ public class Creditos extends Fragment implements Basic{
 
                 //CONSULTA PATA OBTENER TODOS LOS CREDITOS REGISTRADOS DE UN CLIENTE EN ESPECIFICO
                 RequestQueue queueCreditos = Volley.newRequestQueue(getContext());
-                String consultaCreditos = "select distinct ord.id,ord.folio,cre.total,DATE(ord.fecha),CONCAT(pv.tipo,'-',cc.numero)"+
-                " from orden ord,credito cre, punto_venta pv, cliente cli, clave_cliente cc"+
-                " where cre.orden_id = ord.id"+
-                " and ord.puntoVenta_id = pv.id"+
-                " and ord.cliente_id = cli.id"+
-                " and cc.cliente_id =cli.id"+
-                " and pv.id="+usuarioID+
-                " and cre.total>0"+
-                " and cli.id="+claveCliente; ;
+                String consultaCreditos = "select distinct ord.id,cre.total,ord.folio,DATE(ord.fecha),CONCAT(pv.tipo,'-',cc.numero)"+
+                        " from orden ord,credito cre, punto_venta pv, cliente cli, clave_cliente cc"+
+                        " where cre.orden_id = ord.id"+
+                        " and ord.puntoVenta_id = pv.id"+
+                        " and ord.cliente_id = cli.id"+
+                        " and cc.cliente_id =cli.id"+
+                        " and pv.id="+usuarioID+
+                        " and cre.total>0"+
+                        " and cre.estado=0"+
+                        " and cli.id="+claveCliente; ;
                 consultaCreditos = consultaCreditos.replace(" ", "%20");
                 String cadenaCreditos = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaCreditos;
-                url = SERVER + RUTA + "consultaGeneral.php" + cadenaCreditos;
+                String url = SERVER + RUTA + "consultaGeneral.php" + cadenaCreditos;
                 Log.i("info", url);
+
                 JsonArrayRequest requestCreditos = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -145,7 +141,7 @@ public class Creditos extends Fragment implements Basic{
 
             }
         });
-         //PARA SELECCIONAR EL TIPO DE PUNTO DE VENTA
+        //PARA SELECCIONAR EL TIPO DE PUNTO DE VENTA
 
         //Se declara el progress dialog para ejecutar despues la consulta
         progressDialog = new ProgressDialog(getContext());
@@ -158,7 +154,7 @@ public class Creditos extends Fragment implements Basic{
         String consulta = "select tipo from punto_venta where id="+usuarioID;
         consulta = consulta.replace(" ", "%20");
         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
-        url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+        String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
@@ -180,7 +176,7 @@ public class Creditos extends Fragment implements Basic{
                     puntoVenta = null;
                 }
                 if (puntoVenta != null){
-                    txtPuntoVenta.setText(puntoVenta);
+                    txtPunVenta.setText(puntoVenta);
                 }
 
             }
@@ -195,20 +191,20 @@ public class Creditos extends Fragment implements Basic{
         //PARA LA CONSULTA DE LAS CLAVES DE LOS CLIENTES EN EL SPINNER
         RequestQueue queueClaveCliente = Volley.newRequestQueue(getContext());
         String consultaClaveCliente = "select cl.id, cc.numero "+
-        " from cliente cl, clave_cliente cc, punto_venta pv"+
-        " where cc.cliente_id = cl.id"+
-        " and  cc.puntoVenta_id = pv.id"+
-        " and pv.id ="+usuarioID;
+                " from cliente cl, clave_cliente cc, punto_venta pv"+
+                " where cc.cliente_id = cl.id"+
+                " and  cc.puntoVenta_id = pv.id"+
+                " and pv.id ="+usuarioID;
         consultaClaveCliente = consultaClaveCliente.replace(" ", "%20");
         String cadenaClaveCliente = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaClaveCliente;
-        url = SERVER + RUTA + "consultaGeneral.php" + cadenaClaveCliente;
+        String urlClaves = SERVER + RUTA + "consultaGeneral.php" + cadenaClaveCliente;
         Log.i("info", url);
-        JsonArrayRequest requestClaveCliente = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+        JsonArrayRequest requestClaveCliente = new JsonArrayRequest(Request.Method.GET, urlClaves, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 progressDialog.hide();
                 spinnerAdapter= new spinnerAdapter(getContext(), Modelo.ListaSpinner(response));
-                spinnerCreditos.setAdapter(spinnerAdapter);
+                spinnerClaves.setAdapter(spinnerAdapter);
 
             }
         }, new Response.ErrorListener() {
@@ -218,7 +214,27 @@ public class Creditos extends Fragment implements Basic{
             }
         });
         queueClaveCliente.add(requestClaveCliente);
-        return view;
+
+
+       return vista;
+    }
+
+    // TODO: Rename method, update argument and hook method into UI event
+    public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
+        }
+    }
+/*
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
     }
 
     @Override
@@ -227,6 +243,16 @@ public class Creditos extends Fragment implements Basic{
         mListener = null;
     }
 
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
