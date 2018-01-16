@@ -1,6 +1,5 @@
 package com.example.fabi.atc.Adapters;
 
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
