@@ -38,11 +38,10 @@ public class detallesCreditosPendientes extends Fragment  implements Basic{
         // Required empty public constructor
     }
 
-    public static detallesCreditosPendientes newInstance(int ordenID,String total) {
+    public static detallesCreditosPendientes newInstance(int ordenID) {
         detallesCreditosPendientes fragment = new detallesCreditosPendientes();
         Bundle args = new Bundle();
         args.putInt("ordenID",ordenID);
-        args.putString("totalOrden",total);
         fragment.setArguments(args);
         return fragment;
     }

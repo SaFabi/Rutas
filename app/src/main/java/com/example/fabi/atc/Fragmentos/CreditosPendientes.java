@@ -23,10 +23,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.fabi.atc.Adapters.AdapterClientes;
+import com.example.fabi.atc.Adapters.CreditosAdapter;
 import com.example.fabi.atc.Adapters.spinnerAdapter;
 import com.example.fabi.atc.Clases.Basic;
 import com.example.fabi.atc.Clases.Modelo;
 import com.example.fabi.atc.Clases.ModeloClientes;
+import com.example.fabi.atc.Clases.ModeloCreditos;
 import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
 
@@ -49,13 +51,13 @@ public class CreditosPendientes extends Fragment implements Basic{
     String puntoVenta;
     int claveCliente;
     int ordenID;
-    String Total;
+    int Total;
 
 
     //ADAPTERS
     rutasLib rutasObj;
     spinnerAdapter spinnerAdapter;
-    AdapterClientes adapterClientes;
+    CreditosAdapter creditosAdapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -89,9 +91,10 @@ public class CreditosPendientes extends Fragment implements Basic{
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ordenID = (int)adapterClientes.getItemId(i);
+                ordenID = (int)creditosAdapter.getItemId(i);
+                Total = (int)creditosAdapter.getTotal(i);
                 Toast.makeText(getContext(),String.valueOf(ordenID),Toast.LENGTH_SHORT).show();
-                Fragment fragment = detallesCreditosPendientes.newInstance(ordenID,Total);
+                Fragment fragment = detallesCreditosPendientes.newInstance(ordenID);
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.content_main,fragment);
                 fragmentTransaction.addToBackStack(null);
@@ -114,7 +117,7 @@ public class CreditosPendientes extends Fragment implements Basic{
 
                 //CONSULTA PATA OBTENER TODOS LOS CREDITOS REGISTRADOS DE UN CLIENTE EN ESPECIFICO
                 RequestQueue queueCreditos = Volley.newRequestQueue(getContext());
-                String consultaCreditos = "select distinct ord.id,cre.total,ord.folio,DATE(ord.fecha),CONCAT(pv.tipo,'-',cc.numero)"+
+                String consultaCreditos = "select distinct ord.id,ord.folio,DATE(ord.fecha),CONCAT(pv.tipo,'-',cc.numero),cre.total"+
                 " from orden ord,credito cre, punto_venta pv, cliente cli, clave_cliente cc"+
                 " where cre.orden_id = ord.id"+
                 " and ord.puntoVenta_id = pv.id"+
@@ -132,8 +135,8 @@ public class CreditosPendientes extends Fragment implements Basic{
                     @Override
                     public void onResponse(JSONArray response) {
                         progressDialog.hide();
-                        adapterClientes= new AdapterClientes(getContext(), ModeloClientes.sacarListaClientes(response));
-                        listView.setAdapter(adapterClientes);
+                        creditosAdapter= new CreditosAdapter(getActivity().getSupportFragmentManager(),getContext(), ModeloCreditos.sacarListaClientes(response),ordenID,Total);
+                        listView.setAdapter(creditosAdapter);
 
                     }
                 }, new Response.ErrorListener() {
