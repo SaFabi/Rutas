@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -22,12 +21,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.fabi.atc.Adapters.AdapterClientes;
 import com.example.fabi.atc.Adapters.CreditosAdapter;
 import com.example.fabi.atc.Adapters.spinnerAdapter;
 import com.example.fabi.atc.Clases.Basic;
 import com.example.fabi.atc.Clases.Modelo;
-import com.example.fabi.atc.Clases.ModeloClientes;
 import com.example.fabi.atc.Clases.ModeloCreditos;
 import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
@@ -117,7 +114,7 @@ public class CreditosPendientes extends Fragment implements Basic{
 
                 //CONSULTA PATA OBTENER TODOS LOS CREDITOS REGISTRADOS DE UN CLIENTE EN ESPECIFICO
                 RequestQueue queueCreditos = Volley.newRequestQueue(getContext());
-                String consultaCreditos = "select distinct ord.id,ord.folio,DATE(ord.fecha),CONCAT(pv.tipo,'-',cc.numero),cre.total"+
+                String consultaCreditos = "select distinct ord.id,ord.folio,DATE(ord.fecha),CONCAT(pv.tipo,'-',cc.numero),cre.total, cli.id"+
                 " from orden ord,credito cre, punto_venta pv, cliente cli, clave_cliente cc"+
                 " where cre.orden_id = ord.id"+
                 " and ord.puntoVenta_id = pv.id"+
@@ -126,7 +123,7 @@ public class CreditosPendientes extends Fragment implements Basic{
                 " and pv.id="+usuarioID+
                 " and cre.total>0"+
                 " and cre.estado=1"+
-                " and cli.id="+claveCliente; ;
+                " and cli.id="+claveCliente;
                 consultaCreditos = consultaCreditos.replace(" ", "%20");
                 String cadenaCreditos = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaCreditos;
                 url = SERVER + RUTA + "consultaGeneral.php" + cadenaCreditos;
