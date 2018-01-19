@@ -114,7 +114,7 @@ public class CreditosPendientes extends Fragment implements Basic{
 
                 //CONSULTA PATA OBTENER TODOS LOS CREDITOS REGISTRADOS DE UN CLIENTE EN ESPECIFICO
                 RequestQueue queueCreditos = Volley.newRequestQueue(getContext());
-                String consultaCreditos = "select distinct ord.id,ord.folio,DATE(ord.fecha),CONCAT(pv.tipo,'-',cc.numero),cre.total, cli.id"+
+                String consultaCreditos = "select distinct ord.id,ord.folio,DATE(ord.fecha),CONCAT(pv.tipo,'-',cc.numero),cre.total, cli.id,cre.id" +
                 " from orden ord,credito cre, punto_venta pv, cliente cli, clave_cliente cc"+
                 " where cre.orden_id = ord.id"+
                 " and ord.puntoVenta_id = pv.id"+

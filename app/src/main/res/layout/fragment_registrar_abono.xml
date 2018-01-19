@@ -14,6 +14,8 @@
         android:layout_height="wrap_content" />
 
     <EditText
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        android:textAlignment="center"
         android:id="@+id/edtmontoTotal"
         android:enabled="false"
         android:layout_below="@id/montoTotal"

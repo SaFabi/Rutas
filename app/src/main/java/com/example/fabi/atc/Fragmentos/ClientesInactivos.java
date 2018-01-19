@@ -1,7 +1,9 @@
 package com.example.fabi.atc.Fragmentos;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -31,12 +34,13 @@ import com.example.fabi.atc.R;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class ClientesInactivos extends Fragment implements SwipeRefreshLayout.OnRefreshListener,Basic , Response.Listener<JSONArray>, Response.ErrorListener{
+public class ClientesInactivos extends Fragment implements SwipeRefreshLayout.OnRefreshListener,Basic{
 
     private static final String ARG_POSITION = "POSITION";
     String url;
     ListView listView;
     AdapterClientes adapter;
+    int clienteID;
     private ProgressDialog progressDialog;
     private SwipeRefreshLayout contenedorClientesI;
 
@@ -69,19 +73,19 @@ public class ClientesInactivos extends Fragment implements SwipeRefreshLayout.On
                              Bundle savedInstanceState) {
         //Crea la vista
        View view = inflater.inflate(R.layout.fragment_clientes_inactivos, container, false);
+
+        //CREA LA VISTA PARA MOSTRAR UN ICONO DENTRO DEL ALERT
+        LayoutInflater vistaAlert = LayoutInflater.from(getContext());
+        final View vistaAlertActivar = vistaAlert.inflate(R.layout.alertactivar,null);
+
+
+
         //Se declaran los elementos con su id
         contenedorClientesI = (SwipeRefreshLayout)view.findViewById(R.id.contenedorClientesInactivos);
         contenedorClientesI.setOnRefreshListener(this);
         listView = (ListView)view.findViewById(R.id.clientesInactivos);
-       listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-           @Override
-           public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-               int id = (int)adapter.getItemId(i);
-               Toast.makeText(getContext(), "ID: " + String.valueOf(id), Toast.LENGTH_SHORT).show();
-               return false;
-           }
-       });
 
+        //PARA LENAR EL LISTVIEW CON LOS CLIENTES QUE ESTAN DESHABILITADOS
         //Se declara el progress dialog para ejecutar despues la consulta
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
@@ -102,7 +106,24 @@ public class ClientesInactivos extends Fragment implements SwipeRefreshLayout.On
         Log.i("info", url);
 
         //Hace la petición String
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, this, this);
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                progressDialog.hide();
+                // Toast.makeText(getContext(), "Telefonos    "+url, Toast.LENGTH_SHORT).show();
+                adapter= new AdapterClientes(getContext(),ModeloClientes.sacarListaClientes(response));
+                listView.setAdapter(adapter);
+                contenedorClientesI.setRefreshing(false);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.hide();
+                Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),  "Inactivos   "+url, Toast.LENGTH_SHORT).show();
+            }
+        });
 
         //Agrega y ejecuta la cola
         queue.add(request);
@@ -110,6 +131,107 @@ public class ClientesInactivos extends Fragment implements SwipeRefreshLayout.On
 
 
 
+
+        //PARA AEJECUTAR LAS ACCIONES CUANDO SE DEJA PRESIONADO UN ITEM DEL LISTVIEW
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //Hace la consulta para sacar el id del cliente que se va a eliminar
+
+                clienteID = (int)adapter.getItemId(i);
+                //Toast.makeText(getContext(), "ID: " + String.valueOf(clienteID), Toast.LENGTH_SHORT).show();
+
+
+                AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
+                dialogo1.setTitle("Importante");
+                dialogo1.setView(vistaAlertActivar);
+                dialogo1.setCancelable(false);
+                dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+                    //
+                    public void onClick(DialogInterface dialogo1, int id) {
+
+                        //Inicializa el progres dialog
+                        progressDialog = new ProgressDialog(getContext());
+                        progressDialog.setTitle("En Proceso");
+                        progressDialog.setMessage("Un momento...");
+                        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                        progressDialog.show();
+
+
+                        RequestQueue queue = Volley.newRequestQueue(getContext());
+                        String consulta = "update clave_cliente set activo=1 where id="+clienteID;
+                        consulta = consulta.replace(" ", "%20");
+                        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+                        final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+                        Log.i("info", url);
+
+                        //Inicia la peticion para actualizar el estado del cliente a activo
+                        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                            @Override
+                            public void onResponse(JSONArray response) {
+                                //Inicia la peticion
+                                RequestQueue queue = Volley.newRequestQueue(getContext());
+                                String consulta = "select cc.id,cl.nombre, cl.direccion,cl.telefono,CONCAT(pv.tipo,'-',cc.numero) " +
+                                        "from cliente cl, clave_cliente cc, punto_venta pv " +
+                                        "where cc.puntoVenta_id = pv.id " +
+                                        "and cc.cliente_id = cl.id " +
+                                        " and pv.id="+usuarioID+" and cc.activo =false";
+                                consulta = consulta.replace(" ", "%20");
+                                String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+                                final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+                                Log.i("info", url);
+
+                                //Hace la petición String para mostrar los clientes que siguen inactivos
+                                JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                                    @Override
+                                    public void onResponse(JSONArray response) {
+                                        progressDialog.hide();
+                                        //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
+                                        adapter = new AdapterClientes(getContext(),ModeloClientes.sacarListaClientes(response));
+                                        listView.setAdapter(adapter);
+
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        progressDialog.hide();
+                                        Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(),  "Activos   "+url, Toast.LENGTH_SHORT).show();
+
+                                    }
+                                });
+
+                                //Agrega y ejecuta la cola
+                                queue.add(request);
+                                progressDialog.hide();
+                                Toast.makeText(getContext(),"Se activo correctamente",Toast.LENGTH_SHORT).show();
+
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                progressDialog.hide();
+                                Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(),  "Activos   "+url, Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+
+                        //Agrega y ejecuta la cola
+                        queue.add(request);
+
+
+                    }
+                });
+                dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogo1, int id) {
+                    }
+                });
+                dialogo1.show();
+
+                return false;
+            }
+        });
         return view;
     }
 
@@ -119,42 +241,9 @@ public class ClientesInactivos extends Fragment implements SwipeRefreshLayout.On
             mListener.onFragmentInteraction(uri);
         }
     }
-    /*
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-    */
 
-    @Override
-    public void onErrorResponse(VolleyError error) {
-        progressDialog.hide();
-        Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
-        Toast.makeText(getContext(),  "Inactivos   "+url, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onResponse(JSONArray response) {
-        progressDialog.hide();
-        // Toast.makeText(getContext(), "Telefonos    "+url, Toast.LENGTH_SHORT).show();
-       adapter= new AdapterClientes(getContext(),ModeloClientes.sacarListaClientes(response));
-        listView.setAdapter(adapter);
-        contenedorClientesI.setRefreshing(false);
-
-    }
 
     @Override
     public void onRefresh() {

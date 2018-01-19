@@ -77,6 +77,11 @@ public class ClientesActivos extends Fragment implements SwipeRefreshLayout.OnRe
         // Inflate the layout for this fragment
         //Crea la vista
         View view = inflater.inflate(R.layout.fragment_clientes_activos, container, false);
+
+        //CREA LA VISTA PARA MOSTRAR UN ICONO DENTRO DEL ALERT
+       LayoutInflater vistaAlert = LayoutInflater.from(getContext());
+        final View vistaAlertEliminar = vistaAlert.inflate(R.layout.alerteliminar,null);
+
         //Se declaran los elementos con su id
         listView = (ListView) view.findViewById(R.id.clientesActivos);
         contenedorClientesA = (SwipeRefreshLayout)view.findViewById(R.id.contenedorClientesActivos);
@@ -129,12 +134,12 @@ public class ClientesActivos extends Fragment implements SwipeRefreshLayout.OnRe
                //Hace la consulta para sacar el id del cliente que se va a eliminar
 
                clienteID = (int)adapter.getItemId(i);
-                Toast.makeText(getContext(), "ID: " + String.valueOf(clienteID), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), "ID: " + String.valueOf(clienteID), Toast.LENGTH_SHORT).show();
 
 
                 AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
+                dialogo1.setView(vistaAlertEliminar);
                 dialogo1.setTitle("Importante");
-                dialogo1.setMessage("¿Desea eliminar este elemento?");
                 dialogo1.setCancelable(false);
                 dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
                     //
@@ -280,42 +285,6 @@ public class ClientesActivos extends Fragment implements SwipeRefreshLayout.OnRe
         //Agrega y ejecuta la cola
         queue.add(request);
     }
-
-    /*
-        @Override
-        public void onAttach(Context context) {
-            super.onAttach(context);
-            if (context instanceof OnFragmentInteractionListener) {
-                mListener = (OnFragmentInteractionListener) context;
-            } else {
-                throw new RuntimeException(context.toString()
-                        + " must implement OnFragmentInteractionListener");
-            }
-        }
-
-        @Override
-        public void onDetach() {
-            super.onDetach();
-            mListener = null;
-        }
-    */
-/*
-    @Override
-    public void onErrorResponse(VolleyError error) {
-        progressDialog.hide();
-        Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
-        Toast.makeText(getContext(),  "Activos   "+url, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onResponse(JSONArray response) {
-        progressDialog.hide();
-        // Toast.makeText(getContext(), "Telefonos    "+url, Toast.LENGTH_SHORT).show();
-        ClientesAdapter adapter = new ClientesAdapter(response,getContext());
-        listView.setAdapter(adapter);
-
-    }
-*/
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

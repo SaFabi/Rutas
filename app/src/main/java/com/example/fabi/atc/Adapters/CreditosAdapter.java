@@ -60,6 +60,9 @@ public class CreditosAdapter extends BaseAdapter {
     public long getClienteID (int i){
         return elementos.get(i).getClienteID();
     }
+    public  long getCreditoID(int i){
+        return elementos.get(i).getCreditoID();
+    }
 
 
     @Override
@@ -79,7 +82,7 @@ public class CreditosAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 Toast.makeText(context,"Agregar abono",Toast.LENGTH_SHORT).show();
-                 Fragment fragment = RegistrarAbono.newInstance((int)getItemId(i),(int)getTotal(i), (int)getClienteID(i));
+                 Fragment fragment = RegistrarAbono.newInstance((int)getItemId(i),(int)getTotal(i), (int)getClienteID(i), (int)getCreditoID(i));
                 FragmentTransaction fragmentTransaction =fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.content_main,fragment);
                 fragmentTransaction.addToBackStack(null);
