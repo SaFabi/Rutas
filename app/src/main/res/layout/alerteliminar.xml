@@ -9,6 +9,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp" />
     <TextView
+        android:id="@+id/txtmensaje"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:textAlignment="center"
         android:text="¿Desea eliminar este elemento?"
