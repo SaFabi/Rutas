@@ -25,6 +25,10 @@
             android:icon="@drawable/historial"
             android:title="Creditos" />
         <item
+            android:id="@+id/Pedidos"
+            android:icon="@drawable/reporte"
+            android:title="Pedidos" />
+        <item
             android:id="@+id/InventarioG"
             android:icon="@drawable/catalogo"
             android:title="Inventario General" />

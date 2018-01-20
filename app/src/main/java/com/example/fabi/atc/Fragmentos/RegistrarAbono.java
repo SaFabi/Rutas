@@ -91,14 +91,7 @@ public class RegistrarAbono extends Fragment  implements Basic{
         View vista = inflater.inflate(R.layout.fragment_registrar_abono, container, false);
 
         //VERIFICAR QUE LOS DATOS SE ESTEN ENVIANDO CORRECTAMENTE
-        //Toast.makeText(getContext(),String.valueOf("  "+ordenID)+String.valueOf("  "+MontoTotal)+String.valueOf("  "+ClienteID)+String.valueOf("  "+CreditoID),Toast.LENGTH_SHORT).show();
-        //CREA LA VISTA PARA MOSTRAR UN ICONO DENTRO DEL ALERT
-        LayoutInflater vistaAlert = LayoutInflater.from(getContext());
-        if (vistaAlertEliminar == null){
-            vistaAlert.inflate(R.layout.alertactivar,null);
-        }
-        final TextView txtmensajeAlert = (TextView)vistaAlertEliminar.findViewById(R.id.txtmensaje);
-        final ImageView imageViewAlert = (ImageView)vistaAlertEliminar.findViewById(R.id.eliminar);
+        Toast.makeText(getContext(),String.valueOf("  "+ordenID)+String.valueOf("  "+MontoTotal)+String.valueOf("  "+ClienteID)+String.valueOf("  "+CreditoID),Toast.LENGTH_SHORT).show();
         //ASIGANCION DE VALORES A LOS CONTROLES
         edtMonto = (EditText)vista.findViewById(R.id.edtmontoTotal);
         edtAbono = (EditText)vista.findViewById(R.id.edtABono);
@@ -136,7 +129,8 @@ public class RegistrarAbono extends Fragment  implements Basic{
                                     " AND bc.credito_id = c.id" +
                                     " AND o.cliente_id =" + ClienteID +
                                     " AND c.orden_id =" + ordenID +
-                                    " and bc.cantidad > 0; ";
+                                    " and bc.cantidad > 0"+
+                                    " ORDER BY bc.id DESC";
                             consultaCreditos = consultaCreditos.replace(" ", "%20");
                             String cadenaCreditos = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaCreditos;
                             final String url = SERVER + RUTA + "consultaGeneral.php" + cadenaCreditos;
@@ -191,7 +185,7 @@ public class RegistrarAbono extends Fragment  implements Basic{
                                                 if ((MontoTotal - SumaAbonos) == 0) {
 
 
-                                                //CONSULTA PATA OBTENER TODOS LOS CREDITOS REGISTRADOS DE UN CLIENTE EN ESPECIFICO
+                                                //CONSULTA PATA ACTUALIZAR EL ESTADO DEL CREDITO A INACTIVO
                                                 RequestQueue queueActualizar = Volley.newRequestQueue(getContext());
                                                 String consultaActualizar = "update credito set estado=0 where id =" + CreditoID;
                                                 consultaActualizar = consultaActualizar.replace(" ", "%20");
@@ -206,9 +200,8 @@ public class RegistrarAbono extends Fragment  implements Basic{
                                                         AlertDialog.Builder dialogo = new AlertDialog.Builder(getActivity());
                                                         dialogo.setTitle("Importante");
                                                         dialogo.setCancelable(false);
-                                                        txtmensajeAlert.setText("Se ha cumplido el monto de este Credito");
-                                                        imageViewAlert.setImageDrawable(getContext().getDrawable(R.drawable.aceptar));
-                                                        dialogo.setView(vistaAlertEliminar);
+                                                        dialogo.setIcon(R.drawable.aceptar);
+                                                        dialogo.setMessage("Se completó el monto del credito");
                                                         dialogo.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
                                                             @Override
                                                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -262,7 +255,8 @@ public class RegistrarAbono extends Fragment  implements Basic{
                     AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
                     dialogo1.setTitle("Importante");
                     dialogo1.setCancelable(false);
-                    txtmensajeAlert.setText("Introduzca la cantidad");
+                    dialogo1.setIcon(R.drawable.cancelar);
+                    dialogo1.setMessage("Introduza una cantidad");
                     dialogo1.setView(vistaAlertEliminar);
                     dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
                         @Override
@@ -291,7 +285,8 @@ public class RegistrarAbono extends Fragment  implements Basic{
                 " AND bc.credito_id = c.id" +
                 " AND o.cliente_id =" +ClienteID+
                 " AND c.orden_id =" +ordenID+
-                " and bc.cantidad > 0; ";
+                " and bc.cantidad > 0"+
+                " ORDER BY bc.id DESC";
         consultaCreditos = consultaCreditos.replace(" ", "%20");
         String cadenaCreditos = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaCreditos;
         final String url = SERVER + RUTA + "consultaGeneral.php" + cadenaCreditos;

@@ -19,6 +19,7 @@ import com.example.fabi.atc.Fragmentos.ContenedorInventarioGeneral;
 import com.example.fabi.atc.Fragmentos.CreditosContenedor;
 import com.example.fabi.atc.Fragmentos.CreditosPendientes;
 import com.example.fabi.atc.Fragmentos.Inicio;
+import com.example.fabi.atc.Fragmentos.PedidosFragment;
 import com.example.fabi.atc.Fragmentos.Reportes;
 
 public class MainActivity extends AppCompatActivity
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity
         Clientes.OnFragmentInteractionListener,
         Contenedor.OnFragmentInteractionListener, ClientesContenedor.OnFragmentInteractionListener,
         ContenedorInventarioGeneral.OnFragmentInteractionListener, Reportes.OnFragmentInteractionListener,
-        CreditosContenedor.OnFragmentInteractionListener{
+        CreditosContenedor.OnFragmentInteractionListener, PedidosFragment.OnFragmentInteractionListener{
     MenuItem itemBuscar;
     MenuItem itemCarrito;
 
@@ -149,6 +150,11 @@ public class MainActivity extends AppCompatActivity
             itemBuscar.setVisible(true);
 
 
+        }else if (id == R.id.Pedidos){
+            miFragment = new PedidosFragment();
+            fragmentSeleccionado = true;
+            itemCarrito.setVisible(false);
+            itemBuscar.setVisible(false);
         }
 
         if (fragmentSeleccionado == true){
