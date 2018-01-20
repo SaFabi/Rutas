@@ -43,6 +43,7 @@ public class RegistrarAbono extends Fragment  implements Basic{
     int ClienteID;
     int CreditoID;
     int SumaAbonos;
+    View vistaAlertEliminar;
 
     //CONTROLES DEL LAYOUT
     EditText edtMonto, edtAbono;
@@ -90,13 +91,12 @@ public class RegistrarAbono extends Fragment  implements Basic{
         View vista = inflater.inflate(R.layout.fragment_registrar_abono, container, false);
 
         //VERIFICAR QUE LOS DATOS SE ESTEN ENVIANDO CORRECTAMENTE
-        Toast.makeText(getContext(),String.valueOf("  "+ordenID)+String.valueOf("  "+MontoTotal)+String.valueOf("  "+ClienteID)+String.valueOf("  "+CreditoID),Toast.LENGTH_SHORT).show();
-
-
-
+        //Toast.makeText(getContext(),String.valueOf("  "+ordenID)+String.valueOf("  "+MontoTotal)+String.valueOf("  "+ClienteID)+String.valueOf("  "+CreditoID),Toast.LENGTH_SHORT).show();
         //CREA LA VISTA PARA MOSTRAR UN ICONO DENTRO DEL ALERT
         LayoutInflater vistaAlert = LayoutInflater.from(getContext());
-        final View vistaAlertEliminar = vistaAlert.inflate(R.layout.alerteliminar,null);
+        if (vistaAlertEliminar == null){
+            vistaAlert.inflate(R.layout.alertactivar,null);
+        }
         final TextView txtmensajeAlert = (TextView)vistaAlertEliminar.findViewById(R.id.txtmensaje);
         final ImageView imageViewAlert = (ImageView)vistaAlertEliminar.findViewById(R.id.eliminar);
         //ASIGANCION DE VALORES A LOS CONTROLES
@@ -188,34 +188,48 @@ public class RegistrarAbono extends Fragment  implements Basic{
                                                 // Toast.makeText(getContext(),String.valueOf(SumaAbonos),Toast.LENGTH_SHORT).show();
                                                 edtMonto.setText("$" + String.valueOf(MontoTotal - SumaAbonos));
                                                 //COMPARA SI EL CREDITO SE LIQUIDO
-                                                if ((MontoTotal-SumaAbonos) == 0){
-                                                    //CONSULTA PATA OBTENER TODOS LOS CREDITOS REGISTRADOS DE UN CLIENTE EN ESPECIFICO
-                                                    RequestQueue queueActualizar = Volley.newRequestQueue(getContext());
-                                                    String consultaActualizar = "update credito set estado=0 where id ="+CreditoID;
-                                                    consultaActualizar = consultaActualizar.replace(" ", "%20");
-                                                    String cadenaActualizar= "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaActualizar;
-                                                    final String urlActualizar = SERVER + RUTA + "consultaGeneral.php" + cadenaActualizar;
-                                                    Log.i("info", urlActualizar);
-                                                    JsonArrayRequest requestActualizar = new JsonArrayRequest(Request.Method.GET, urlActualizar, null, new Response.Listener<JSONArray>() {
-                                                        @Override
-                                                        public void onResponse(JSONArray response) {
+                                                if ((MontoTotal - SumaAbonos) == 0) {
 
 
-                                                        }
-                                                    }, new Response.ErrorListener() {
-                                                        @Override
-                                                        public void onErrorResponse(VolleyError error) {
+                                                //CONSULTA PATA OBTENER TODOS LOS CREDITOS REGISTRADOS DE UN CLIENTE EN ESPECIFICO
+                                                RequestQueue queueActualizar = Volley.newRequestQueue(getContext());
+                                                String consultaActualizar = "update credito set estado=0 where id =" + CreditoID;
+                                                consultaActualizar = consultaActualizar.replace(" ", "%20");
+                                                String cadenaActualizar = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaActualizar;
+                                                final String urlActualizar = SERVER + RUTA + "consultaGeneral.php" + cadenaActualizar;
+                                                Log.i("info", urlActualizar);
+                                                JsonArrayRequest requestActualizar = new JsonArrayRequest(Request.Method.GET, urlActualizar, null, new Response.Listener<JSONArray>() {
+                                                    @Override
+                                                    public void onResponse(JSONArray response) {
+                                                        btnAgregarAbono.setEnabled(false);
+                                                        edtAbono.setEnabled(false);
+                                                        AlertDialog.Builder dialogo = new AlertDialog.Builder(getActivity());
+                                                        dialogo.setTitle("Importante");
+                                                        dialogo.setCancelable(false);
+                                                        txtmensajeAlert.setText("Se ha cumplido el monto de este Credito");
+                                                        imageViewAlert.setImageDrawable(getContext().getDrawable(R.drawable.aceptar));
+                                                        dialogo.setView(vistaAlertEliminar);
+                                                        dialogo.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialogInterface, int i) {
 
-                                                        }
-                                                    });
-                                                    queueActualizar.add(requestActualizar);
+                                                            }
+                                                        });
+                                                        dialogo.show();
+
+
+                                                    }
+                                                }, new Response.ErrorListener() {
+                                                    @Override
+                                                    public void onErrorResponse(VolleyError error) {
+
+                                                    }
+                                                });
+                                                queueActualizar.add(requestActualizar);
+                                            }
 
 
                                                 }
-
-
-
-                                            }
                                         }
                                     }, new Response.ErrorListener() {
                                         @Override
@@ -315,24 +329,6 @@ public class RegistrarAbono extends Fragment  implements Basic{
                         if (SumaAbonos != 0){
                            // Toast.makeText(getContext(),String.valueOf(SumaAbonos),Toast.LENGTH_SHORT).show();
                             edtMonto.setText("$"+String.valueOf(MontoTotal-SumaAbonos));
-                            if ((MontoTotal-SumaAbonos) == 0){
-                                btnAgregarAbono.setEnabled(false);
-                                AlertDialog.Builder dialogo = new AlertDialog.Builder(getActivity());
-                                dialogo.setTitle("Importante");
-                                dialogo.setCancelable(false);
-                                txtmensajeAlert.setText("Se ha cumplido el monto de este Credito");
-                                imageViewAlert.setImageDrawable(getContext().getDrawable(R.drawable.aceptar));
-                                dialogo.setView(vistaAlertEliminar);
-                                dialogo.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                                    }
-                                });
-                                dialogo.show();
-                            }
-
-
 
                         }
                     }

@@ -43,6 +43,7 @@ public class ClientesInactivos extends Fragment implements SwipeRefreshLayout.On
     int clienteID;
     private ProgressDialog progressDialog;
     private SwipeRefreshLayout contenedorClientesI;
+    View vistaAlertActivar;
 
     // TODO: Rename and change types of parameters
     private int mPosition;
@@ -69,17 +70,9 @@ public class ClientesInactivos extends Fragment implements SwipeRefreshLayout.On
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //Crea la vista
        View view = inflater.inflate(R.layout.fragment_clientes_inactivos, container, false);
-
-        //CREA LA VISTA PARA MOSTRAR UN ICONO DENTRO DEL ALERT
-        LayoutInflater vistaAlert = LayoutInflater.from(getContext());
-        final View vistaAlertActivar = vistaAlert.inflate(R.layout.alertactivar,null);
-
-
-
         //Se declaran los elementos con su id
         contenedorClientesI = (SwipeRefreshLayout)view.findViewById(R.id.contenedorClientesInactivos);
         contenedorClientesI.setOnRefreshListener(this);
@@ -144,6 +137,8 @@ public class ClientesInactivos extends Fragment implements SwipeRefreshLayout.On
 
                 AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
                 dialogo1.setTitle("Importante");
+                dialogo1.setIcon(R.drawable.aceptar);
+                dialogo1.setMessage("¿Desea Restaurar este elemento?");
                 dialogo1.setView(vistaAlertActivar);
                 dialogo1.setCancelable(false);
                 dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {

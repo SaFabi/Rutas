@@ -44,6 +44,7 @@ public class ClientesActivos extends Fragment implements SwipeRefreshLayout.OnRe
     SwipeRefreshLayout contenedorClientesA;
 
 
+
     // TODO: Rename and change types of parameters
     private int mPosition;
 
@@ -69,6 +70,7 @@ public class ClientesActivos extends Fragment implements SwipeRefreshLayout.OnRe
         if (getArguments() != null) {
             mPosition = getArguments().getInt(ARG_POSITION);
         }
+
     }
 
     @Override
@@ -77,10 +79,6 @@ public class ClientesActivos extends Fragment implements SwipeRefreshLayout.OnRe
         // Inflate the layout for this fragment
         //Crea la vista
         View view = inflater.inflate(R.layout.fragment_clientes_activos, container, false);
-
-        //CREA LA VISTA PARA MOSTRAR UN ICONO DENTRO DEL ALERT
-       LayoutInflater vistaAlert = LayoutInflater.from(getContext());
-        final View vistaAlertEliminar = vistaAlert.inflate(R.layout.alerteliminar,null);
 
         //Se declaran los elementos con su id
         listView = (ListView) view.findViewById(R.id.clientesActivos);
@@ -138,8 +136,9 @@ public class ClientesActivos extends Fragment implements SwipeRefreshLayout.OnRe
 
 
                 AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
-                dialogo1.setView(vistaAlertEliminar);
+                dialogo1.setIcon(R.drawable.cancelar);
                 dialogo1.setTitle("Importante");
+                dialogo1.setMessage("¿Desea eliminar este elemento?");
                 dialogo1.setCancelable(false);
                 dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
                     //
