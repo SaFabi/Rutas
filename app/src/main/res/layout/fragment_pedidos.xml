@@ -5,11 +5,10 @@
     android:background="@color/colorBlanco"
     tools:context="com.example.fabi.atc.Fragmentos.PedidosFragment">
 
-    <TextView
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="PEDIDOS" />
+   <ListView
+       android:id="@+id/listaPedidos"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"/>
 
 
 </RelativeLayout>

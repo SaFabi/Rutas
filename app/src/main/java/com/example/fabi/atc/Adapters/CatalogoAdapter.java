@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * Created by Fabi on 18/12/2017.
  */
+//ADAPTER PARA ACOMODAR Y ASIGNAR TITULOS A LOS TABS
 
 public class CatalogoAdapter extends FragmentStatePagerAdapter {
     //Adaptador para fragmentos con TABS

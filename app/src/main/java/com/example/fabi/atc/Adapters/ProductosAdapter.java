@@ -35,7 +35,7 @@ import java.util.ArrayList;
 public class ProductosAdapter extends BaseAdapter {
     private JSONArray array;
     private Context context;
-    TextView titulo, subtitulo,precio;
+    TextView titulo, subtitulo,precio, txtcantidad;
     rutasLib rutasObj;
     Button carrito;
     //ImageView imageView;
@@ -76,35 +76,11 @@ public class ProductosAdapter extends BaseAdapter {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         View view = convertView;
         if (convertView == null){
-            view = inflater.inflate(R.layout.card,null);
+            view = inflater.inflate(R.layout.cardinventariogral,null);
         }
-        titulo=(TextView)view.findViewById(R.id.titulocard);
-        subtitulo = (TextView)view.findViewById(R.id.subtitulocard);
-        precio = (TextView)view.findViewById(R.id.precio);
-        carrito = (Button)view.findViewById(R.id.btnCarrito);
-        carrito.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-                final EditText textoBusqueda = new EditText(context);
-                textoBusqueda.setInputType(1);
-                builder.setTitle("Cantidad");   // Título
-                builder.setView(textoBusqueda);
-                builder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        Toast.makeText(context,"Se agregaron al carrito",Toast.LENGTH_SHORT).show();
-                       // Log.i("Algo", textoBusqueda.getText().toString());
-                    }
-                });
-                builder .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialogo1, int id) {
-                    }
-                });
-                builder.show();
-
-            }
-        });
+        titulo=(TextView)view.findViewById(R.id.marca);
+        subtitulo = (TextView)view.findViewById(R.id.modelo);
+        precio = (TextView)view.findViewById(R.id.precioGeneral);
       //  imageView = (ImageView)view.findViewById(R.id.imagencard);
         String titulo2, subtitulo2, imagen;
         try

@@ -19,9 +19,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.fabi.atc.Adapters.InventarioPersonalAdapter;
 import com.example.fabi.atc.Adapters.ProductosAdapter;
 import com.example.fabi.atc.Clases.Basic;
 import com.example.fabi.atc.Clases.Modelo;
+import com.example.fabi.atc.Clases.ModeloInventarioPersonal;
 import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
 
@@ -80,7 +82,7 @@ public class Clientes extends Fragment implements Basic, Response.Listener<JSONA
 
         //Inicia la peticion
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String consulta = "select ta.nombre, ma.nombre,a.precio " +
+        String consulta = "select ca.id,ta.nombre, ma.nombre,a.precio,ca.valor " +
                 "from marca ma, modelo mo, articulo a, punto_venta pv, cantidad ca, tipo_articulo ta " +
                 "where a.modelo_id = mo.id " +
                 "and mo.marca_id = ma.id " +
@@ -115,7 +117,7 @@ public class Clientes extends Fragment implements Basic, Response.Listener<JSONA
     public void onErrorResponse(VolleyError error) {
         progressDialog.hide();
         Toast.makeText(getContext(),"Error en el webservice", Toast.LENGTH_SHORT).show();
-        //Toast.makeText(getContext(), "Accesorios  "+url, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Accesorios  "+url, Toast.LENGTH_SHORT).show();
 
     }
 
@@ -123,7 +125,7 @@ public class Clientes extends Fragment implements Basic, Response.Listener<JSONA
     public void onResponse(JSONArray response) {
         progressDialog.hide();
         //Toast.makeText(getContext(), "Accesorios  "+url, Toast.LENGTH_SHORT).show();
-        ProductosAdapter adapter = new ProductosAdapter(response,getContext());
+        InventarioPersonalAdapter adapter = new InventarioPersonalAdapter(getContext(), ModeloInventarioPersonal.sacarListaproductos(response));
         listView.setAdapter(adapter);
 
     }
