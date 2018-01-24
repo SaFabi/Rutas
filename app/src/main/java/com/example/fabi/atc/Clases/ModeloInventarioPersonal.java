@@ -12,7 +12,9 @@ import java.util.List;
  */
 
 public class ModeloInventarioPersonal {
+    public static List<ModeloInventarioPersonal>lista;
     int CantidadID;
+
     String marca, modelo, precio, cantidad;
 
     public ModeloInventarioPersonal(int CantidadID,String marca, String modelo, String precio, String cantidad) {
@@ -66,7 +68,7 @@ public class ModeloInventarioPersonal {
 
     public static List<ModeloInventarioPersonal> sacarListaproductos(JSONArray array)
     {
-        List<ModeloInventarioPersonal> lista = new ArrayList<>();
+       lista = new ArrayList<>();
         try
         {
             for (int i = 0; i < array.length(); i++)
@@ -82,6 +84,10 @@ public class ModeloInventarioPersonal {
             lista = null;
         }
 
+        return lista;
+    }
+
+    public List<ModeloInventarioPersonal>regresarlista(){
         return lista;
     }
 }

@@ -11,6 +11,7 @@ import com.example.fabi.atc.Clases.Basic;
 import com.example.fabi.atc.Clases.ModeloInventarioPersonal;
 import com.example.fabi.atc.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,4 +60,12 @@ public class InventarioPersonalAdapter extends BaseAdapter {
         txtCantidad.setText("Cantidad disponible: "+getItem(i).getCantidad());
         return vista;
     }
+
+    public void setFilter(List<ModeloInventarioPersonal> lista){
+        this.elementos = new ArrayList<>();
+        this.elementos.addAll(lista);
+        notifyDataSetChanged();
+
+    }
 }
+

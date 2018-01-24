@@ -5,13 +5,16 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -33,13 +36,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class Catalogo extends Fragment  implements Basic, Response.Listener<JSONArray>, Response.ErrorListener{
+public class Catalogo extends Fragment  implements SearchView.OnQueryTextListener,Basic, Response.Listener<JSONArray>, Response.ErrorListener{
 
     //Fragmento para los telefonos
     private static final String ARG_POSITION = "POSITION";
     String url;
     ListView listView;
+    List<ModeloInventarioPersonal>lista;
+    InventarioPersonalAdapter inventarioPersonalAdapter;
     private ProgressDialog progressDialog;
 
     // TODO: Rename and change types of parameters
@@ -118,32 +124,26 @@ public class Catalogo extends Fragment  implements Basic, Response.Listener<JSON
         }
     }
 
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_buscador,menu);
+        MenuItem buscador = menu.findItem(R.id.buscador2);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(buscador);
+        searchView.setOnQueryTextListener(this);
+       MenuItemCompat.setOnActionExpandListener(buscador, new MenuItemCompat.OnActionExpandListener() {
+           @Override
+           public boolean onMenuItemActionExpand(MenuItem item) {
+               return true;
+           }
+
+           @Override
+           public boolean onMenuItemActionCollapse(MenuItem item) {
+               inventarioPersonalAdapter.setFilter(lista);
+               return true;
+           }
+       });
+
     }
-
-    /*
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-    */
-
     @Override
     public void onErrorResponse(VolleyError error) {
         progressDialog.hide();
@@ -154,10 +154,45 @@ public class Catalogo extends Fragment  implements Basic, Response.Listener<JSON
     @Override
     public void onResponse(JSONArray response) {
         progressDialog.hide();
+        lista = ModeloInventarioPersonal.sacarListaproductos(response);
        // Toast.makeText(getContext(), "Telefonos    "+url, Toast.LENGTH_SHORT).show();
-        InventarioPersonalAdapter adapter = new InventarioPersonalAdapter(getContext(),ModeloInventarioPersonal.sacarListaproductos(response));
-        listView.setAdapter(adapter);
+        inventarioPersonalAdapter = new InventarioPersonalAdapter(getContext(),lista);
+        listView.setAdapter(inventarioPersonalAdapter);
 
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        try {
+            List<ModeloInventarioPersonal>listafiltrada =filter(lista,s);
+            inventarioPersonalAdapter.setFilter(listafiltrada);
+        }catch (Exception e){
+            e.printStackTrace();
+
+        }
+        return false;
+    }
+    private List<ModeloInventarioPersonal>filter(List<ModeloInventarioPersonal>notas,String texto){
+        List<ModeloInventarioPersonal>listaFiltrada= new ArrayList<>();
+        try {
+            texto=texto.toLowerCase();
+            for (ModeloInventarioPersonal nota:notas){
+                String nota2 = nota.getMarca().toLowerCase();
+                //Para saber si el texto se encuentra dentro de la nota
+                if (nota2.contains(texto)){
+                    listaFiltrada.add(nota);
+                }
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return listaFiltrada;
     }
 
     public interface OnFragmentInteractionListener {
