@@ -1,6 +1,5 @@
 package com.example.fabi.atc.Adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,14 +14,10 @@ import android.widget.Toast;
 
 import com.example.fabi.atc.Clases.ModeloCreditos;
 import com.example.fabi.atc.Fragmentos.RegistrarAbono;
-import com.example.fabi.atc.Fragmentos.detallesCreditosPendientes;
 import com.example.fabi.atc.R;
 
 import java.util.List;
 
-/**
- * Created by Fabi on 16/01/2018.
- */
 
 public class CreditosAdapter extends BaseAdapter {
     Context context;
@@ -54,7 +49,7 @@ public class CreditosAdapter extends BaseAdapter {
         return elementos.get(i).getOrdenID();
     }
 
-    public long getTotal(int i) {
+    public double getTotal(int i) {
         return elementos.get(i).getMontoTotal();
     }
     public long getClienteID (int i){

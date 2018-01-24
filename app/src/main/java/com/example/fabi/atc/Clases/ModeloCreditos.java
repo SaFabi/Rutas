@@ -7,20 +7,17 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Fabi on 16/01/2018.
- */
 
 public class ModeloCreditos {
     int ordenID;
-    int montoTotal;
+    double montoTotal;
     int CreditoID;
     String folio;
     String Fecha;
     String claveCliente;
     int ClienteID;
 
-    public ModeloCreditos(int ordenID ,String folio, String fecha, String claveCliente,int montoTotal, int ClienteID,int CreditoID) {
+    public ModeloCreditos(int ordenID ,String folio, String fecha, String claveCliente,double montoTotal, int ClienteID,int CreditoID) {
         this.montoTotal = montoTotal;
         this.folio = folio;
         Fecha = fecha;
@@ -30,11 +27,11 @@ public class ModeloCreditos {
         this.CreditoID = CreditoID;
     }
 
-    public int getMontoTotal() {
+    public double getMontoTotal() {
         return montoTotal;
     }
 
-    public void setMontoTotal(int montoTotal) {
+    public void setMontoTotal(double montoTotal) {
         this.montoTotal = montoTotal;
     }
 
@@ -96,7 +93,7 @@ public class ModeloCreditos {
             {
                 JSONObject jsonObject = array.getJSONObject(i);
                 ModeloCreditos cliente = new ModeloCreditos(Integer.parseInt(jsonObject.getString("0")), jsonObject.getString("1"), jsonObject.getString("2"),
-                        jsonObject.getString("3"), (Integer.parseInt(jsonObject.getString("4"))),jsonObject.getInt("5"), (Integer.parseInt(jsonObject.getString("6"))));
+                        jsonObject.getString("3"), (Double.parseDouble(jsonObject.getString("4"))),jsonObject.getInt("5"), (Integer.parseInt(jsonObject.getString("6"))));
                 lista.add(cliente);
             }
         }

@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -64,6 +66,7 @@ public class Catalogo extends Fragment  implements Basic, Response.Listener<JSON
         if (getArguments() != null) {
             mPosition = getArguments().getInt(ARG_POSITION);
         }
+
     }
 
     @Override
@@ -71,8 +74,9 @@ public class Catalogo extends Fragment  implements Basic, Response.Listener<JSON
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_catalogo, container, false);
 
+        View view = inflater.inflate(R.layout.fragment_catalogo, container, false);
+        setHasOptionsMenu(true);
         listView= (ListView)view.findViewById(R.id.lvCatalogo);
 
         progressDialog = new ProgressDialog(getContext());
@@ -113,6 +117,13 @@ public class Catalogo extends Fragment  implements Basic, Response.Listener<JSON
             mListener.onFragmentInteraction(uri);
         }
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_buscador,menu);
+    }
+
     /*
 
     @Override

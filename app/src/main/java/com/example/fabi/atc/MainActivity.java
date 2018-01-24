@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -11,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.example.fabi.atc.Fragmentos.CarritoFragment;
 import com.example.fabi.atc.Fragmentos.Catalogo;
 import com.example.fabi.atc.Fragmentos.Clientes;
 import com.example.fabi.atc.Fragmentos.ClientesContenedor;
@@ -65,33 +68,25 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        getMenuInflater().inflate(R.menu.menu_buscador,menu);
-        itemBuscar =menu.findItem(R.id.buscador2);
-        itemCarrito = menu.findItem(R.id.carrito);
+        // getMenuInflater().inflate(R.menu.menu_buscador,menu);
+        //itemBuscar =menu.findItem(R.id.buscador2);
+        //itemCarrito = menu.findItem(R.id.carrito);
 
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_settings:
-                return true;
-            case R.id.buscador2:
-                return true;
-            case R.id.carrito:
-                return true;
-        }
-
-
-        /*
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.carrito) {
+            CarritoFragment carritoFragment = new CarritoFragment();
+            FragmentManager manager = getSupportFragmentManager();
+            manager.beginTransaction().replace(R.id.content_main, carritoFragment, carritoFragment.getTag())
+                    .addToBackStack("Cart").commit();
         }
-*/
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -106,55 +101,55 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.Inicio){
             miFragment = new Inicio();
             fragmentSeleccionado = true;
-            itemBuscar.setVisible(false);
-            itemCarrito.setVisible(false);
+            //itemBuscar.setVisible(false);
+            //itemCarrito.setVisible(false);
         } else if (id == R.id.Catalogo) {
             miFragment = new Contenedor();
             fragmentSeleccionado=true;
-            itemBuscar.setVisible(true);
-            itemCarrito.setVisible(true);
+            //itemBuscar.setVisible(true);
+            //itemCarrito.setVisible(true);
         } else if (id == R.id.Clientes) {
             miFragment = new ClientesContenedor();
             fragmentSeleccionado = true;
-            itemCarrito.setVisible(false);
-            itemBuscar.setVisible(true);
+            //itemCarrito.setVisible(false);
+            //itemBuscar.setVisible(true);
 
         } else if (id == R.id.Creditos) {
-            itemCarrito.setVisible(false);
-            itemBuscar.setVisible(false);
+            //itemCarrito.setVisible(false);
+            //itemBuscar.setVisible(false);
             miFragment = new CreditosContenedor();
             fragmentSeleccionado = true;
 
 
         } else if (id == R.id.Reportes) {
-            itemCarrito.setVisible(false);
-            itemBuscar.setVisible(true);
+            //itemCarrito.setVisible(false);
+            //itemBuscar.setVisible(true);
             miFragment = new Reportes();
             fragmentSeleccionado = true;
 
 
         } else if (id == R.id.Ayuda) {
-            itemCarrito.setVisible(false);
-            itemBuscar.setVisible(false);
+            //itemCarrito.setVisible(false);
+            //itemBuscar.setVisible(false);
 
 
         } else if (id == R.id.Contacto) {
-            itemCarrito.setVisible(false);
-            itemBuscar.setVisible(false);
+           // itemCarrito.setVisible(false);
+            //itemBuscar.setVisible(false);
 
 
         }else if (id == R.id.InventarioG) {
             miFragment = new ContenedorInventarioGeneral();
             fragmentSeleccionado = true;
-            itemCarrito.setVisible(false);
-            itemBuscar.setVisible(true);
+            //itemCarrito.setVisible(false);
+            //itemBuscar.setVisible(true);
 
 
         }else if (id == R.id.Pedidos){
             miFragment = new PedidosFragment();
             fragmentSeleccionado = true;
-            itemCarrito.setVisible(false);
-            itemBuscar.setVisible(false);
+//            itemCarrito.setVisible(false);
+  //          itemBuscar.setVisible(false);
         }
 
         if (fragmentSeleccionado == true){

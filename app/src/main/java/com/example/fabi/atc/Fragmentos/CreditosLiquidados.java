@@ -22,10 +22,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.fabi.atc.Adapters.AdapterClientes;
+import com.example.fabi.atc.Adapters.CreditosLiquidadosAdapter;
 import com.example.fabi.atc.Adapters.spinnerAdapter;
 import com.example.fabi.atc.Clases.Basic;
 import com.example.fabi.atc.Clases.Modelo;
 import com.example.fabi.atc.Clases.ModeloClientes;
+import com.example.fabi.atc.Clases.ModeloCreditos;
 import com.example.fabi.atc.R;
 
 import org.json.JSONArray;
@@ -44,7 +46,7 @@ public class CreditosLiquidados extends Fragment implements Basic {
 
     //ADAPTERS
     spinnerAdapter spinnerAdapter;
-    AdapterClientes adapterClientes;
+    CreditosLiquidadosAdapter adapter;
 
     //VARIABLES
     int claveCliente;
@@ -82,14 +84,6 @@ public class CreditosLiquidados extends Fragment implements Basic {
         spinnerClaves = (Spinner)vista.findViewById(R.id.spinnerClavesCreditosLiquidados);
         listView = (ListView)vista.findViewById(R.id.CreditoClientesCreditosLiquidados);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ordenID = (int)adapterClientes.getItemId(i);
-                Toast.makeText(getContext(),String.valueOf(ordenID),Toast.LENGTH_SHORT).show();
-            }
-        });
-
 
         spinnerClaves.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -104,7 +98,7 @@ public class CreditosLiquidados extends Fragment implements Basic {
 
                 //CONSULTA PATA OBTENER TODOS LOS CREDITOS REGISTRADOS DE UN CLIENTE EN ESPECIFICO
                 RequestQueue queueCreditos = Volley.newRequestQueue(getContext());
-                String consultaCreditos = "select distinct ord.id,cre.total,ord.folio,DATE(ord.fecha),CONCAT(pv.tipo,'-',cc.numero)"+
+                String consultaCreditos = "select distinct ord.id,ord.folio,DATE(ord.fecha),CONCAT(pv.tipo,'-',cc.numero),cre.total, cli.id,cre.id"+
                         " from orden ord,credito cre, punto_venta pv, cliente cli, clave_cliente cc"+
                         " where cre.orden_id = ord.id"+
                         " and ord.puntoVenta_id = pv.id"+
@@ -123,8 +117,8 @@ public class CreditosLiquidados extends Fragment implements Basic {
                     @Override
                     public void onResponse(JSONArray response) {
                         progressDialog.hide();
-                        adapterClientes= new AdapterClientes(getContext(), ModeloClientes.sacarListaClientes(response));
-                        listView.setAdapter(adapterClientes);
+                        adapter= new CreditosLiquidadosAdapter(getContext(), ModeloCreditos.sacarListaClientes(response));
+                        listView.setAdapter(adapter);
 
                     }
                 }, new Response.ErrorListener() {
