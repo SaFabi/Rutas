@@ -7,12 +7,17 @@ import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -36,7 +41,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Inicio extends Fragment  implements Basic, Response.Listener<JSONArray>, Response.ErrorListener {
+public class Inicio extends Fragment  implements SearchView.OnQueryTextListener, Basic, Response.Listener<JSONArray>, Response.ErrorListener {
 
     //Fragmento para los chips
 
@@ -46,6 +51,8 @@ public class Inicio extends Fragment  implements Basic, Response.Listener<JSONAr
     ListView listView;
     rutasLib rutasObj;
     private ProgressDialog progressDialog;
+    List<ModeloInventarioPersonal> lista;
+    InventarioPersonalAdapter inventarioPersonalAdapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -74,7 +81,7 @@ public class Inicio extends Fragment  implements Basic, Response.Listener<JSONAr
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_inicio, container, false);
-
+        setHasOptionsMenu(true);
         listView= (ListView)view.findViewById(R.id.lvInicio);
 
         progressDialog = new ProgressDialog(getContext());
@@ -109,41 +116,33 @@ public class Inicio extends Fragment  implements Basic, Response.Listener<JSONAr
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
     }
-/*
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+    //Infla el menu para el carrito y el buscador
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_buscador,menu);
+        MenuItem buscador = menu.findItem(R.id.buscador2);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(buscador);
+        searchView.setOnQueryTextListener(this);
+        MenuItemCompat.setOnActionExpandListener(buscador, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                inventarioPersonalAdapter.setFilter(lista);
+                return true;
+            }
+        });
 
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction
-     * in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
 
     @Override
     public void onErrorResponse(VolleyError error) {
@@ -156,10 +155,45 @@ public class Inicio extends Fragment  implements Basic, Response.Listener<JSONAr
     @Override
     public void onResponse(JSONArray response) {
         progressDialog.hide();
+        lista = ModeloInventarioPersonal.sacarListaproductos(response);
        // Toast.makeText(getContext(),"Chips   "+ url, Toast.LENGTH_SHORT).show();
-        InventarioPersonalAdapter adapter = new InventarioPersonalAdapter(getContext(), ModeloInventarioPersonal.sacarListaproductos(response));
-        listView.setAdapter(adapter);
+        inventarioPersonalAdapter = new InventarioPersonalAdapter(getContext(),lista);
+        listView.setAdapter(inventarioPersonalAdapter);
 
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        try {
+            List<ModeloInventarioPersonal>listafiltrada =filter(lista,s);
+            inventarioPersonalAdapter.setFilter(listafiltrada);
+        }catch (Exception e){
+            e.printStackTrace();
+
+        }
+        return false;
+    }
+    private List<ModeloInventarioPersonal>filter(List<ModeloInventarioPersonal>notas,String texto){
+        List<ModeloInventarioPersonal>listaFiltrada= new ArrayList<>();
+        try {
+            texto=texto.toLowerCase();
+            for (ModeloInventarioPersonal nota:notas){
+                String nota2 = nota.getMarca().toLowerCase();
+                //Para saber si el texto se encuentra dentro de la nota
+                if (nota2.contains(texto)){
+                    listaFiltrada.add(nota);
+                }
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return listaFiltrada;
     }
 
 

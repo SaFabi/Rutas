@@ -1,7 +1,6 @@
 package com.example.fabi.atc.Fragmentos;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -123,7 +122,7 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
             mListener.onFragmentInteraction(uri);
         }
     }
-
+//Infla el menu para el carrito y el buscador
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_buscador,menu);
@@ -160,7 +159,7 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
         listView.setAdapter(inventarioPersonalAdapter);
 
     }
-
+//PARA REALIZAR LAS BUSQUEDAS
     @Override
     public boolean onQueryTextSubmit(String s) {
         return false;

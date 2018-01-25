@@ -12,7 +12,6 @@ import java.util.List;
  */
 
 public class ModeloInventarioPersonal {
-    public static List<ModeloInventarioPersonal>lista;
     int CantidadID;
 
     String marca, modelo, precio, cantidad;
@@ -68,7 +67,7 @@ public class ModeloInventarioPersonal {
 
     public static List<ModeloInventarioPersonal> sacarListaproductos(JSONArray array)
     {
-       lista = new ArrayList<>();
+        List<ModeloInventarioPersonal>  lista = new ArrayList<>();
         try
         {
             for (int i = 0; i < array.length(); i++)
@@ -87,7 +86,4 @@ public class ModeloInventarioPersonal {
         return lista;
     }
 
-    public List<ModeloInventarioPersonal>regresarlista(){
-        return lista;
-    }
 }
