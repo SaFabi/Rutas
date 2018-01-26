@@ -8,8 +8,10 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.fabi.atc.Clases.ModeloClientes;
+import com.example.fabi.atc.Clases.ModeloInventarioPersonal;
 import com.example.fabi.atc.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -62,5 +64,11 @@ public class AdapterClientes extends BaseAdapter {
         txtClave.setText(getItem(i).getClaveR());
 
         return vista;
+    }
+    public void setFilter(List<ModeloClientes> lista){
+        this.elementos = new ArrayList<>();
+        this.elementos.addAll(lista);
+        notifyDataSetChanged();
+
     }
 }

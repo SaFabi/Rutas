@@ -8,13 +8,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -27,18 +32,25 @@ import com.example.fabi.atc.Adapters.AdapterClientes;
 import com.example.fabi.atc.Adapters.ClientesAdapter;
 import com.example.fabi.atc.Clases.Basic;
 import com.example.fabi.atc.Clases.ModeloClientes;
+import com.example.fabi.atc.Clases.ModeloCreditos;
+import com.example.fabi.atc.Clases.ModeloInventarioPersonal;
 import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
 
 import org.json.JSONArray;
 
-public class ClientesActivos extends Fragment implements SwipeRefreshLayout.OnRefreshListener,Basic{
+import java.util.ArrayList;
+import java.util.List;
+
+public class ClientesActivos extends Fragment implements SearchView.OnQueryTextListener,SwipeRefreshLayout.OnRefreshListener,Basic{
 
     private static final String ARG_POSITION = "param1";
     String url;
     ListView listView;
     rutasLib rutasObj;
     int clienteID;
+    List<ModeloClientes> lista;
+
     private ProgressDialog progressDialog;
     AdapterClientes adapter;
     SwipeRefreshLayout contenedorClientesA;
@@ -79,6 +91,7 @@ public class ClientesActivos extends Fragment implements SwipeRefreshLayout.OnRe
         // Inflate the layout for this fragment
         //Crea la vista
         View view = inflater.inflate(R.layout.fragment_clientes_activos, container, false);
+        setHasOptionsMenu(true);
 
         //Se declaran los elementos con su id
         listView = (ListView) view.findViewById(R.id.clientesActivos);
@@ -108,8 +121,9 @@ public class ClientesActivos extends Fragment implements SwipeRefreshLayout.OnRe
             @Override
             public void onResponse(JSONArray response) {
                 progressDialog.hide();
+                lista = ModeloClientes.sacarListaClientes(response);
                 //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
-                adapter = new AdapterClientes(getContext(),ModeloClientes.sacarListaClientes(response));
+                adapter = new AdapterClientes(getContext(),lista);
                 listView.setAdapter(adapter);
 
             }
@@ -180,8 +194,9 @@ public class ClientesActivos extends Fragment implements SwipeRefreshLayout.OnRe
                                     @Override
                                     public void onResponse(JSONArray response) {
                                         progressDialog.hide();
+                                        lista = ModeloClientes.sacarListaClientes(response);
                                         //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
-                                        adapter = new AdapterClientes(getContext(),ModeloClientes.sacarListaClientes(response));
+                                        adapter = new AdapterClientes(getContext(),lista);
                                         listView.setAdapter(adapter);
 
                                     }
@@ -245,6 +260,29 @@ public class ClientesActivos extends Fragment implements SwipeRefreshLayout.OnRe
             mListener.onFragmentInteraction(uri);
         }
     }
+    //Infla el menu para el carrito y el buscador
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_buscador,menu);
+        MenuItem carrito = menu.findItem(R.id.carrito);
+        carrito.setVisible(false);
+        MenuItem buscador = menu.findItem(R.id.buscador2);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(buscador);
+        searchView.setOnQueryTextListener(this);
+        MenuItemCompat.setOnActionExpandListener(buscador, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+               adapter.setFilter(lista);
+                return true;
+            }
+        });
+
+    }
 
     @Override
     public void onRefresh() {
@@ -265,8 +303,9 @@ public class ClientesActivos extends Fragment implements SwipeRefreshLayout.OnRe
             @Override
             public void onResponse(JSONArray response) {
                 progressDialog.hide();
+                lista = ModeloClientes.sacarListaClientes(response);
                 //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
-                adapter = new AdapterClientes(getContext(),ModeloClientes.sacarListaClientes(response));
+                adapter = new AdapterClientes(getContext(),lista);
                 listView.setAdapter(adapter);
                 contenedorClientesA.setRefreshing(false);
 
@@ -283,6 +322,41 @@ public class ClientesActivos extends Fragment implements SwipeRefreshLayout.OnRe
 
         //Agrega y ejecuta la cola
         queue.add(request);
+    }
+
+    //PARA REALIZAR LAS BUSQUEDAS
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        try {
+            List<ModeloClientes>listafiltrada =filter(lista,s);
+            adapter.setFilter(listafiltrada);
+        }catch (Exception e){
+            e.printStackTrace();
+
+        }
+        return false;
+    }
+    private List<ModeloClientes>filter(List<ModeloClientes>notas,String texto){
+        List<ModeloClientes>listaFiltrada= new ArrayList<>();
+        try {
+            texto=texto.toLowerCase();
+            for (ModeloClientes nota:notas){
+                String nota2 = nota.getNombre().toLowerCase();
+                //Para saber si el texto se encuentra dentro de la nota
+                if (nota2.contains(texto)){
+                    listaFiltrada.add(nota);
+                }
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return listaFiltrada;
     }
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
