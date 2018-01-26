@@ -310,7 +310,7 @@ public class ClientesInactivos extends Fragment implements SearchView.OnQueryTex
 
     }
 
-    //PARA REALIZAR LAS BUSQUEDAS
+    //PARA REALIZAR LAS BUSQUEDAS-
     @Override
     public boolean onQueryTextSubmit(String s) {
         return false;
