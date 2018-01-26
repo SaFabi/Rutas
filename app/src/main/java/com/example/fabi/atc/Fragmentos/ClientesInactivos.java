@@ -7,15 +7,20 @@ import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -34,13 +39,17 @@ import com.example.fabi.atc.R;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class ClientesInactivos extends Fragment implements SwipeRefreshLayout.OnRefreshListener,Basic{
+import java.util.ArrayList;
+import java.util.List;
+
+public class ClientesInactivos extends Fragment implements SearchView.OnQueryTextListener,SwipeRefreshLayout.OnRefreshListener,Basic{
 
     private static final String ARG_POSITION = "POSITION";
     String url;
     ListView listView;
     AdapterClientes adapter;
     int clienteID;
+    List<ModeloClientes> lista;
     private ProgressDialog progressDialog;
     private SwipeRefreshLayout contenedorClientesI;
     View vistaAlertActivar;
@@ -73,11 +82,11 @@ public class ClientesInactivos extends Fragment implements SwipeRefreshLayout.On
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //Crea la vista
        View view = inflater.inflate(R.layout.fragment_clientes_inactivos, container, false);
+        setHasOptionsMenu(true);
         //Se declaran los elementos con su id
         contenedorClientesI = (SwipeRefreshLayout)view.findViewById(R.id.contenedorClientesInactivos);
         contenedorClientesI.setOnRefreshListener(this);
         listView = (ListView)view.findViewById(R.id.clientesInactivos);
-
         //PARA LENAR EL LISTVIEW CON LOS CLIENTES QUE ESTAN DESHABILITADOS
         //Se declara el progress dialog para ejecutar despues la consulta
         progressDialog = new ProgressDialog(getContext());
@@ -103,8 +112,9 @@ public class ClientesInactivos extends Fragment implements SwipeRefreshLayout.On
             @Override
             public void onResponse(JSONArray response) {
                 progressDialog.hide();
+                lista=ModeloClientes.sacarListaClientes(response);
                 // Toast.makeText(getContext(), "Telefonos    "+url, Toast.LENGTH_SHORT).show();
-                adapter= new AdapterClientes(getContext(),ModeloClientes.sacarListaClientes(response));
+                adapter= new AdapterClientes(getContext(),lista);
                 listView.setAdapter(adapter);
                 contenedorClientesI.setRefreshing(false);
 
@@ -181,8 +191,9 @@ public class ClientesInactivos extends Fragment implements SwipeRefreshLayout.On
                                     @Override
                                     public void onResponse(JSONArray response) {
                                         progressDialog.hide();
+                                        lista = ModeloClientes.sacarListaClientes(response);
                                         //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
-                                        adapter = new AdapterClientes(getContext(),ModeloClientes.sacarListaClientes(response));
+                                        adapter = new AdapterClientes(getContext(),lista);
                                         listView.setAdapter(adapter);
 
                                     }
@@ -236,6 +247,30 @@ public class ClientesInactivos extends Fragment implements SwipeRefreshLayout.On
             mListener.onFragmentInteraction(uri);
         }
     }
+    //Infla el menu para el carrito y el buscador
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_buscador,menu);
+        MenuItem carrito = menu.findItem(R.id.carrito);
+        carrito.setVisible(false);
+        MenuItem buscador = menu.findItem(R.id.buscador2);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(buscador);
+        searchView.setOnQueryTextListener(this);
+        MenuItemCompat.setOnActionExpandListener(buscador, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                adapter.setFilter(lista);
+                return true;
+            }
+        });
+
+    }
+
 
 
 
@@ -257,7 +292,8 @@ public class ClientesInactivos extends Fragment implements SwipeRefreshLayout.On
             @Override
             public void onResponse(JSONArray response) {
                 // Toast.makeText(getContext(), "Telefonos    "+url, Toast.LENGTH_SHORT).show();
-                adapter= new AdapterClientes(getContext(),ModeloClientes.sacarListaClientes(response));
+                lista = ModeloClientes.sacarListaClientes(response);
+                adapter= new AdapterClientes(getContext(),lista);
                 listView.setAdapter(adapter);
                 contenedorClientesI.setRefreshing(false);
             }
@@ -274,6 +310,40 @@ public class ClientesInactivos extends Fragment implements SwipeRefreshLayout.On
 
     }
 
+    //PARA REALIZAR LAS BUSQUEDAS
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        try {
+            List<ModeloClientes>listafiltrada =filter(lista,s);
+            adapter.setFilter(listafiltrada);
+        }catch (Exception e){
+            e.printStackTrace();
+
+        }
+        return false;
+    }
+    private List<ModeloClientes>filter(List<ModeloClientes>notas,String texto){
+        List<ModeloClientes>listaFiltrada= new ArrayList<>();
+        try {
+            texto=texto.toLowerCase();
+            for (ModeloClientes nota:notas){
+                String nota2 = nota.getNombre().toLowerCase();
+                //Para saber si el texto se encuentra dentro de la nota
+                if (nota2.contains(texto)){
+                    listaFiltrada.add(nota);
+                }
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return listaFiltrada;
+    }
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

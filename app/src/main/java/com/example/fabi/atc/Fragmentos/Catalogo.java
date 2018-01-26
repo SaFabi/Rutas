@@ -68,6 +68,7 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mPosition = getArguments().getInt(ARG_POSITION);
         }
