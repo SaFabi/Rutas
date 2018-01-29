@@ -1,17 +1,20 @@
 package com.example.fabi.atc.Fragmentos;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -20,23 +23,27 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.fabi.atc.Adapters.ProductosAdapter;
 import com.example.fabi.atc.Clases.Basic;
-import com.example.fabi.atc.Clases.rutasLib;
+import com.example.fabi.atc.Clases.ModeloInventarioGeneral;
+import com.example.fabi.atc.Clases.ModeloInventarioPersonal;
 import com.example.fabi.atc.R;
-
 import org.json.JSONArray;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public class AccesoriosGeneral extends Fragment  implements Basic, Response.Listener<JSONArray>, Response.ErrorListener {
+
+public class AccesoriosGeneral extends Fragment  implements SearchView.OnQueryTextListener,Basic, Response.Listener<JSONArray>, Response.ErrorListener {
     private static final String ARG_POSITION = "POSITION";
     private int mPosition;
     String url;
     ListView listView;
+    ProductosAdapter adapter;
+    List<ModeloInventarioGeneral>lista;
     private ProgressDialog progressDialog;
 
     private OnFragmentInteractionListener mListener;
 
     public AccesoriosGeneral() {
-        // Required empty public constructor
     }
 
 
@@ -63,7 +70,7 @@ public class AccesoriosGeneral extends Fragment  implements Basic, Response.List
         View view =  inflater.inflate(R.layout.fragment_accesorios_general, container, false);
 
         listView= (ListView)view.findViewById(R.id.accesoriosGeneral);
-
+        setHasOptionsMenu(true);
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
         progressDialog.setMessage("Un momento...");
@@ -97,34 +104,33 @@ public class AccesoriosGeneral extends Fragment  implements Basic, Response.List
         queue.add(request);
         return view;
     }
-    /*
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-    */
-
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
-
+    //Infla el menu para el carrito y el buscador
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_buscador,menu);
+        MenuItem carrito = menu.findItem(R.id.carrito);
+        carrito.setVisible(false);
+        MenuItem buscador = menu.findItem(R.id.buscador2);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(buscador);
+        searchView.setOnQueryTextListener(this);
+        MenuItemCompat.setOnActionExpandListener(buscador, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                adapter.setFilter(lista);
+                return true;
+            }
+        });
+    }
     @Override
     public void onErrorResponse(VolleyError error) {
         progressDialog.hide();
@@ -137,10 +143,46 @@ public class AccesoriosGeneral extends Fragment  implements Basic, Response.List
     public void onResponse(JSONArray response) {
         progressDialog.hide();
         // Toast.makeText(getContext(),"Chips   "+ url, Toast.LENGTH_SHORT).show();
-        ProductosAdapter adapter = new ProductosAdapter(response,getContext());
+        lista = ModeloInventarioGeneral.listaProductos(response);
+        adapter = new ProductosAdapter(lista,getContext());
         listView.setAdapter(adapter);
 
     }
+
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        try {
+            List<ModeloInventarioGeneral>listafiltrada =filter(lista,s);
+           adapter.setFilter(listafiltrada);
+        }catch (Exception e){
+            e.printStackTrace();
+
+        }
+        return false;
+    }
+    private List<ModeloInventarioGeneral>filter(List<ModeloInventarioGeneral>notas,String texto){
+        List<ModeloInventarioGeneral>listaFiltrada= new ArrayList<>();
+        try {
+            texto=texto.toLowerCase();
+            for (ModeloInventarioGeneral nota:notas){
+                String nota2 = nota.getMarcaIG().toLowerCase();
+                //Para saber si el texto se encuentra dentro de la nota
+                if (nota2.contains(texto)){
+                    listaFiltrada.add(nota);
+                }
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return listaFiltrada;
+    }
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

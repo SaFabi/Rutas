@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.fabi.atc.Clases.ModeloInventarioGeneral;
 import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
 
@@ -16,38 +17,28 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ProductosAdapter extends BaseAdapter {
-    private JSONArray array;
-    private Context context;
-    TextView titulo, subtitulo,precio, txtcantidad;
-    rutasLib rutasObj;
-    Button carrito;
-    //ImageView imageView;
-    public ProductosAdapter(JSONArray array, Context context) {
-        this.array= array;
+
+   List<ModeloInventarioGeneral>elementos;
+    Context context;
+    TextView titulo, subtitulo,precio;
+
+    public ProductosAdapter(List<ModeloInventarioGeneral> elementos, Context context) {
+        this.elementos = elementos;
         this.context = context;
     }
 
-
     @Override
     public int getCount() {
-        return array.length();
+        return elementos.size();
     }
 
     @Override
-    public JSONObject getItem(int i) {
-        JSONObject jsonObject;
-
-        try
-        {
-            jsonObject = array.getJSONObject(i);
-        }
-        catch (JSONException e)
-        {
-            jsonObject = null;
-        }
-
-        return jsonObject;
+    public ModeloInventarioGeneral getItem(int i) {
+        return elementos.get(i);
     }
 
     @Override
@@ -65,48 +56,20 @@ public class ProductosAdapter extends BaseAdapter {
         titulo=(TextView)view.findViewById(R.id.marca);
         subtitulo = (TextView)view.findViewById(R.id.modelo);
         precio = (TextView)view.findViewById(R.id.precioGeneral);
-      //  imageView = (ImageView)view.findViewById(R.id.imagencard);
-        String titulo2, subtitulo2, imagen;
-        try
-        {
-            titulo2= getItem(i).getString("0");
-            subtitulo2 = getItem(i).getString("1");
-            imagen = getItem(i).getString("2");
-        }
-        catch (JSONException e)
-        {
-            titulo2= null;
-            subtitulo2 = null;
-            imagen= null;
-        }
-        if (titulo2 != null) {
-            titulo.setText(titulo2);
-            subtitulo.setText(subtitulo2);
-            precio.setText("$"+imagen);
-            // String http = imagen;
-/*
 
-            Glide.with(viewGroup.getContext())
-                    .load(rutasObj.URL + http)
-                    .crossFade()
-                    .centerCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .thumbnail(0.5f)
-                    .into(imageView);
-        */
-        }
+        titulo.setText(getItem(i).getMarcaIG());
+        subtitulo.setText(getItem(i).getModeloIG());
+        precio.setText(getItem(i).getPrecioIG());
         return view;
     }
 
-/*
-    public void setFilter(ArrayList<Modelo>listamodelos){
-        this.modelo= new ArrayList<>();
-        this.modelo.addAll(listamodelos);
+
+    public void setFilter(List<ModeloInventarioGeneral>listamodelos){
+        this.elementos= new ArrayList<>();
+        this.elementos.addAll(listamodelos);
         notifyDataSetChanged();
-
-
     }
-    */
+
 
 }
 
