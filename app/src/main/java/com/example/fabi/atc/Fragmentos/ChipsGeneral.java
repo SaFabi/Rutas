@@ -105,17 +105,9 @@ public class ChipsGeneral extends Fragment  implements SearchView.OnQueryTextLis
 
         //Agrega y ejecuta la cola
         queue.add(request);
-
-
-
-
-
-
-
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -147,14 +139,10 @@ public class ChipsGeneral extends Fragment  implements SearchView.OnQueryTextLis
         super.onDetach();
         mListener = null;
     }
-
-
-
     @Override
     public void onErrorResponse(VolleyError error) {
         progressDialog.hide();
         Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
-        //Toast.makeText(getContext(),"Chips   "+ url, Toast.LENGTH_SHORT).show();
 
     }
 
