@@ -53,6 +53,7 @@ public class Inicio extends Fragment  implements SearchView.OnQueryTextListener,
     private ProgressDialog progressDialog;
     List<ModeloInventarioPersonal> lista;
     InventarioPersonalAdapter inventarioPersonalAdapter;
+    int cantidadID;
 
     private OnFragmentInteractionListener mListener;
 
@@ -79,11 +80,17 @@ public class Inicio extends Fragment  implements SearchView.OnQueryTextListener,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_inicio, container, false);
         setHasOptionsMenu(true);
         listView= (ListView)view.findViewById(R.id.lvInicio);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                cantidadID = (int)inventarioPersonalAdapter.getItemId(i);
+                Toast.makeText(getContext(),String.valueOf(cantidadID),Toast.LENGTH_SHORT).show();
+            }
+        });
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
         progressDialog.setMessage("Un momento...");
@@ -157,7 +164,7 @@ public class Inicio extends Fragment  implements SearchView.OnQueryTextListener,
         progressDialog.hide();
         lista = ModeloInventarioPersonal.sacarListaproductos(response);
        // Toast.makeText(getContext(),"Chips   "+ url, Toast.LENGTH_SHORT).show();
-        inventarioPersonalAdapter = new InventarioPersonalAdapter(getContext(),lista);
+        inventarioPersonalAdapter = new InventarioPersonalAdapter(getContext(),lista,"Chips");
         listView.setAdapter(inventarioPersonalAdapter);
 
     }

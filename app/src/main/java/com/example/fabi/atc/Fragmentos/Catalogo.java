@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -46,6 +47,7 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
     List<ModeloInventarioPersonal>lista;
     InventarioPersonalAdapter inventarioPersonalAdapter;
     private ProgressDialog progressDialog;
+    int cantidadID;
 
     // TODO: Rename and change types of parameters
     private int mPosition;
@@ -84,6 +86,14 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
         View view = inflater.inflate(R.layout.fragment_catalogo, container, false);
         setHasOptionsMenu(true);
         listView= (ListView)view.findViewById(R.id.lvCatalogo);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                cantidadID = (int)inventarioPersonalAdapter.getItemId(i);
+                Toast.makeText(getContext(),String.valueOf(cantidadID),Toast.LENGTH_SHORT).show();
+            }
+        });
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
@@ -156,7 +166,7 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
         progressDialog.hide();
         lista = ModeloInventarioPersonal.sacarListaproductos(response);
        // Toast.makeText(getContext(), "Telefonos    "+url, Toast.LENGTH_SHORT).show();
-        inventarioPersonalAdapter = new InventarioPersonalAdapter(getContext(),lista);
+        inventarioPersonalAdapter = new InventarioPersonalAdapter(getContext(),lista,"Telefonos");
         listView.setAdapter(inventarioPersonalAdapter);
 
     }

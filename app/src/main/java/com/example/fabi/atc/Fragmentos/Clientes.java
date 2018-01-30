@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -52,6 +53,7 @@ public class Clientes extends Fragment implements SearchView.OnQueryTextListener
     private ProgressDialog progressDialog;
     private int  mPosition;
     private OnFragmentInteractionListener mListener;
+    int cantidadID;
 
     public Clientes() {
         // Required empty public constructor
@@ -81,6 +83,14 @@ public class Clientes extends Fragment implements SearchView.OnQueryTextListener
         View view = inflater.inflate(R.layout.fragment_clientes, container, false);
         setHasOptionsMenu(true);
         listView= (ListView)view.findViewById(R.id.lvFClientes);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                cantidadID = (int)inventarioPersonalAdapter.getItemId(i);
+                Toast.makeText(getContext(),String.valueOf(cantidadID),Toast.LENGTH_SHORT).show();
+            }
+        });
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
@@ -155,7 +165,7 @@ public class Clientes extends Fragment implements SearchView.OnQueryTextListener
         progressDialog.hide();
         lista = ModeloInventarioPersonal.sacarListaproductos(response);
         //Toast.makeText(getContext(), "Accesorios  "+url, Toast.LENGTH_SHORT).show();
-        inventarioPersonalAdapter= new InventarioPersonalAdapter(getContext(), lista);
+        inventarioPersonalAdapter= new InventarioPersonalAdapter(getContext(), lista,"Accesorios");
         listView.setAdapter(inventarioPersonalAdapter);
 
     }
