@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (fragmentSeleccionado == true){
-            getSupportFragmentManager().beginTransaction().replace(R.id.content_main,miFragment).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_main,miFragment).addToBackStack(null).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
