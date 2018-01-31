@@ -98,7 +98,7 @@ public class detallesCreditosPendientes extends Fragment  implements Basic{
             }
         });
         queueCreditos.add(requestCreditos);
-        Toast.makeText(getContext(),String.valueOf(ordenID),Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(),String.valueOf(ordenID),Toast.LENGTH_SHORT).show();
 
 
         return vista;

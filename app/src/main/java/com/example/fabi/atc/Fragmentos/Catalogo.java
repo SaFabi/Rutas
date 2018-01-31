@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,7 +39,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Catalogo extends Fragment  implements SearchView.OnQueryTextListener,Basic, Response.Listener<JSONArray>, Response.ErrorListener{
+public class Catalogo extends Fragment  implements SearchView.OnQueryTextListener,SwipeRefreshLayout.OnRefreshListener,Basic, Response.Listener<JSONArray>, Response.ErrorListener{
 
     //Fragmento para los telefonos
     private static final String ARG_POSITION = "POSITION";
@@ -48,6 +49,7 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
     InventarioPersonalAdapter inventarioPersonalAdapter;
     private ProgressDialog progressDialog;
     int cantidadID;
+    SwipeRefreshLayout contenedorClientesA;
 
     // TODO: Rename and change types of parameters
     private int mPosition;
@@ -86,6 +88,9 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
         View view = inflater.inflate(R.layout.fragment_catalogo, container, false);
         setHasOptionsMenu(true);
         listView= (ListView)view.findViewById(R.id.lvCatalogo);
+
+        contenedorClientesA = (SwipeRefreshLayout)view.findViewById(R.id.contenedorCatalogoTelefonos);
+        contenedorClientesA.setOnRefreshListener(this);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -203,6 +208,51 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
             e.printStackTrace();
         }
         return listaFiltrada;
+    }
+
+    @Override
+    public void onRefresh() {
+        //Inicia la peticion
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String consulta = "select ca.id,ma.nombre,mo.nombre,a.precio,ca.valor " +
+                "from marca ma, modelo mo, articulo a, punto_venta pv, cantidad ca, tipo_articulo ta " +
+                "where a.modelo_id=mo.id " +
+                "and mo.marca_id=ma.id " +
+                "and ca.puntoVenta_id=pv.id " +
+                "and ca.articulo_id=a.id " +
+                "and a.tipoArticulo_id=ta.id " +
+                "and pv.id = "+usuarioID+" and ta.nombre='Teléfono' "+
+                "and ca.valor >0 "+
+                "order by ma.nombre asc ";
+        consulta = consulta.replace(" ", "%20");
+        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+        url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+        Log.i("info", url);
+
+        //Hace la petición String
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                progressDialog.hide();
+                lista = ModeloInventarioPersonal.sacarListaproductos(response);
+                // Toast.makeText(getContext(), "Telefonos    "+url, Toast.LENGTH_SHORT).show();
+                contenedorClientesA.setRefreshing(false);
+                inventarioPersonalAdapter = new InventarioPersonalAdapter(getContext(),lista,"Telefonos");
+                listView.setAdapter(inventarioPersonalAdapter);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.hide();
+                Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),  "Telefonos    "+url, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //Agrega y ejecuta la cola
+        queue.add(request);
+
     }
 
     public interface OnFragmentInteractionListener {

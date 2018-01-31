@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,10 +26,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.fabi.atc.Adapters.AdapterClientes;
 import com.example.fabi.atc.Adapters.InventarioPersonalAdapter;
 import com.example.fabi.atc.Adapters.ProductosAdapter;
 import com.example.fabi.atc.Clases.Basic;
 import com.example.fabi.atc.Clases.Modelo;
+import com.example.fabi.atc.Clases.ModeloClientes;
 import com.example.fabi.atc.Clases.ModeloInventarioPersonal;
 import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
@@ -40,7 +43,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Clientes extends Fragment implements SearchView.OnQueryTextListener,Basic, Response.Listener<JSONArray>, Response.ErrorListener{
+public class Clientes extends Fragment implements SwipeRefreshLayout.OnRefreshListener,SearchView.OnQueryTextListener,Basic, Response.Listener<JSONArray>, Response.ErrorListener{
 
     //Fragmento para los accesorios
     private static final String ARG_POSITION= "POSITION";
@@ -54,9 +57,9 @@ public class Clientes extends Fragment implements SearchView.OnQueryTextListener
     private int  mPosition;
     private OnFragmentInteractionListener mListener;
     int cantidadID;
+    SwipeRefreshLayout contenedorClientesA;
 
     public Clientes() {
-        // Required empty public constructor
     }
 
     public static Clientes newInstance(int position) {
@@ -83,6 +86,8 @@ public class Clientes extends Fragment implements SearchView.OnQueryTextListener
         View view = inflater.inflate(R.layout.fragment_clientes, container, false);
         setHasOptionsMenu(true);
         listView= (ListView)view.findViewById(R.id.lvFClientes);
+        contenedorClientesA = (SwipeRefreshLayout)view.findViewById(R.id.contenedorCatalogoAccesorios);
+        contenedorClientesA.setOnRefreshListener(this);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -203,6 +208,53 @@ public class Clientes extends Fragment implements SearchView.OnQueryTextListener
         }
         return listaFiltrada;
     }
+
+    @Override
+    public void onRefresh() {
+        //Inicia la peticion
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String consulta = "select ca.id,ta.nombre, ma.nombre,a.precio,ca.valor " +
+                "from marca ma, modelo mo, articulo a, punto_venta pv, cantidad ca, tipo_articulo ta " +
+                "where a.modelo_id = mo.id " +
+                "and mo.marca_id = ma.id " +
+                "and ca.puntoVenta_id = pv.id " +
+                "and ca.articulo_id = a.id " +
+                "and a.tipoArticulo_id = ta.id " +
+                "and pv.id = "+usuarioID+" and ta.nombre !='Teléfono' " +
+                "and ta.nombre !='Chip' " +
+                "and ca.valor > 0 "+
+                "order by ta.nombre asc;";
+        consulta = consulta.replace(" ", "%20");
+        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+        final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+        Log.i("info", url);
+
+        //Hace la petición String
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                progressDialog.hide();
+                lista = ModeloInventarioPersonal.sacarListaproductos(response);
+                //Toast.makeText(getContext(), "Accesorios  "+url, Toast.LENGTH_SHORT).show();
+                inventarioPersonalAdapter= new InventarioPersonalAdapter(getContext(), lista,"Accesorios");
+                listView.setAdapter(inventarioPersonalAdapter);
+                contenedorClientesA.setRefreshing(false);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.hide();
+                Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),  "Activos   "+url, Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        //Agrega y ejecuta la cola
+        queue.add(request);
+    }
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

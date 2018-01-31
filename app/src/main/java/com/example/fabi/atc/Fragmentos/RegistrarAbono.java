@@ -91,7 +91,7 @@ public class RegistrarAbono extends Fragment  implements Basic{
         View vista = inflater.inflate(R.layout.fragment_registrar_abono, container, false);
 
         //VERIFICAR QUE LOS DATOS SE ESTEN ENVIANDO CORRECTAMENTE
-        Toast.makeText(getContext(),String.valueOf("  "+ordenID)+String.valueOf("  "+MontoTotal)+String.valueOf("  "+ClienteID)+String.valueOf("  "+CreditoID),Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(),String.valueOf("  "+ordenID)+String.valueOf("  "+MontoTotal)+String.valueOf("  "+ClienteID)+String.valueOf("  "+CreditoID),Toast.LENGTH_SHORT).show();
         //ASIGANCION DE VALORES A LOS CONTROLES
         edtMonto = (EditText)vista.findViewById(R.id.edtmontoTotal);
         edtAbono = (EditText)vista.findViewById(R.id.edtABono);
@@ -110,7 +110,6 @@ public class RegistrarAbono extends Fragment  implements Basic{
                 progressDialog.setMessage("Un momento...");
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 progressDialog.show();
-
                     //CONSULTA PARA INSERTAR EN BONO CREDITO
                     RequestQueue queueInsertar = Volley.newRequestQueue(getContext());
                     String consultaInsertar = "insert into bono_credito(cantidad,estado,fecha,credito_id)values(" + Integer.parseInt(edtAbono.getText().toString()) + "," + 1 + ",now()," + CreditoID + ")";
