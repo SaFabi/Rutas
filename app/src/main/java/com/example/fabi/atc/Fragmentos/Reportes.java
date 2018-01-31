@@ -310,20 +310,15 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                 progressDialog.hide();
                                 Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
                                 Toast.makeText(getContext(),  "Activos   "+urlVentas, Toast.LENGTH_SHORT).show();
-
                             }
                         });
-
                         //Agrega y ejecuta la cola
                         queueVentas.add(requestVentas);
                         break;
                 }
-
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
 
@@ -568,7 +563,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
 
         return view;
     }
-    /*
+
     //Infla el menu para el carrito y el buscador
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -578,7 +573,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
         carrito.setVisible(false);
         buscador.setVisible(false);
     }
-    */
+
 
     public ArrayList<ModeloSpinnerGeneral>listaReportes(){
         ArrayList<ModeloSpinnerGeneral>lista = new ArrayList<>();

@@ -10,6 +10,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -80,6 +83,7 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
                              final Bundle savedInstanceState) {
        final View view= inflater.inflate(R.layout.fragment_registro_clientes, container, false);
         //ASIGNACION DE VARIABLES CON SUS CONTROLES
+        setHasOptionsMenu(true);
         spinner = (Spinner)view.findViewById(R.id.Ciudades);
         btnAgregar = (Button)view.findViewById(R.id.btnAgregarUsuario);
         edtNombre = (EditText)view.findViewById(R.id.edtNombre);
@@ -366,6 +370,20 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem buscar, carrito;
+             buscar = menu.findItem(R.id.buscador2);
+            carrito = menu.findItem(R.id.carrito);
+
+            buscar.setVisible(false);
+            carrito.setVisible(false);
+
+
+
     }
 
     @Override

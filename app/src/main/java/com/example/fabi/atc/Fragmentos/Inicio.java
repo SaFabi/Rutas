@@ -155,8 +155,11 @@ public class Inicio extends Fragment  implements SwipeRefreshLayout.OnRefreshLis
     //Infla el menu para el carrito y el buscador
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_buscador,menu);
+        //inflater.inflate(R.menu.menu_buscador,menu);
         MenuItem buscador = menu.findItem(R.id.buscador2);
+        MenuItem carrito = menu.findItem(R.id.carrito);
+        buscador.setVisible(true);
+        carrito.setVisible(true);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(buscador);
         searchView.setOnQueryTextListener(this);
         MenuItemCompat.setOnActionExpandListener(buscador, new MenuItemCompat.OnActionExpandListener() {
