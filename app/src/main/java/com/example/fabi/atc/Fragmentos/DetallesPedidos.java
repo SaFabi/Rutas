@@ -85,9 +85,47 @@ public class DetallesPedidos extends Fragment implements Basic {
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                progressDialog.hide();
                 adapterDetallesCreditos = new AdapterDetallesCreditos(response,getContext());
                 listView.setAdapter(adapterDetallesCreditos);
+                RequestQueue queue1 = Volley.newRequestQueue(getContext());
+                String consulta1 = "SELECT SUM(od.precio_final * od.cantidad)"+
+                " from orden o, orden_descripcion od"+
+                " where od.orden_id = o.id"+
+               " and o.id="+pedidoID;
+                consulta1 = consulta1.replace(" ", "%20");
+                String cadena1 = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta1;
+                String url1 = SERVER + RUTA + "consultaGeneral.php" + cadena1;
+                JsonArrayRequest request1 = new JsonArrayRequest(Request.Method.GET, url1, null, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        progressDialog.hide();
+                        String  puntoVenta;
+                        JSONObject jsonObject;
+                        try {
+                            jsonObject =response.getJSONObject(0);
+                        }catch (Exception e){
+                            jsonObject = new JSONObject();
+                        }
+
+                        try {
+                            puntoVenta= jsonObject.getString("0");
+
+                        }catch (Exception e){
+                            puntoVenta = null;
+                        }
+                        if (puntoVenta != null){
+                            txtTotal.setText("TOTAL: $"+puntoVenta);
+                        }
+
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                });
+                queue1.add(request1);
 
             }
         }, new Response.ErrorListener() {
