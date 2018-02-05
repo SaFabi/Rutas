@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.android.volley.Request;
@@ -37,6 +39,8 @@ public class PedidosFragment extends Fragment implements Basic {
     // CONTROLES
     ListView listView;
     ProgressDialog progressDialog;
+    int pedidoID;
+    PedidosAdapter pedidosAdapter;
 
     private static final String ARG_POSITION = "POSITION";
 
@@ -74,6 +78,18 @@ public class PedidosFragment extends Fragment implements Basic {
         setHasOptionsMenu(true);
         listView = (ListView)view.findViewById(R.id.listaPedidos);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                pedidoID = (int)pedidosAdapter.getItemId(i);
+                Fragment fragment = DetallesPedidos.newInstance(pedidoID);
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.content_main,fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        });
+
         //Se declara el progress dialog para ejecutar despues la consulta
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
@@ -83,7 +99,7 @@ public class PedidosFragment extends Fragment implements Basic {
         //PARA LA CONSULTA DE LAS CLAVES DE LOS CLIENTES EN EL SPINNER
         RequestQueue queue = Volley.newRequestQueue(getContext());
         String consulta = " SELECT distinct o.id,o.folio,CONCAT(pv.tipo,'-',cc.numero),DATE(o.fecha),"+
-        " ( SELECT SUM( od.precio_final * od.cantidad)"+
+        " (SELECT SUM( od.precio_final * od.cantidad)"+
         " FROM orden_descripcion od, orden ord"+
         " where od.orden_id = ord.id"+
         " AND ord.id = o.id)"+
@@ -104,8 +120,8 @@ public class PedidosFragment extends Fragment implements Basic {
             @Override
             public void onResponse(JSONArray response) {
                 progressDialog.hide();
-                PedidosAdapter adapter = new PedidosAdapter(getContext(), ModeloPedidos.sacarListaClientes(response));
-                listView.setAdapter(adapter);
+                pedidosAdapter = new PedidosAdapter(getContext(), ModeloPedidos.sacarListaClientes(response));
+                listView.setAdapter(pedidosAdapter);
 
 
             }
@@ -116,10 +132,6 @@ public class PedidosFragment extends Fragment implements Basic {
             }
         });
         queue.add(request);
-
-
-
-
         return view;
     }
 
@@ -139,34 +151,6 @@ public class PedidosFragment extends Fragment implements Basic {
         carrito.setVisible(false);
         buscador.setVisible(false);
     }
-/*
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
