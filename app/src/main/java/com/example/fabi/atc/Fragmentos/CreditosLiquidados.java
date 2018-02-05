@@ -69,7 +69,6 @@ public class CreditosLiquidados extends Fragment implements Basic {
         fragment.setArguments(args);
         return fragment;
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +76,6 @@ public class CreditosLiquidados extends Fragment implements Basic {
             mPosition = getArguments().getInt(ARG_POSITION);
         }
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -87,8 +85,6 @@ public class CreditosLiquidados extends Fragment implements Basic {
         txtPunVenta = (TextView)vista.findViewById(R.id.puntoVentaCreditosLiquidados);
         spinnerClaves = (Spinner)vista.findViewById(R.id.spinnerClavesCreditosLiquidados);
         listView = (ListView)vista.findViewById(R.id.CreditoClientesCreditosLiquidados);
-
-
         spinnerClaves.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -123,24 +119,19 @@ public class CreditosLiquidados extends Fragment implements Basic {
                         progressDialog.hide();
                         adapter= new CreditosLiquidadosAdapter(getContext(), ModeloCreditos.sacarListaClientes(response));
                         listView.setAdapter(adapter);
-
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
                     }
                 });
                 queueCreditos.add(requestCreditos);
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
         //PARA SELECCIONAR EL TIPO DE PUNTO DE VENTA
-
         //Se declara el progress dialog para ejecutar despues la consulta
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
@@ -185,7 +176,6 @@ public class CreditosLiquidados extends Fragment implements Basic {
             }
         });
         queue.add(request);
-
         //PARA LA CONSULTA DE LAS CLAVES DE LOS CLIENTES EN EL SPINNER
         RequestQueue queueClaveCliente = Volley.newRequestQueue(getContext());
         String consultaClaveCliente = "select cl.id, cc.numero "+
@@ -216,15 +206,11 @@ public class CreditosLiquidados extends Fragment implements Basic {
 
        return vista;
     }
-
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
     }
-
-
     //Infla el menu para el carrito y el buscador
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -234,34 +220,7 @@ public class CreditosLiquidados extends Fragment implements Basic {
         carrito.setVisible(false);
         buscador.setVisible(false);
     }
-/*
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

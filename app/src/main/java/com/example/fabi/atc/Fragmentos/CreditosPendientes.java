@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -35,7 +37,7 @@ import com.example.fabi.atc.R;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class CreditosPendientes extends Fragment implements Basic{
+public class CreditosPendientes extends Fragment implements SwipeRefreshLayout.OnRefreshListener,Basic{
     private static final String ARG_POSITION = "position";
     private int mPosition;
     //URL DE LA CONSULTA DEL PUNTO DE VENTA
@@ -46,6 +48,7 @@ public class CreditosPendientes extends Fragment implements Basic{
     TextView txtPuntoVenta;
     Spinner spinnerCreditos;
     private ProgressDialog progressDialog;
+    SwipeRefreshLayout contenedorCreditosP;
 
     //VARIABLES NORMALES
     String puntoVenta;
@@ -89,6 +92,8 @@ public class CreditosPendientes extends Fragment implements Basic{
         listView = (ListView)view.findViewById(R.id.CreditoClientes);
         txtPuntoVenta = (TextView)view.findViewById(R.id.puntoVenta);
         spinnerCreditos = (Spinner)view.findViewById(R.id.spinnerClaves);
+        contenedorCreditosP = (SwipeRefreshLayout)view.findViewById(R.id.contenedorCreditosPendientes);
+        contenedorCreditosP.setOnRefreshListener(this);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -100,6 +105,22 @@ public class CreditosPendientes extends Fragment implements Basic{
                 fragmentTransaction.replace(R.id.content_main,fragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
+            }
+        });
+        //Parte que recarga el listview solamente si llega al tope
+        listView.setOnScrollListener(new AbsListView.OnScrollListener()
+        {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState)
+            {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+            {
+                int top = (listView == null || listView.getChildCount() == 0) ? 0 : listView.getChildAt(0).getTop();
+                contenedorCreditosP.setEnabled(firstVisibleItem == 0 && top >= 0);
             }
         });
 
@@ -245,6 +266,43 @@ public class CreditosPendientes extends Fragment implements Basic{
         MenuItem carrito = menu.findItem(R.id.carrito);
         carrito.setVisible(false);
         buscador.setVisible(false);
+    }
+
+    @Override
+    public void onRefresh() {
+
+        //CONSULTA PARA OBTENER TODOS LOS CREDITOS REGISTRADOS DE UN CLIENTE EN ESPECIFICO
+        RequestQueue queueCreditos = Volley.newRequestQueue(getContext());
+        String consultaCreditos = "select distinct ord.id,ord.folio,DATE(ord.fecha),CONCAT(pv.tipo,'-',cc.numero),cre.total, cli.id,cre.id" +
+                " from orden ord,credito cre, punto_venta pv, cliente cli, clave_cliente cc"+
+                " where cre.orden_id = ord.id"+
+                " and ord.puntoVenta_id = pv.id"+
+                " and ord.cliente_id = cli.id"+
+                " and cc.cliente_id =cli.id"+
+                " and pv.id="+usuarioID+
+                " and cre.total>0"+
+                " and cre.estado=1"+
+                " and cli.id="+claveCliente;
+        consultaCreditos = consultaCreditos.replace(" ", "%20");
+        String cadenaCreditos = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaCreditos;
+        url = SERVER + RUTA + "consultaGeneral.php" + cadenaCreditos;
+        Log.i("info", url);
+        JsonArrayRequest requestCreditos = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                creditosAdapter= new CreditosAdapter(getActivity().getSupportFragmentManager(),getContext(), ModeloCreditos.sacarListaClientes(response),ordenID,Total);
+                listView.setAdapter(creditosAdapter);
+                contenedorCreditosP.setRefreshing(false);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        queueCreditos.add(requestCreditos);
+
     }
 
     public interface OnFragmentInteractionListener {

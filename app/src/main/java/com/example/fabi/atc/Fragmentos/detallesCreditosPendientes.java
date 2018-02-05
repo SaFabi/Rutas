@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -24,6 +25,7 @@ import com.example.fabi.atc.Clases.ModeloClientes;
 import com.example.fabi.atc.R;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 
 public class detallesCreditosPendientes extends Fragment  implements Basic{
@@ -33,7 +35,7 @@ public class detallesCreditosPendientes extends Fragment  implements Basic{
     ProgressDialog progressDialog;
     AdapterDetallesCreditos adapter;
     ListView listView;
-
+    TextView txtMonto;
     public detallesCreditosPendientes() {
         // Required empty public constructor
     }
@@ -59,6 +61,7 @@ public class detallesCreditosPendientes extends Fragment  implements Basic{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View vista =  inflater.inflate(R.layout.fragment_detalles_creditos_pendientes, container, false);
+        txtMonto = (TextView)vista.findViewById(R.id.txtTotalCreditos);
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
         progressDialog.setMessage("Un momento...");
@@ -79,15 +82,53 @@ public class detallesCreditosPendientes extends Fragment  implements Basic{
                 "and ord.id="+ordenID;
         consultaCreditos = consultaCreditos.replace(" ", "%20");
         String cadenaCreditos = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaCreditos;
-        String url = SERVER + RUTA + "consultaGeneral.php" + cadenaCreditos;
+        final String url = SERVER + RUTA + "consultaGeneral.php" + cadenaCreditos;
         Log.i("info", url);
         JsonArrayRequest requestCreditos = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                progressDialog.hide();
                adapter = new AdapterDetallesCreditos(response,getContext());
                 listView.setAdapter(adapter);
+                //CONSULTA PARA OBTENER EL TOTAL DEL CREDITO
+                RequestQueue queue = Volley.newRequestQueue(getContext());
+                String consulta = "select sum(orddesc.precio_final * orddesc.cantidad) " +
+                        "from orden_descripcion orddesc, orden ord " +
+                        "where orddesc.orden_id = ord.id " +
+                        "and ord.id="+ordenID;
+                consulta = consulta.replace(" ", "%20");
+                String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+                String url1 = SERVER + RUTA + "consultaGeneral.php" + cadena;
+                Log.i("info", url1);
+                JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url1, null, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        progressDialog.hide();
+                        String  puntoVenta;
+                        JSONObject jsonObject;
+                        try {
+                            jsonObject =response.getJSONObject(0);
+                        }catch (Exception e){
+                            jsonObject = new JSONObject();
+                        }
 
+                        try {
+                            puntoVenta= jsonObject.getString("0");
+
+                        }catch (Exception e){
+                            puntoVenta = null;
+                        }
+                        if (puntoVenta != null){
+                            txtMonto.setText("TOTAL: $"+puntoVenta);
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                });
+            queue.add(request);
 
 
             }
