@@ -116,10 +116,10 @@ public class ChipsGeneral extends Fragment  implements SearchView.OnQueryTextLis
     //Infla el menu para el carrito y el buscador
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_buscador,menu);
         MenuItem carrito = menu.findItem(R.id.carrito);
         carrito.setVisible(false);
         MenuItem buscador = menu.findItem(R.id.buscador2);
+        buscador.setVisible(true);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(buscador);
         searchView.setOnQueryTextListener(this);
         MenuItemCompat.setOnActionExpandListener(buscador, new MenuItemCompat.OnActionExpandListener() {

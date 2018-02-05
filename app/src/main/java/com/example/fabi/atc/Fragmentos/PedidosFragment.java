@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -68,7 +71,7 @@ public class PedidosFragment extends Fragment implements Basic {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_pedidos, container, false);
-
+        setHasOptionsMenu(true);
         listView = (ListView)view.findViewById(R.id.listaPedidos);
 
         //Se declara el progress dialog para ejecutar despues la consulta
@@ -125,6 +128,16 @@ public class PedidosFragment extends Fragment implements Basic {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+
+    //Infla el menu para el carrito y el buscador
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        //inflater.inflate(R.menu.menu_buscador,menu);
+        MenuItem buscador = menu.findItem(R.id.buscador2);
+        MenuItem carrito = menu.findItem(R.id.carrito);
+        carrito.setVisible(false);
+        buscador.setVisible(false);
     }
 /*
     @Override

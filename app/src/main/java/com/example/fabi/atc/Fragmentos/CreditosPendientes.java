@@ -7,6 +7,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -82,6 +85,7 @@ public class CreditosPendientes extends Fragment implements Basic{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_creditos_pendientes, container, false);
+        setHasOptionsMenu(true);
         listView = (ListView)view.findViewById(R.id.CreditoClientes);
         txtPuntoVenta = (TextView)view.findViewById(R.id.puntoVenta);
         spinnerCreditos = (Spinner)view.findViewById(R.id.spinnerClaves);
@@ -230,6 +234,17 @@ public class CreditosPendientes extends Fragment implements Basic{
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+
+    //Infla el menu para el carrito y el buscador
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        //inflater.inflate(R.menu.menu_buscador,menu);
+        MenuItem buscador = menu.findItem(R.id.buscador2);
+        MenuItem carrito = menu.findItem(R.id.carrito);
+        carrito.setVisible(false);
+        buscador.setVisible(false);
     }
 
     public interface OnFragmentInteractionListener {
