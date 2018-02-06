@@ -51,7 +51,6 @@ public class rutasLib implements  Basic {
      private static ReportesAdapter adapter ;
      private static  ProgressDialog progressDialog;
 
-
     //Metodo para llenar un ViewPager con los titulos y los fragmentos
     public  static CatalogoAdapter llenarViewPager(FragmentManager fragmentManager, List<Fragment> fragments,List<String> titulos) {
         CatalogoAdapter adapter = new CatalogoAdapter(fragmentManager);

@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity
             CarritoFragment carritoFragment = new CarritoFragment();
             FragmentManager manager = getSupportFragmentManager();
             manager.beginTransaction().replace(R.id.content_main, carritoFragment, carritoFragment.getTag())
-                    .addToBackStack("Cart").commit();
+                    .addToBackStack(null).commit();
         }
 
         return super.onOptionsItemSelected(item);
@@ -158,7 +158,6 @@ public class MainActivity extends AppCompatActivity
         if (fragmentSeleccionado == true){
             getSupportFragmentManager().beginTransaction().replace(R.id.content_main,miFragment).addToBackStack(null).commit();
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -166,6 +165,5 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-
     }
 }

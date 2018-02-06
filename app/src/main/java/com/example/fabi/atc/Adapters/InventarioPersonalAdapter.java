@@ -77,8 +77,19 @@ public class InventarioPersonalAdapter extends BaseAdapter {
                     dialogo1.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            int  Cantidad =Integer.parseInt(textoBusqueda.getText().toString());
-                            Toast.makeText(context,String.valueOf(Cantidad),Toast.LENGTH_SHORT).show();
+                            if (textoBusqueda.getText().length() >0){
+                                int  Cantidad =Integer.parseInt(textoBusqueda.getText().toString());
+                               // Toast.makeText(context,String.valueOf(Cantidad),Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(context, "Introduzca una cantidad", Toast.LENGTH_SHORT).show();
+                            }
+
+
+                        }
+                    });
+                    dialogo1.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
 
                         }
                     });
@@ -131,7 +142,7 @@ public class InventarioPersonalAdapter extends BaseAdapter {
         NumberPicker.OnValueChangeListener valueChangeListener = new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker numberPicker, int i, int i1) {
-                Toast.makeText(context,String.valueOf(i1),Toast.LENGTH_SHORT).show();
+               // Toast.makeText(context,String.valueOf(i1),Toast.LENGTH_SHORT).show();
             }
         };
         numberPicker.setOnValueChangedListener(valueChangeListener);
