@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity
         CreditosContenedor.OnFragmentInteractionListener, PedidosFragment.OnFragmentInteractionListener{
     MenuItem itemBuscar;
     MenuItem itemCarrito;
+    Fragment miFragment =null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +72,6 @@ public class MainActivity extends AppCompatActivity
          getMenuInflater().inflate(R.menu.menu_buscador,menu);
         MenuItem itembuscar =menu.findItem(R.id.buscador2);
          MenuItem itemcarrito = menu.findItem(R.id.carrito);
-
         itemcarrito.setVisible(false);
         itembuscar.setVisible(false);
 
@@ -82,14 +82,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.carrito) {
-            CarritoFragment carritoFragment = new CarritoFragment();
-            FragmentManager manager = getSupportFragmentManager();
-            manager.beginTransaction().replace(R.id.content_main, carritoFragment, carritoFragment.getTag())
-                    .addToBackStack(null).commit();
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -98,7 +90,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        Fragment miFragment =null;
+
         boolean fragmentSeleccionado=false;
 
         if (id == R.id.Inicio){
