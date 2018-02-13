@@ -130,7 +130,7 @@ public class InventarioPersonalAdapter extends BaseAdapter {
         */
         txtMarca.setText(getItem(i).getMarca());
         txtModelo.setText(getItem(i).getModelo());
-        txtPrecio.setText(getItem(i).getPrecio());
+        txtPrecio.setText("$"+getItem(i).getPrecio());
         txtCantidad.setText("Cantidad disponible: "+getItem(i).getCantidad());
         return vista;
     }

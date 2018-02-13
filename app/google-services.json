@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1032289220228",
+    "firebase_url": "https://rutas-469fa.firebaseio.com",
+    "project_id": "rutas-469fa",
+    "storage_bucket": "rutas-469fa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1032289220228:android:d1eb0c8c1ca578a0",
+        "android_client_info": {
+          "package_name": "com.example.fabi.atc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1032289220228-vqtbhue66buhmi8jh5c9hhr5qrhp9voc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fabi.atc",
+            "certificate_hash": "ce8c79328b647196caa94eeaf7767b42aac6cdce"
+          }
+        },
+        {
+          "client_id": "1032289220228-c3eblb7bn94fss1viu8pmuro4bn4v40p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9hjFRhR5X6u34nMKukegDVYfvMlXPoNo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1032289220228-c3eblb7bn94fss1viu8pmuro4bn4v40p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
