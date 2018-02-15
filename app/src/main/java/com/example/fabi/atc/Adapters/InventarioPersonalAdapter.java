@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.fabi.atc.Clases.Basic;
 import com.example.fabi.atc.Clases.ModeloInventarioPersonal;
+import com.example.fabi.atc.Fragmentos.CarritoFragment;
 import com.example.fabi.atc.R;
 
 import java.util.ArrayList;
@@ -28,7 +29,11 @@ import java.util.List;
 public class InventarioPersonalAdapter extends BaseAdapter {
     Context context;
     List<ModeloInventarioPersonal> elementos;
+     public static  ArrayList<ModeloInventarioPersonal>carrito =new ArrayList<>();;
     String fragmento;
+    int Cantidad;
+    String marca,modelo,cantidad,precio;
+    int CantidadID;
 
     public InventarioPersonalAdapter(Context context, List<ModeloInventarioPersonal> elementos, String fragmento) {
         this.context = context;
@@ -46,10 +51,16 @@ public class InventarioPersonalAdapter extends BaseAdapter {
         return elementos.get(i);
     }
 
+    public ArrayList<ModeloInventarioPersonal> regresarcarrito(){
+        return carrito;
+    }
+
+
     @Override
     public long getItemId(int i) {
         return elementos.get(i).getCantidadID();
     }
+
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
@@ -63,7 +74,20 @@ public class InventarioPersonalAdapter extends BaseAdapter {
         TextView txtPrecio = (TextView)vista.findViewById(R.id.precio);
         TextView txtCantidad = (TextView)vista.findViewById(R.id.cantidadproductos);
         Button btncarrito = (Button)vista.findViewById(R.id.btnCarrito);
+
+        marca = getItem(i).getMarca();
+        modelo = getItem(i).getModelo();
+        precio = getItem(i).getPrecio();
+        cantidad = getItem(i).getCantidad();
+        CantidadID = getItem(i).getCantidadID();
+
+        txtMarca.setText(marca);
+        txtModelo.setText(modelo);
+        txtPrecio.setText("$"+precio);
+        txtCantidad.setText("Cantidad disponible: "+cantidad);
+
         if (fragmento.equals("Chips")){
+            //SI LOS ARTICULOS A AGREGAR SON CHIPS SE HACE ESTE PROCEDIMIENTO
             btncarrito.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -78,8 +102,11 @@ public class InventarioPersonalAdapter extends BaseAdapter {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             if (textoBusqueda.getText().length() >0){
-                                int  Cantidad =Integer.parseInt(textoBusqueda.getText().toString());
-                               // Toast.makeText(context,String.valueOf(Cantidad),Toast.LENGTH_SHORT).show();
+                                Cantidad =Integer.parseInt(textoBusqueda.getText().toString());
+                                carrito.add(new ModeloInventarioPersonal(CantidadID,marca,modelo,precio,String.valueOf(Cantidad)));
+                               Toast.makeText(context,marca+" "+modelo,Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "Se agrego al carrito ", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context,String.valueOf(Cantidad), Toast.LENGTH_SHORT).show();
                             }else{
                                 Toast.makeText(context, "Introduzca una cantidad", Toast.LENGTH_SHORT).show();
                             }
@@ -98,40 +125,16 @@ public class InventarioPersonalAdapter extends BaseAdapter {
             });
 
         }else{
+            //SI LOS ARTICULOS NO SON CHIPS SE SIGUE ESTE PROCEDIMIENTO
             btncarrito.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Toast.makeText(context,String.valueOf(CantidadID), Toast.LENGTH_SHORT).show();
                     numerPickerDialog();
                 }
             });
         }
 
-        /*
-        btncarrito.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder dialogo1 = new AlertDialog.Builder(context);
-                final EditText textoBusqueda = new EditText(context);
-                dialogo1.setIcon(R.drawable.cancelar);
-                dialogo1.setTitle("Importante");
-                dialogo1.setMessage("¿Desea eliminar este elemento?");
-                textoBusqueda.setInputType(InputType.TYPE_CLASS_NUMBER);
-                dialogo1.setView(textoBusqueda);
-                dialogo1.setCancelable(false);
-                dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
-                });
-                dialogo1.show();
-            }
-        });
-        */
-        txtMarca.setText(getItem(i).getMarca());
-        txtModelo.setText(getItem(i).getModelo());
-        txtPrecio.setText("$"+getItem(i).getPrecio());
-        txtCantidad.setText("Cantidad disponible: "+getItem(i).getCantidad());
         return vista;
     }
 
@@ -142,7 +145,8 @@ public class InventarioPersonalAdapter extends BaseAdapter {
         NumberPicker.OnValueChangeListener valueChangeListener = new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker numberPicker, int i, int i1) {
-               // Toast.makeText(context,String.valueOf(i1),Toast.LENGTH_SHORT).show();
+                // Toast.makeText(context,String.valueOf(i1),Toast.LENGTH_SHORT).show();
+                Cantidad = i1;
             }
         };
         numberPicker.setOnValueChangedListener(valueChangeListener);
@@ -152,7 +156,9 @@ public class InventarioPersonalAdapter extends BaseAdapter {
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
+                carrito.add(new ModeloInventarioPersonal(CantidadID,marca,modelo,precio,String.valueOf(Cantidad)));
+                Toast.makeText(context,marca+" "+modelo,Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Se agrego al carrito ", Toast.LENGTH_SHORT).show();
             }
         });
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity
         final String token = FirebaseInstanceId.getInstance().getToken();
        // Toast.makeText(this, token, Toast.LENGTH_SHORT).show();
 
-        //PARA HACER LA CONSULTA DE SI EL TOPKEN EXISTE, SI NO LO REGISTRA
+        //PARA HACER LA CONSULTA DE SI EL TOKEN EXISTE, SI NO LO REGISTRA
         RequestQueue queue = Volley.newRequestQueue(getBaseContext());
         String consulta = "select token from usuarios where token='"+token+"'";
         consulta = consulta.replace(" ", "%20");
@@ -80,6 +80,8 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onResponse(JSONArray response) {
                // Toast.makeText(MainActivity.this,String.valueOf(response.length()), Toast.LENGTH_SHORT).show();
+
+                //SI NO ENCUENTRA LE TOKEN REGISTRADO SE REGISTRA EN LA BASE DE DATOS
                if (response.length() == 0) {
                    //Toast.makeText(MainActivity.this, "Si llego hasta aqui", Toast.LENGTH_SHORT).show();
                     RequestQueue queueInsertar = Volley.newRequestQueue(MainActivity.this);
@@ -115,7 +117,7 @@ public class MainActivity extends AppCompatActivity
         queue.add(stringRequest);
 
 
-
+        //PARA SABER SI ENTRA POR EL LADO DE LA NOTIFICACION
         if (identificador != null){
             //Toast.makeText(this, identificador, Toast.LENGTH_SHORT).show();
             if (identificador.equals("Notificacion")){
@@ -123,35 +125,6 @@ public class MainActivity extends AppCompatActivity
                 getSupportFragmentManager().beginTransaction().replace(R.id.content_main,miFragment).addToBackStack(null).commit();
             }
         }
-        /*else{
-
-
-            Log.i("url",URL);
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("En Proceso");
-            progressDialog.setMessage("Un momento...");
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.show();
-            RequestQueue queue = Volley.newRequestQueue(this);
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    progressDialog.hide();
-                    Toast.makeText(MainActivity.this, "Se registro el token", Toast.LENGTH_SHORT).show();
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.i("error",error.getMessage());
-
-                }
-            });
-            queue.add(stringRequest);
-        }
-
-            */
-
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -204,55 +177,37 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.Inicio){
             miFragment = new Inicio();
             fragmentSeleccionado = true;
-            //itemBuscar.setVisible(false);
-            //itemCarrito.setVisible(false);
         } else if (id == R.id.Catalogo) {
             miFragment = new Contenedor();
             fragmentSeleccionado=true;
-            //itemBuscar.setVisible(true);
-            //itemCarrito.setVisible(true);
         } else if (id == R.id.Clientes) {
             miFragment = new ClientesContenedor();
             fragmentSeleccionado = true;
-            //itemCarrito.setVisible(false);
-            //itemBuscar.setVisible(true);
 
         } else if (id == R.id.Creditos) {
-            //itemCarrito.setVisible(false);
-            //itemBuscar.setVisible(false);
             miFragment = new CreditosContenedor();
             fragmentSeleccionado = true;
 
 
         } else if (id == R.id.Reportes) {
-            //itemCarrito.setVisible(false);
-            //itemBuscar.setVisible(true);
             miFragment = new Reportes();
             fragmentSeleccionado = true;
 
 
         } else if (id == R.id.Ayuda) {
-            //itemCarrito.setVisible(false);
-            //itemBuscar.setVisible(false);
 
 
         } else if (id == R.id.Contacto) {
-           // itemCarrito.setVisible(false);
-            //itemBuscar.setVisible(false);
 
 
         }else if (id == R.id.InventarioG) {
             miFragment = new ContenedorInventarioGeneral();
             fragmentSeleccionado = true;
-            //itemCarrito.setVisible(false);
-            //itemBuscar.setVisible(true);
 
 
         }else if (id == R.id.Pedidos){
             miFragment = new PedidosFragment();
             fragmentSeleccionado = true;
-//            itemCarrito.setVisible(false);
-  //          itemBuscar.setVisible(false);
         }
 
         if (fragmentSeleccionado == true){

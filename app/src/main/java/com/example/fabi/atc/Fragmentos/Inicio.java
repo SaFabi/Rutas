@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -177,6 +178,22 @@ public class Inicio extends Fragment  implements SwipeRefreshLayout.OnRefreshLis
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.carrito) {
+            Fragment fragment = CarritoFragment.newInstance(inventarioPersonalAdapter.regresarcarrito());
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.content_main,fragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+
+            // Toast.makeText(getContext(), "SI entra a carrito", Toast.LENGTH_SHORT).show();
+        }
+
+        return super.onOptionsItemSelected(item);
+
+    }
 
     @Override
     public void onErrorResponse(VolleyError error) {

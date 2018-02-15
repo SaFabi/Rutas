@@ -108,7 +108,7 @@ public class Contenedor extends Fragment {
             appBAr.removeView(pestanas);
         }
     }
-//Guardar informaccion cuando interactua con otro fragmento
+//Guardar informacion cuando interactua con otro fragmento
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

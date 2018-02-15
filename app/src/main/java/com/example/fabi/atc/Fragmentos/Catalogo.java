@@ -182,12 +182,11 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.carrito) {
-            Fragment fragment = CarritoFragment.newInstance(1);
+            Fragment fragment = CarritoFragment.newInstance(inventarioPersonalAdapter.regresarcarrito());
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.content_main,fragment);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
-
 
            // Toast.makeText(getContext(), "SI entra a carrito", Toast.LENGTH_SHORT).show();
         }
