@@ -34,33 +34,30 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link TelefonosGeneral.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link TelefonosGeneral#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class TelefonosGeneral extends Fragment implements SearchView.OnQueryTextListener,Basic, Response.Listener<JSONArray>, Response.ErrorListener {
-    private static final String ARG_POSITION = "POSITION";
-    private int mPosition;
+    //FRAGMENTO PROBADO. ESTA DENTRO DE CONTENEDOR DE INVENTARIO GENERAL.MUESTRA LOS TELEFONOS
+
+    //VARIABLES
     String url;
-    ListView listView;
-    ProductosAdapter adapter;
     List<ModeloInventarioGeneral>lista;
+
+    //CONTROLES
+    ListView listView;
     private ProgressDialog progressDialog;
+
+    //ADAPTERS
+    ProductosAdapter adapter;
 
     private OnFragmentInteractionListener mListener;
 
     public TelefonosGeneral() {
-        // Required empty public constructor
+
     }
 
     public static TelefonosGeneral newInstance(int position) {
         TelefonosGeneral fragment = new TelefonosGeneral();
         Bundle args = new Bundle();
-        args.putInt(ARG_POSITION, position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -69,7 +66,6 @@ public class TelefonosGeneral extends Fragment implements SearchView.OnQueryText
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mPosition = getArguments().getInt(ARG_POSITION);
         }
     }
 
@@ -78,7 +74,9 @@ public class TelefonosGeneral extends Fragment implements SearchView.OnQueryText
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_telefonos_general, container, false);
+        //MUESTRA EL MENU DE OPCIONES EN LA TOOLBAR
         setHasOptionsMenu(true);
+
         listView= (ListView)view.findViewById(R.id.telefonosGeneral);
 
         progressDialog = new ProgressDialog(getContext());
@@ -121,7 +119,7 @@ public class TelefonosGeneral extends Fragment implements SearchView.OnQueryText
             mListener.onFragmentInteraction(uri);
         }
     }
-    //Infla el menu para el carrito y el buscador
+    //INFLA EL MENU DE OPCIONES
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem carrito = menu.findItem(R.id.carrito);
@@ -148,6 +146,7 @@ public class TelefonosGeneral extends Fragment implements SearchView.OnQueryText
         mListener = null;
     }
 
+    //RESPUESTA DE 
     @Override
     public void onErrorResponse(VolleyError error) {
         progressDialog.hide();

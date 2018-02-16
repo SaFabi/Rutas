@@ -564,7 +564,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
         return view;
     }
 
-    //Infla el menu para el carrito y el buscador
+    //INFLA EL MENU DE OPCIONES
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         //inflater.inflate(R.menu.menu_buscador,menu);
