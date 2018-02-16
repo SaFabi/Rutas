@@ -36,16 +36,17 @@ import org.json.JSONArray;
 
 
 public class PedidosFragment extends Fragment implements Basic {
-    // CONTROLES
+    //FRAGMENTO PROBADO.MUETSRA LA LISTA DE LOS PEDIDOS QUE LOS CLIENTES REALIZAN
+    // VARIABLES
+    int pedidoID;
+
+    //CONTROLES
     ListView listView;
     ProgressDialog progressDialog;
-    int pedidoID;
+
+    //ADAPTERS
     PedidosAdapter pedidosAdapter;
 
-    private static final String ARG_POSITION = "POSITION";
-
-    // TODO: Rename and change types of parameters
-    private int mPosition;
 
     private OnFragmentInteractionListener mListener;
 
@@ -56,7 +57,6 @@ public class PedidosFragment extends Fragment implements Basic {
     public static PedidosFragment newInstance(int position) {
         PedidosFragment fragment = new PedidosFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_POSITION, position);
 
         fragment.setArguments(args);
         return fragment;
@@ -66,7 +66,6 @@ public class PedidosFragment extends Fragment implements Basic {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mPosition= getArguments().getInt(ARG_POSITION);
         }
     }
 
@@ -75,7 +74,10 @@ public class PedidosFragment extends Fragment implements Basic {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_pedidos, container, false);
+
+        //MUESTRA EL MENU DE OPCIONES EN LA TOOLBAR
         setHasOptionsMenu(true);
+
         listView = (ListView)view.findViewById(R.id.listaPedidos);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -90,7 +92,7 @@ public class PedidosFragment extends Fragment implements Basic {
             }
         });
 
-        //Se declara el progress dialog para ejecutar despues la consulta
+        //SE INICIALIZA EL PROGRESS DIALOG
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
         progressDialog.setMessage("Un momento...");
@@ -142,7 +144,7 @@ public class PedidosFragment extends Fragment implements Basic {
         }
     }
 
-    //Infla el menu para el carrito y el buscador
+    //INFLA EL MENU DE OPCIONES
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         //inflater.inflate(R.menu.menu_buscador,menu);

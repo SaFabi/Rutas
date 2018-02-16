@@ -45,21 +45,20 @@ import java.util.List;
 
 public class ClientesActivos extends Fragment implements SearchView.OnQueryTextListener,SwipeRefreshLayout.OnRefreshListener,Basic{
 
-    private static final String ARG_POSITION = "param1";
+    //FRAGMENTO PROBADO.ESTA DENTRO DE CLIENTESCONTENEDOR.MUESTRA LOS CLIENTES ACTIVOS
+
+    //VARIABLES
     String url;
-    ListView listView;
-    rutasLib rutasObj;
     int clienteID;
     List<ModeloClientes> lista;
 
+    //CONTROLES
+    ListView listView;
     private ProgressDialog progressDialog;
-    AdapterClientes adapter;
     SwipeRefreshLayout contenedorClientesA;
 
-
-
-    // TODO: Rename and change types of parameters
-    private int mPosition;
+    //ADAPTERS
+    AdapterClientes adapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -72,7 +71,6 @@ public class ClientesActivos extends Fragment implements SearchView.OnQueryTextL
     public static ClientesActivos newInstance(int position) {
         ClientesActivos fragment = new ClientesActivos();
         Bundle args = new Bundle();
-        args.putInt(ARG_POSITION, position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -81,7 +79,6 @@ public class ClientesActivos extends Fragment implements SearchView.OnQueryTextL
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mPosition = getArguments().getInt(ARG_POSITION);
         }
 
     }
@@ -90,15 +87,15 @@ public class ClientesActivos extends Fragment implements SearchView.OnQueryTextL
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        //Crea la vista
         View view = inflater.inflate(R.layout.fragment_clientes_activos, container, false);
+        //MUESTRA EL MENU DE OPCIONES EN LA TOOLBAR
         setHasOptionsMenu(true);
 
-        //Se declaran los elementos con su id
         listView = (ListView) view.findViewById(R.id.clientesActivos);
         contenedorClientesA = (SwipeRefreshLayout)view.findViewById(R.id.contenedorClientesActivos);
         contenedorClientesA.setOnRefreshListener(this);
-        //Inicializa el progres dialog
+
+        //INICILAIZA EL PROGRESS DIALOG
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
         progressDialog.setMessage("Un momento...");
@@ -141,6 +138,7 @@ public class ClientesActivos extends Fragment implements SearchView.OnQueryTextL
         //Agrega y ejecuta la cola
         queue.add(request);
 
+        //PARA EJECUTAR LAS ACCIONES CUANDO SE DEJA PRESIONADO UN ITEM DEL LISTVIEW
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -229,17 +227,6 @@ public class ClientesActivos extends Fragment implements SearchView.OnQueryTextL
 
                         //Agrega y ejecuta la cola
                         queue.add(request);
-
-                        //PARA PASAR A OTRO FRAGMENTO
-                        /*Fragment nuevoFragmento = new ClientesInactivos();
-                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                        transaction.replace(R.id.content_main, nuevoFragmento);
-                        transaction.addToBackStack(null);
-
-                        // Commit a la transacción
-                        transaction.commit();
-                        */
-
                     }
                 });
                 dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -251,7 +238,7 @@ public class ClientesActivos extends Fragment implements SearchView.OnQueryTextL
                 return false;
             }
         });
-        //Parte que recarga el listview solamente si llega al tope
+        //RECARGA EL LISTVIEW SI LLEGA AL TOPE
         listView.setOnScrollListener(new AbsListView.OnScrollListener()
         {
             @Override
@@ -276,7 +263,7 @@ public class ClientesActivos extends Fragment implements SearchView.OnQueryTextL
             mListener.onFragmentInteraction(uri);
         }
     }
-    //Infla el menu para el carrito y el buscador
+    //INFLA LE MENU DE OPCIONES
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
        // inflater.inflate(R.menu.menu_buscador,menu);
@@ -302,6 +289,7 @@ public class ClientesActivos extends Fragment implements SearchView.OnQueryTextL
     }
 
 
+    //ACTUALIZAR EL LISTVIEW
     @Override
     public void onRefresh() {
         //Inicia la peticion

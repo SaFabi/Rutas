@@ -21,16 +21,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientesContenedor extends Fragment {
+    //FRAGMENTO PROBADO. ES EL CONTENEDOR DE LO RELACIONADO CON LOS CLIENTES
 
-    private OnFragmentInteractionListener mListener;
+    //VARIABLES
+    List<Fragment> fragmentos = new ArrayList<>();
+    List<String> titulos = new ArrayList<>();
     View vista;
+
+    //CONTROLES
     private AppBarLayout appBArClientes;
     private TabLayout pestanasClientes;
     private ViewPager viewPagerClientes;
-    rutasLib rutasObj;
-    List<Fragment> fragmentos = new ArrayList<>();
-    List<String> titulos = new ArrayList<>();
 
+    //ADAPTERS
+    rutasLib rutasObj;
+
+    private OnFragmentInteractionListener mListener;
 
     public ClientesContenedor() {
         // Required empty public constructor
@@ -58,6 +64,7 @@ public class ClientesContenedor extends Fragment {
         if (Utilidades.rotacion == 0){
             View parent = (View) container.getParent();
             if (appBArClientes==null){
+                //PERSONALIZAR LA BARRA
                 appBArClientes = parent.findViewById(R.id.appBar);
                 pestanasClientes =  new TabLayout(getActivity());
                 pestanasClientes.setTabTextColors(Color.parseColor("#FFFFFF"),Color.parseColor("#FFFFFF"));
@@ -65,14 +72,15 @@ public class ClientesContenedor extends Fragment {
 
                 viewPagerClientes =vista.findViewById(R.id.ViewPagerClientes);
 
-                //llena los Arrays de los fragmentos
+                //LLENA EL ARRAY DE LOS FRAGMENTOS
                 fragmentos.add(new RegistroClientes());
                 fragmentos.add(new ClientesActivos());
                 fragmentos.add(new ClientesInactivos());
-                //Manda los titulos
+                //LLENA EL ARRAY DE LOS TITULOS
                 titulos.add("Registrar");
                 titulos.add("Activos");
                 titulos.add("Inactivos");
+
                 viewPagerClientes.setAdapter(rutasObj.llenarViewPager(getFragmentManager(),fragmentos,titulos));
 
                 viewPagerClientes.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
@@ -88,13 +96,9 @@ public class ClientesContenedor extends Fragment {
         }else {
             Utilidades.rotacion = 1;
         }
-
-
-
         return vista;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);

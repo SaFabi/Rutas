@@ -38,8 +38,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class CreditosPendientes extends Fragment implements SwipeRefreshLayout.OnRefreshListener,Basic{
-    private static final String ARG_POSITION = "position";
-    private int mPosition;
+    //FRAGMENTO PROBADO.MUESTRA LOS CREDITOS QUE AUN ESTAN PENDIENTES. ESTA DENTRO DE CREDITOSCONTENEDOR
     //URL DE LA CONSULTA DEL PUNTO DE VENTA
     String url;
 
@@ -71,7 +70,6 @@ public class CreditosPendientes extends Fragment implements SwipeRefreshLayout.O
     public static CreditosPendientes newInstance(int position) {
         CreditosPendientes fragment = new CreditosPendientes();
         Bundle args = new Bundle();
-        args.putInt(ARG_POSITION,position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -80,7 +78,6 @@ public class CreditosPendientes extends Fragment implements SwipeRefreshLayout.O
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mPosition = getArguments().getInt(ARG_POSITION);
         }
     }
 
@@ -107,7 +104,7 @@ public class CreditosPendientes extends Fragment implements SwipeRefreshLayout.O
                 fragmentTransaction.commit();
             }
         });
-        //Parte que recarga el listview solamente si llega al tope
+        //RECARGA EL LISTIVIEW SI LLEGA AL TOPE
         listView.setOnScrollListener(new AbsListView.OnScrollListener()
         {
             @Override

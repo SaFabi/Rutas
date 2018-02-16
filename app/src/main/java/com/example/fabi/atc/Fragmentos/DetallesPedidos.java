@@ -26,10 +26,16 @@ import org.json.JSONObject;
 
 
 public class DetallesPedidos extends Fragment implements Basic {
+    //FRAGMENTO PROBANDO. SE MUESTRAN LOS DETALLES DE UN PEDIDO.
+    //VARIABLES
+    int pedidoID;
+
+    //CONTROLES
     ListView listView;
     TextView txtTotal;
     ProgressDialog progressDialog;
-    int pedidoID;
+
+    //ADAPTERS
     AdapterDetallesCreditos adapterDetallesCreditos;
 
     private OnFragmentInteractionListener mListener;

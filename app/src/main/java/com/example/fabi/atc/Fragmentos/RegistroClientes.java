@@ -40,12 +40,14 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class RegistroClientes extends Fragment implements Basic, Response.Listener<JSONArray>, Response.ErrorListener{
+    //FRAGMENTO PROBADO.PERMITE AÑADIR UN NUEVO CLIENTE A LA BASE DE DATOS
     //CONTROLES
     Spinner spinner;
     Button btnAgregar;
     EditText edtNombre, edtDireccion,edtTelefono,edtCorreo;
     EditText edtClave;
-    //VARIABLES NORMALES
+    private ProgressDialog progressDialog;
+    //VARIABLES
     String url;
     String urlClave;
    int ciudadID;
@@ -55,11 +57,6 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
     //ADAPTERS
     spinnerAdapter adapter;
 
-    private static final String ARG_POSITION = "POSITION";
-    private ProgressDialog progressDialog;
-
-    private int mPosition;
-
     private OnFragmentInteractionListener mListener;
     public RegistroClientes() {
         // Required empty public constructor
@@ -67,7 +64,6 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
     public static RegistroClientes newInstance(int position) {
         RegistroClientes fragment = new RegistroClientes();
         Bundle args = new Bundle();
-        args.putInt(ARG_POSITION, position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -75,7 +71,6 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mPosition= getArguments().getInt(ARG_POSITION);
         }
     }
     @Override
@@ -108,6 +103,7 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
                     progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                     progressDialog.show();
                     //Inicia la peticion
+                    //INSERTAR EN LA TABLA CLIENTE
                     RequestQueue queue = Volley.newRequestQueue(getContext());
                     String consulta = "INSERT INTO cliente (nombre,direccion,telefono,email,activo,ciudad_id) values('"+edtNombre.getText().toString()+
                             "','"+edtDireccion.getText().toString()+"','"+edtTelefono.getText().toString()+"','"+edtCorreo.getText().toString()+"',1,"+String.valueOf(ciudadID)+");";
@@ -145,7 +141,7 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
                                         ultimoUsuario = null;
                                     }
                                     if (ultimoUsuario != null){
-                                        //PARA SACAR EL ID DEL CLIENTE QUE SE ACABA DE REGISTRAR
+                                        //INSERTAR EN CLAVE CLIENTE
                                         //Inicia la peticion
                                         RequestQueue queue = Volley.newRequestQueue(getContext());
                                         String consulta = "INSERT INTO clave_cliente(numero,activo,cliente_id,puntoVenta_id) values ('"+Nuevaclave+"',1,"+ultimoUsuario+","+usuarioID+");";
@@ -156,8 +152,6 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
                                         JsonArrayRequest requestCC = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
                                             @Override
                                             public void onResponse(JSONArray response) {
-                                                // Toast.makeText(getContext(), urlClave, Toast.LENGTH_SHORT).show();
-                                                //Toast.makeText(getContext(), url, Toast.LENGTH_SHORT).show();
                                                 progressDialog.hide();
                                                 AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
                                                 dialogo1.setIcon(R.drawable.aceptar);
@@ -372,6 +366,7 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
         }
     }
 
+    //INFLA EL MENU DE OPCIONES
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -386,6 +381,7 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
 
     }
 
+    //RESPUESTA DE LA CONSULTA GENERAL
     @Override
     public void onErrorResponse(VolleyError error) {
         progressDialog.hide();

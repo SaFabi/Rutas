@@ -38,8 +38,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 public class CreditosLiquidados extends Fragment implements Basic {
-    private static final String ARG_POSITION = "position";
-    private int mPosition;
+    //FRAGMENTO PROBADO. MUESTRA LOS CREDITOS QUE YA ESTAN LIQUIDADOS. ESTA DENTRO DE CREDITOSCONTENEDOR
 
     //CONTROLES
     TextView txtPunVenta;
@@ -65,7 +64,6 @@ public class CreditosLiquidados extends Fragment implements Basic {
     public static CreditosLiquidados newInstance(int position) {
         CreditosLiquidados fragment = new CreditosLiquidados();
         Bundle args = new Bundle();
-        args.putInt(ARG_POSITION, position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -73,7 +71,6 @@ public class CreditosLiquidados extends Fragment implements Basic {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mPosition = getArguments().getInt(ARG_POSITION);
         }
     }
     @Override
@@ -211,7 +208,7 @@ public class CreditosLiquidados extends Fragment implements Basic {
             mListener.onFragmentInteraction(uri);
         }
     }
-    //Infla el menu para el carrito y el buscador
+    //INFLA EL MENU DE OPCIONES
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         //inflater.inflate(R.menu.menu_buscador,menu);

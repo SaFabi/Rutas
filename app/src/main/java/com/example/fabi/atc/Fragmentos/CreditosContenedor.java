@@ -21,8 +21,12 @@ import java.util.List;
 
 
 public class CreditosContenedor extends Fragment {
+    //FRAGMENTO PROBADO. CONTIENE LOS FRAGMENTOS DE CREDITO
     private OnFragmentInteractionListener mListener;
+    //VARIABLES
     View vista;
+    List<Fragment> fragmentosCreditos = new ArrayList<>();
+    List<String> titulosCreditos = new ArrayList<>();
 
     //CONTROLES
     private AppBarLayout appBAr;
@@ -32,9 +36,7 @@ public class CreditosContenedor extends Fragment {
     //ADAPTERS
     rutasLib rutasObj;
 
-    //LISTAS  PARA LOS FRAGMENTOS Y SUS TITULOS
-    List<Fragment> fragmentosCreditos = new ArrayList<>();
-    List<String> titulosCreditos = new ArrayList<>();
+
 
     public CreditosContenedor() {
         // Required empty public constructor

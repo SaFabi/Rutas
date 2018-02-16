@@ -30,12 +30,21 @@ import org.json.JSONObject;
 
 public class detallesCreditosPendientes extends Fragment  implements Basic{
 
-    private OnFragmentInteractionListener mListener;
+    //FRAGMENTO PROBADO. MUESTRA LOS DETALLES DE UN CREDITO PENDIENTE, SE LLAM DENTRO DE CREDITOS PENDIENTES
+
+    //VARIABLES
     int ordenID;
-    ProgressDialog progressDialog;
-    AdapterDetallesCreditos adapter;
+
+    //CONTROLES
     ListView listView;
     TextView txtMonto;
+    ProgressDialog progressDialog;
+
+    //ADAPTERS
+    AdapterDetallesCreditos adapter;
+
+    private OnFragmentInteractionListener mListener;
+
     public detallesCreditosPendientes() {
         // Required empty public constructor
     }
@@ -62,6 +71,8 @@ public class detallesCreditosPendientes extends Fragment  implements Basic{
         // Inflate the layout for this fragment
         View vista =  inflater.inflate(R.layout.fragment_detalles_creditos_pendientes, container, false);
         txtMonto = (TextView)vista.findViewById(R.id.txtTotalCreditos);
+
+        //INICIALIZA EL PROGRESS DIALOG
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
         progressDialog.setMessage("Un momento...");

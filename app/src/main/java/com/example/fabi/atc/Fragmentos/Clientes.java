@@ -46,20 +46,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Clientes extends Fragment implements SwipeRefreshLayout.OnRefreshListener,SearchView.OnQueryTextListener,Basic, Response.Listener<JSONArray>, Response.ErrorListener{
+    //FRAGMENTO PROBADO. ESTA DENTRO DEL CONTENEDOR DEL CATALOGO, MUESTRA LOS ACCESORIOS
 
-    //Fragmento para los accesorios
-    private static final String ARG_POSITION= "POSITION";
-
-    ListView listView;
-    rutasLib rutasObj;
+    //VARIABLES
     String url;
     List<ModeloInventarioPersonal> lista;
-    InventarioPersonalAdapter inventarioPersonalAdapter;
-    private ProgressDialog progressDialog;
-    private int  mPosition;
-    private OnFragmentInteractionListener mListener;
     int cantidadID;
+
+    //CONTROLES
+    ListView listView;
+    private ProgressDialog progressDialog;
     SwipeRefreshLayout contenedorClientesA;
+
+    //ADAPTERS
+    InventarioPersonalAdapter inventarioPersonalAdapter;
+
+    private OnFragmentInteractionListener mListener;
 
     public Clientes() {
     }
@@ -67,7 +69,6 @@ public class Clientes extends Fragment implements SwipeRefreshLayout.OnRefreshLi
     public static Clientes newInstance(int position) {
         Clientes fragment = new Clientes();
         Bundle args = new Bundle();
-        args.putInt(ARG_POSITION, position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -76,7 +77,6 @@ public class Clientes extends Fragment implements SwipeRefreshLayout.OnRefreshLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mPosition = getArguments().getInt(ARG_POSITION);
         }
     }
 
@@ -84,9 +84,10 @@ public class Clientes extends Fragment implements SwipeRefreshLayout.OnRefreshLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         View view = inflater.inflate(R.layout.fragment_clientes, container, false);
+        //MOSTRAR EL MENU DE OPCIONES EN LA TOOLBAR
         setHasOptionsMenu(true);
+
         listView= (ListView)view.findViewById(R.id.lvFClientes);
         contenedorClientesA = (SwipeRefreshLayout)view.findViewById(R.id.contenedorCatalogoAccesorios);
         contenedorClientesA.setOnRefreshListener(this);
@@ -99,6 +100,7 @@ public class Clientes extends Fragment implements SwipeRefreshLayout.OnRefreshLi
             }
         });
 
+        //INICIALIZA EL PROGRESS DIALOG
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
         progressDialog.setMessage("Un momento...");
@@ -129,7 +131,7 @@ public class Clientes extends Fragment implements SwipeRefreshLayout.OnRefreshLi
         //Agrega y ejecuta la cola
         queue.add(request);
 
-        //Parte que recarga el listview solamente si llega al tope
+        //RECARGA EL LISTIVIEW SOLO SI LLEGA AL TOPE
         listView.setOnScrollListener(new AbsListView.OnScrollListener()
         {
             @Override
@@ -155,7 +157,7 @@ public class Clientes extends Fragment implements SwipeRefreshLayout.OnRefreshLi
         }
     }
 
-   //Infla el menu para el carrito y el buscador
+   //INFLA EL MENU DE OPCIONES
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
        // inflater.inflate(R.menu.menu_buscador,menu);
@@ -195,6 +197,7 @@ public class Clientes extends Fragment implements SwipeRefreshLayout.OnRefreshLi
         return super.onOptionsItemSelected(item);
 
     }
+    //RESPUESTA DE LA CONSULTA GENERAL
     @Override
     public void onErrorResponse(VolleyError error) {
         progressDialog.hide();
@@ -247,6 +250,7 @@ public class Clientes extends Fragment implements SwipeRefreshLayout.OnRefreshLi
         return listaFiltrada;
     }
 
+    //PARA ACTUALIZAR EL LISTVIEW
     @Override
     public void onRefresh() {
         //Inicia la peticion

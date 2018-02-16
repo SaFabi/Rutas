@@ -42,20 +42,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Catalogo extends Fragment  implements SearchView.OnQueryTextListener,SwipeRefreshLayout.OnRefreshListener,Basic, Response.Listener<JSONArray>, Response.ErrorListener{
-
-    //Fragmento para los telefonos
-    private static final String ARG_POSITION = "POSITION";
+    //FRAGMENTO PROBADO, ESTA ASIGNADO AL CONTENEDOR DEL CATALOGO,MUESTRA LOS TÉLEFONOS
+    //VARIABLES
+    int cantidadID;
     String url;
-    ListView listView;
     List<ModeloInventarioPersonal>lista;
     List<ModeloInventarioPersonal>listacarrito;
-    InventarioPersonalAdapter inventarioPersonalAdapter;
+
+    //CONTROLES
+    ListView listView;
     private ProgressDialog progressDialog;
-    int cantidadID;
     SwipeRefreshLayout contenedorClientesA;
 
-    // TODO: Rename and change types of parameters
-    private int mPosition;
+    //ADAPTERS
+    InventarioPersonalAdapter inventarioPersonalAdapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -65,7 +65,6 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
     public static Catalogo newInstance(int position) {
         Catalogo fragment = new Catalogo();
         Bundle args = new Bundle();
-        args.putInt(ARG_POSITION, position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -75,7 +74,6 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mPosition = getArguments().getInt(ARG_POSITION);
         }
 
     }
@@ -84,10 +82,10 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        // Inflate the layout for this fragment
-
         View view = inflater.inflate(R.layout.fragment_catalogo, container, false);
+        //PARA MOSTRAR LAS OPCIONES DE LA TOOLBAR
         setHasOptionsMenu(true);
+
         listView= (ListView)view.findViewById(R.id.lvCatalogo);
 
         contenedorClientesA = (SwipeRefreshLayout)view.findViewById(R.id.contenedorCatalogoTelefonos);
@@ -101,6 +99,7 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
             }
         });
 
+        //INICIALIZAR EL PROGRESSDIALOG
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
         progressDialog.setMessage("Un momento...");
@@ -116,7 +115,8 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
                 "and ca.puntoVenta_id=pv.id " +
                 "and ca.articulo_id=a.id " +
                 "and a.tipoArticulo_id=ta.id " +
-                "and pv.id = "+usuarioID+" and ta.nombre='Teléfono' "+
+                "and pv.id = "+usuarioID+
+                " and ta.nombre='Teléfono' "+
                 "and ca.valor >0 "+
                 "order by ma.nombre asc ";
         consulta = consulta.replace(" ", "%20");
@@ -129,7 +129,8 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
 
         //Agrega y ejecuta la cola
         queue.add(request);
-        //Parte que recarga el listview solamente si llega al tope
+
+        //RECARGA EL LISTVIEW SOLAMENTE SI LLEGA AL TOPE
         listView.setOnScrollListener(new AbsListView.OnScrollListener()
         {
             @Override
@@ -155,7 +156,7 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
             mListener.onFragmentInteraction(uri);
         }
     }
-//Infla el menu para el carrito y el buscador
+    //INFLA EL MENU DE OPCIONES DE LA TOOLBAR
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem buscador = menu.findItem(R.id.buscador2);
@@ -195,6 +196,7 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
 
     }
 
+    //RESPUESTA DE LA CONSULTA GENERAL
     @Override
     public void onErrorResponse(VolleyError error) {
         progressDialog.hide();
@@ -211,7 +213,8 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
         listView.setAdapter(inventarioPersonalAdapter);
 
     }
-//PARA REALIZAR LAS BUSQUEDAS
+
+    //PARA REALIZAR LAS BUSQUEDAS
     @Override
     public boolean onQueryTextSubmit(String s) {
         return false;
@@ -246,6 +249,7 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
         return listaFiltrada;
     }
 
+    //PARA ACTUALIZAR EL LISTVIEW
     @Override
     public void onRefresh() {
         //Inicia la peticion

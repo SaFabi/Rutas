@@ -37,13 +37,18 @@ import java.util.List;
 
 public class ChipsGeneral extends Fragment  implements SearchView.OnQueryTextListener,Basic, Response.Listener<JSONArray>, Response.ErrorListener {
 
-    private static final String ARG_POSITION = "position";
-    private int mPosition;
+    //FRAGMENTO PROBADO.ESTA DENTRO DEL CONTENEDOR DEL INVENTARIO GENERAL
+
+    //VARIABLES
     String url;
-    ListView listView;
-    ProductosAdapter adapter;
     List<ModeloInventarioGeneral> lista;
+
+    //CONTROLES
+    ListView listView;
     private ProgressDialog progressDialog;
+
+    //ADAPTERS
+    ProductosAdapter adapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -54,7 +59,6 @@ public class ChipsGeneral extends Fragment  implements SearchView.OnQueryTextLis
     public static ChipsGeneral newInstance(int position) {
         ChipsGeneral fragment = new ChipsGeneral();
         Bundle args = new Bundle();
-        args.putInt(ARG_POSITION, position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -63,7 +67,6 @@ public class ChipsGeneral extends Fragment  implements SearchView.OnQueryTextLis
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mPosition = getArguments().getInt(ARG_POSITION);
         }
     }
 
@@ -72,9 +75,12 @@ public class ChipsGeneral extends Fragment  implements SearchView.OnQueryTextLis
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_chips_general, container, false);
-
+        //ASIGNACION DE CONTROLES
         listView= (ListView)view.findViewById(R.id.chipsGeneral);
+        //MOSTRAR EL MENU DE OPCIONES EN LA TOOLBAR
         setHasOptionsMenu(true);
+
+        //INICIALIZA EL PROGRESS DIALOG
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
         progressDialog.setMessage("Un momento...");
@@ -113,7 +119,7 @@ public class ChipsGeneral extends Fragment  implements SearchView.OnQueryTextLis
             mListener.onFragmentInteraction(uri);
         }
     }
-    //Infla el menu para el carrito y el buscador
+    //INFLA EL MENU DE OPCIONES
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem carrito = menu.findItem(R.id.carrito);
@@ -139,13 +145,14 @@ public class ChipsGeneral extends Fragment  implements SearchView.OnQueryTextLis
         super.onDetach();
         mListener = null;
     }
+
+    //REPSUESTA DE LA CONSULTA GENERAL
     @Override
     public void onErrorResponse(VolleyError error) {
         progressDialog.hide();
         Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
 
     }
-
     @Override
     public void onResponse(JSONArray response) {
         progressDialog.hide();
@@ -156,6 +163,7 @@ public class ChipsGeneral extends Fragment  implements SearchView.OnQueryTextLis
 
     }
 
+    //PARA LAS BUSQUEDAS
     @Override
     public boolean onQueryTextSubmit(String s) {
         return false;

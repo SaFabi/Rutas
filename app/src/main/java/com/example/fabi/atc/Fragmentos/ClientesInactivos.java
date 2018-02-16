@@ -45,18 +45,21 @@ import java.util.List;
 
 public class ClientesInactivos extends Fragment implements SearchView.OnQueryTextListener,SwipeRefreshLayout.OnRefreshListener,Basic{
 
-    private static final String ARG_POSITION = "POSITION";
+    //FRAGMENTO PROBADO.ESTA EN CLIENTESCONTENEDOR. MUESTRA LOS CLIENTES QUE NO ESTAN ACTIVOS
+
+    //VARIABLES
     String url;
-    ListView listView;
-    AdapterClientes adapter;
     int clienteID;
     List<ModeloClientes> lista;
+
+    //CONTROLES
+    ListView listView;
     private ProgressDialog progressDialog;
     private SwipeRefreshLayout contenedorClientesI;
     View vistaAlertActivar;
 
-    // TODO: Rename and change types of parameters
-    private int mPosition;
+    //ADAPTERS
+    AdapterClientes adapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -66,7 +69,6 @@ public class ClientesInactivos extends Fragment implements SearchView.OnQueryTex
     public static ClientesInactivos newInstance(int position) {
         ClientesInactivos fragment = new ClientesInactivos();
         Bundle args = new Bundle();
-        args.putInt(ARG_POSITION, position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -75,7 +77,6 @@ public class ClientesInactivos extends Fragment implements SearchView.OnQueryTex
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mPosition = getArguments().getInt(ARG_POSITION);
         }
     }
 
@@ -83,11 +84,13 @@ public class ClientesInactivos extends Fragment implements SearchView.OnQueryTex
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //Crea la vista
        View view = inflater.inflate(R.layout.fragment_clientes_inactivos, container, false);
+        //SE MUESTRA EL MENU DE OPCIONES EN LA TOOLBAR
         setHasOptionsMenu(true);
-        //Se declaran los elementos con su id
+        //SE ASIGNAN LOS CONTROLES
         contenedorClientesI = (SwipeRefreshLayout)view.findViewById(R.id.contenedorClientesInactivos);
         contenedorClientesI.setOnRefreshListener(this);
         listView = (ListView)view.findViewById(R.id.clientesInactivos);
+
         //PARA LENAR EL LISTVIEW CON LOS CLIENTES QUE ESTAN DESHABILITADOS
         //Se declara el progress dialog para ejecutar despues la consulta
         progressDialog = new ProgressDialog(getContext());
@@ -136,7 +139,7 @@ public class ClientesInactivos extends Fragment implements SearchView.OnQueryTex
 
 
 
-        //PARA AEJECUTAR LAS ACCIONES CUANDO SE DEJA PRESIONADO UN ITEM DEL LISTVIEW
+        //PARA EJECUTAR LAS ACCIONES CUANDO SE DEJA PRESIONADO UN ITEM DEL LISTVIEW
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -239,7 +242,8 @@ public class ClientesInactivos extends Fragment implements SearchView.OnQueryTex
                 return false;
             }
         });
-        //Parte que recarga el listview solamente si llega al tope
+
+        //RECARGA EL LISTVIEW SOLO SI LLEGA AL TOPE
         listView.setOnScrollListener(new AbsListView.OnScrollListener()
         {
             @Override
@@ -265,7 +269,7 @@ public class ClientesInactivos extends Fragment implements SearchView.OnQueryTex
             mListener.onFragmentInteraction(uri);
         }
     }
-    //Infla el menu para el carrito y el buscador
+    //INFLA EL MENU DE OPCIONES
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         //inflater.inflate(R.menu.menu_buscador,menu);
@@ -289,11 +293,7 @@ public class ClientesInactivos extends Fragment implements SearchView.OnQueryTex
         });
 
     }
-
-
-
-
-
+    //PARA ACTUALIZAR EL LISTVIEW
     @Override
     public void onRefresh() {
         RequestQueue queue = Volley.newRequestQueue(getContext());

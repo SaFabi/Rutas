@@ -52,33 +52,34 @@ import java.util.ArrayList;
 
 public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextListener {
 
-    private static final String ARG_POSITION = "position";
-    private int mPosition;
-    Button btnFechaInicio, btnFechaFin, btnConsultar;
-    EditText edtFechaInicio, edtFechaFin;
-    private int dia,mes, ano,dayI, monthI, yearI,dayF, monthF, yearF;
-    Spinner spinner;
-     rutasLib rutasObj;
+    //FRAGMENTO PROBADO, MUESTRA LAS OPCIONES DE LOS REPORTES DISPONIBLES
+
+    //VARIABLES
     ArrayList<Modelo> modelo;
     String fechaActual;
     ListView listView;
     String fechaInicial ="2017-08-12";
     String fechaFinal;
     String opcionSeleccionada;
+    private int dia,mes, ano,dayI, monthI, yearI,dayF, monthF, yearF;
+    //CONTROLES
+    Button btnFechaInicio, btnFechaFin, btnConsultar;
+    EditText edtFechaInicio, edtFechaFin;
+    Spinner spinner;
     ProgressDialog progressDialog;
-    ReportesAdapter adapter;
     TextView edtMonto;
+    //ADAPTERS
+    ReportesAdapter adapter;
+
     private OnFragmentInteractionListener mListener;
 
     public Reportes() {
-        // Required empty public constructor
     }
 
 
     public static Reportes newInstance(int position) {
         Reportes fragment = new Reportes();
         Bundle args = new Bundle();
-        args.putInt(ARG_POSITION, position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -87,7 +88,6 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mPosition = getArguments().getInt(ARG_POSITION);
         }
     }
 
@@ -118,7 +118,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
         fechaFinal = fechaActual;
 
 
-        //ADAPTER DEL MENU DEL OPCIONES DEL SPINNER
+        //ADAPTER DEL MENU DE OPCIONES DEL SPINNER
         spinnerSencilloAdapter spinnerSencilloAdapter = new spinnerSencilloAdapter(listaReportes(),getContext());
 
         spinner.setAdapter(spinnerSencilloAdapter);
@@ -151,8 +151,6 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
                         final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
                         Log.i("info", url);
-
-                        //PARA CALCULAR EL TOTAL DE COMISIONES GENERADAS EN UN LAPSO DE TIEMPO
                         //Hace la petición String
                         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
                             @Override
@@ -160,6 +158,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                 //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
                                 adapter = new ReportesAdapter(response,getContext());
                                 listView.setAdapter(adapter);
+                                //PARA CALCULAR EL TOTAL DE COMISIONES GENERADAS EN UN LAPSO DE TIEMPO
                                 //Inicia la peticion
                                 RequestQueue queuetotal = Volley.newRequestQueue(getContext());
                                 String consultatotal = "select sum(tac.total) " +
@@ -194,6 +193,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                             puntoVenta = null;
                                         }
                                         if (puntoVenta != null){
+                                            //SE ASIGNA EL RESULTADO DE LA CONSULTA EN EL EDITTEXT
                                             edtMonto.setText("TOTAL: $"+puntoVenta);
                                         }
 
@@ -247,8 +247,6 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                         String cadenaVentas = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaVentas;
                         final String urlVentas = SERVER + RUTA + "consultaGeneral.php" + cadenaVentas;
                         Log.i("info", urlVentas);
-
-                        //PARA CALCULAR EL TOTAL DE VENTAS REALIZADAS EN UN LAPSO DE TIEMPO
                         //Hace la petición String
                         JsonArrayRequest requestVentas = new JsonArrayRequest(Request.Method.GET, urlVentas, null, new Response.Listener<JSONArray>() {
                             @Override
@@ -256,6 +254,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                 //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
                                 adapter = new ReportesAdapter(response,getContext());
                                 listView.setAdapter(adapter);
+                                //PARA CALCULAR EL TOTAL DE VENTAS REALIZADAS EN UN LAPSO DE TIEMPO
                                 //Inicia la peticion
                                 RequestQueue queuetotal = Volley.newRequestQueue(getContext());
                                 String consultatotal ="select sum(ordc.total) " +
@@ -290,6 +289,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                             puntoVenta = null;
                                         }
                                         if (puntoVenta != null){
+                                            //SE ASIGNA EL RESULTADO DE LA CONSULTA  A UN EDITTEXT
                                             edtMonto.setText("TOTAL: $"+puntoVenta);
                                         }
 

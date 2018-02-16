@@ -46,18 +46,21 @@ import java.util.List;
 
 public class Inicio extends Fragment  implements SwipeRefreshLayout.OnRefreshListener,SearchView.OnQueryTextListener, Basic, Response.Listener<JSONArray>, Response.ErrorListener {
 
-    //Fragmento para los chips
-
-    private static final String ARG_POSITION= "POSITION";
-    private int mPosition;
+    //FRAGMENTO PROBADO. MUESTRA LOS CHIPS. ESTA EN EL CONTENEDOR
+    //VARIABLES
     String url;
-    ListView listView;
-    rutasLib rutasObj;
-    private ProgressDialog progressDialog;
-    List<ModeloInventarioPersonal> lista;
-    InventarioPersonalAdapter inventarioPersonalAdapter;
     int cantidadID;
+    List<ModeloInventarioPersonal> lista;
+
+    //CONTROLES
+    ListView listView;
+    private ProgressDialog progressDialog;
     SwipeRefreshLayout contenedorClientesA;
+
+    //ADAPTERS
+    InventarioPersonalAdapter inventarioPersonalAdapter;
+
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -68,7 +71,6 @@ public class Inicio extends Fragment  implements SwipeRefreshLayout.OnRefreshLis
     public static Inicio newInstance(int position) {
         Inicio fragment = new Inicio();
         Bundle args = new Bundle();
-        args.putInt(ARG_POSITION, position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -77,7 +79,6 @@ public class Inicio extends Fragment  implements SwipeRefreshLayout.OnRefreshLis
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mPosition= getArguments().getInt(ARG_POSITION);
         }
     }
 
@@ -85,9 +86,9 @@ public class Inicio extends Fragment  implements SwipeRefreshLayout.OnRefreshLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_inicio, container, false);
+        //PARA MOSTRAR EL MENU EN LA TOOLBAR
         setHasOptionsMenu(true);
         listView= (ListView)view.findViewById(R.id.lvInicio);
-
         contenedorClientesA = (SwipeRefreshLayout)view.findViewById(R.id.contenedorCatalogoChips);
         contenedorClientesA.setOnRefreshListener(this);
 
@@ -98,6 +99,8 @@ public class Inicio extends Fragment  implements SwipeRefreshLayout.OnRefreshLis
                 Toast.makeText(getContext(),String.valueOf(cantidadID),Toast.LENGTH_SHORT).show();
             }
         });
+
+        //INCIALIZA EL PROGRESS DIALOG
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
         progressDialog.setMessage("Un momento...");
@@ -128,7 +131,7 @@ public class Inicio extends Fragment  implements SwipeRefreshLayout.OnRefreshLis
         //Agrega y ejecuta la cola
         queue.add(request);
 
-        //Parte que recarga el listview solamente si llega al tope
+        //RECARGA EL LISTVIEW SI LLEGA AL TOPE
         listView.setOnScrollListener(new AbsListView.OnScrollListener()
         {
             @Override
@@ -153,7 +156,7 @@ public class Inicio extends Fragment  implements SwipeRefreshLayout.OnRefreshLis
             mListener.onFragmentInteraction(uri);
         }
     }
-    //Infla el menu para el carrito y el buscador
+    //INFLA EL MENU DE OPCIONES
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         //inflater.inflate(R.menu.menu_buscador,menu);
@@ -187,14 +190,13 @@ public class Inicio extends Fragment  implements SwipeRefreshLayout.OnRefreshLis
             fragmentTransaction.replace(R.id.content_main,fragment);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
-
-            // Toast.makeText(getContext(), "SI entra a carrito", Toast.LENGTH_SHORT).show();
         }
 
         return super.onOptionsItemSelected(item);
 
     }
 
+    //RESPUESTA DE LA CONSULTA GENERAL
     @Override
     public void onErrorResponse(VolleyError error) {
         progressDialog.hide();
@@ -213,6 +215,7 @@ public class Inicio extends Fragment  implements SwipeRefreshLayout.OnRefreshLis
 
     }
 
+    //PARA LAS BUSQUEDAS
     @Override
     public boolean onQueryTextSubmit(String s) {
         return false;
@@ -247,6 +250,7 @@ public class Inicio extends Fragment  implements SwipeRefreshLayout.OnRefreshLis
         return listaFiltrada;
     }
 
+    //ACTUALIZA EL LISTVIEW
     @Override
     public void onRefresh()
 

@@ -37,7 +37,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class RegistrarAbono extends Fragment  implements Basic{
-    //VARIABLES PARA OPERACIONES
+    //FRAGMENTO PROBADO. MUESTRA LOS ABONOS REALIZADOS DE UN DETERMINADO CREDITO Y PERMITE AGREGAR UNO NUEVO.
+    //VARIABLES
     int ordenID;
     int MontoTotal;
     int ClienteID;
@@ -45,7 +46,7 @@ public class RegistrarAbono extends Fragment  implements Basic{
     int SumaAbonos;
     View vistaAlertEliminar;
 
-    //CONTROLES DEL LAYOUT
+    //CONTROLES
     EditText edtMonto, edtAbono;
     ListView listView;
     ProgressDialog progressDialog;
@@ -184,7 +185,7 @@ public class RegistrarAbono extends Fragment  implements Basic{
                                                 if ((MontoTotal - SumaAbonos) == 0) {
 
 
-                                                //CONSULTA PATA ACTUALIZAR EL ESTADO DEL CREDITO A INACTIVO
+                                                //CONSULTA PARA ACTUALIZAR EL ESTADO DEL CREDITO A INACTIVO
                                                 RequestQueue queueActualizar = Volley.newRequestQueue(getContext());
                                                 String consultaActualizar = "update credito set estado=0 where id =" + CreditoID;
                                                 consultaActualizar = consultaActualizar.replace(" ", "%20");

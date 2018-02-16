@@ -23,15 +23,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Contenedor extends Fragment {
+    //FRAGMENTO PROBADO. CONTIENE  A LOS FRAGMENTOS DEL CATALOGO.
 
-    private OnFragmentInteractionListener mListener;
-    View vista;
+    //VARIABLES
+    List<Fragment> fragmentosCatalogo = new ArrayList<>();
+    List<String> titulosCatalogo = new ArrayList<>();
+
+
+    //CONTROLES
     private AppBarLayout appBAr;
     private TabLayout pestanas;
     private ViewPager viewPager;
+
+    //ADAPTERS
+    View vista;
     rutasLib rutasObj;
-    List<Fragment> fragmentosCatalogo = new ArrayList<>();
-    List<String> titulosCatalogo = new ArrayList<>();
+
+
+    private OnFragmentInteractionListener mListener;
 
 
     public Contenedor() {
@@ -69,17 +78,16 @@ public class Contenedor extends Fragment {
 
                 viewPager =vista.findViewById(R.id.ViewPagerInformacion);
 
-                //llena los Arrays de los fragmentos
-
+                //LLENA EL ARRAY CON LOS FRAGMENTOS
                fragmentosCatalogo.add(new Catalogo());
                 fragmentosCatalogo.add(new Inicio());
                 fragmentosCatalogo.add(new Clientes());
-                //Manda los titulos
+                //LLENA EL ARRAY CON LOS TITULOS
                 titulosCatalogo.add("Telefonos");
                 titulosCatalogo.add("Chips");
                 titulosCatalogo.add("Accesorios");
 
-                //Pone el Adapter en el ViewPager
+                //PONE EL ADAPTER EN EL VIEWPAGER
                 viewPager.setAdapter(rutasObj.llenarViewPager(getFragmentManager(),fragmentosCatalogo,titulosCatalogo));
 
                 viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){

@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +25,9 @@ import com.android.volley.toolbox.Volley;
 import com.example.fabi.atc.Adapters.AdapterClientes;
 import com.example.fabi.atc.Adapters.InventarioPersonalAdapter;
 import com.example.fabi.atc.Adapters.carritoAdapter;
+import com.example.fabi.atc.Adapters.spinnerAdapter;
 import com.example.fabi.atc.Clases.Basic;
+import com.example.fabi.atc.Clases.Modelo;
 import com.example.fabi.atc.Clases.ModeloClientes;
 import com.example.fabi.atc.Clases.ModeloInventarioPersonal;
 import com.example.fabi.atc.R;
@@ -38,15 +42,22 @@ import java.util.ListIterator;
 
 
 public class CarritoFragment extends Fragment implements Basic {
+    //FRAGMENTO EN PROCESO, IMPLEMENTAR CARRITO PARA REGISTRAR VENTAS Y TERMINAR PEDIDOS
+
+    //VARIABLES
+    double Montototal;
+    static ArrayList<ModeloInventarioPersonal> carritoFinal;
+
+    //CONTROLES
     ProgressDialog progressDialog;
     ListView listView;
+    Spinner spinnerClientes;
+    TextView txtMonto;
+
+    //ADAPTERS
     AdapterClientes adapter;
     carritoAdapter carritoAdapter;
-    int Montototal;
 
-    private static final String ARG_POSITION = "POSITION";
-    private int mPosition;
-     static ArrayList<ModeloInventarioPersonal> carritoFinal = new ArrayList<>();
     private OnFragmentInteractionListener mListener;
 
     public CarritoFragment() {
@@ -54,7 +65,6 @@ public class CarritoFragment extends Fragment implements Basic {
     public static CarritoFragment newInstance(ArrayList<ModeloInventarioPersonal>carrito) {
         CarritoFragment fragment = new CarritoFragment();
         Bundle args = new Bundle();
-        carritoFinal =carrito;
         return fragment;
     }
 
@@ -62,7 +72,6 @@ public class CarritoFragment extends Fragment implements Basic {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mPosition = getArguments().getInt(ARG_POSITION);
         }
     }
 
@@ -71,17 +80,63 @@ public class CarritoFragment extends Fragment implements Basic {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
        View view = inflater.inflate(R.layout.fragment_carrito, container, false);
+        //ASIGNACION DE VARIABLES CON SUS CONTROLES
         listView = (ListView)view.findViewById(R.id.listaproductoscarrito);
-        TextView txtMonto = (TextView)view.findViewById(R.id.montototalcarrito);
-            carritoAdapter = new carritoAdapter(InventarioPersonalAdapter.carrito,getContext());
-            listView.setAdapter(carritoAdapter);
-        for (int i=0;i<carritoFinal.size();i++){
-            Montototal += Integer.parseInt(carritoFinal.get(i).getPrecio());
+        spinnerClientes = (Spinner)view.findViewById(R.id.spinnerclientescarrito);
+        txtMonto = (TextView)view.findViewById(R.id.montototalcarrito);
 
+        carritoFinal=new ArrayList<>();
+        carritoFinal=InventarioPersonalAdapter.carrito;
+
+        carritoAdapter = new carritoAdapter(carritoFinal,getContext());
+        listView.setAdapter(carritoAdapter);
+
+        //SI EL CARRITO TIENE PRODUCTOS SE CALCULA EL TOTAL
+        if (carritoFinal.size() >0){
+            for (int i=0;i<carritoFinal.size();i++){
+                double precioUnitario = Double.parseDouble(carritoFinal.get(i).getPrecio()) *Double.parseDouble(carritoFinal.get(i).getCantidad());
+                Montototal+=precioUnitario;
+            }
+        }else{
+            Toast.makeText(getContext(), "NO hay articulos en el carrito", Toast.LENGTH_SHORT).show();
+            Montototal=0.0;
         }
-        txtMonto.setText(String.valueOf(Montototal));
+        txtMonto.setText("Total: $"+String.valueOf(Montototal));
 
 
+        //Se declara el progress dialog para ejecutar despues la consulta
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setTitle("En Proceso");
+        progressDialog.setMessage("Un momento...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
+
+        //CONSULTA PARA LLENAR EL SPINNER CON LOS CLIENTES
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String consulta = "select cl.id, cc.numero "+
+                " from cliente cl, clave_cliente cc, punto_venta pv"+
+                " where cc.cliente_id = cl.id"+
+                " and  cc.puntoVenta_id = pv.id"+
+                " and pv.id ="+usuarioID;
+        consulta = consulta.replace(" ", "%20");
+        String cadena = "?host=" + HOST + "&db="+DB+ "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+        String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+        Log.i("info", url);
+        JsonArrayRequest requestClaveCliente = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                progressDialog.hide();
+                SpinnerAdapter spinnerAdapter= new spinnerAdapter(getContext(), Modelo.ListaSpinner(response));
+                spinnerClientes.setAdapter(spinnerAdapter);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        queue.add(requestClaveCliente);
 
         return view;
     }
@@ -91,6 +146,7 @@ public class CarritoFragment extends Fragment implements Basic {
             mListener.onFragmentInteraction(uri);
         }
     }
+
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }

@@ -19,28 +19,26 @@ import com.example.fabi.atc.R;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ContenedorInventarioGeneral.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ContenedorInventarioGeneral#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ContenedorInventarioGeneral extends Fragment {
-    private OnFragmentInteractionListener mListener;
-    View vista;
+    //FRAGMENTO PROBADO.CONTIENE LOS FRAGMENTOS DEL INVENTARIO GENERAL
+    //VARIABLES
+    List<Fragment> fragmentosInventario = new ArrayList<>();
+    List<String> titulosInventario = new ArrayList<>();
+
+    //CONTROLES
     private AppBarLayout appBArInventario;
     private TabLayout pestanasInventario;
     private ViewPager viewPagerINventario;
+
+    //ADAPTERS
+    View vista;
     rutasLib rutasObj;
-    List<Fragment> fragmentosInventario = new ArrayList<>();
-    List<String> titulosInventario = new ArrayList<>();
+
+    private OnFragmentInteractionListener mListener;
 
     public ContenedorInventarioGeneral() {
 
     }
-
 
     public static ContenedorInventarioGeneral newInstance(String param1, String param2) {
         ContenedorInventarioGeneral fragment = new ContenedorInventarioGeneral();

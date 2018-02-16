@@ -33,13 +33,20 @@ import java.util.List;
 
 
 public class AccesoriosGeneral extends Fragment  implements SearchView.OnQueryTextListener,Basic, Response.Listener<JSONArray>, Response.ErrorListener {
+    //FRAGMENTO PROBADO,ESTA DENTRO DEL CONTENEDOR DEL INVENTARIO GENERAL
+
+    //VARIABLES
     private static final String ARG_POSITION = "POSITION";
     private int mPosition;
     String url;
-    ListView listView;
-    ProductosAdapter adapter;
     List<ModeloInventarioGeneral>lista;
+    //CONTROLES
+    ListView listView;
     private ProgressDialog progressDialog;
+    //ADAPTERS
+    ProductosAdapter adapter;
+
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -69,8 +76,13 @@ public class AccesoriosGeneral extends Fragment  implements SearchView.OnQueryTe
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_accesorios_general, container, false);
 
+        //ASIGNACION DE VARIABLES CON SUS CONTROLES
         listView= (ListView)view.findViewById(R.id.accesoriosGeneral);
+
+        //PARA MOSTAR EL MENU DE OPCIONES
         setHasOptionsMenu(true);
+
+        //INICIALIZAR EL PROGRESSDIALOG
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
         progressDialog.setMessage("Un momento...");
@@ -110,7 +122,7 @@ public class AccesoriosGeneral extends Fragment  implements SearchView.OnQueryTe
         mListener = null;
     }
 
-    //Infla el menu para el carrito y el buscador
+    //INFLA EL MENU
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem carrito = menu.findItem(R.id.carrito);
@@ -131,6 +143,8 @@ public class AccesoriosGeneral extends Fragment  implements SearchView.OnQueryTe
             }
         });
     }
+
+    //LA RESPUESTA DE LA CONSULTA
     @Override
     public void onErrorResponse(VolleyError error) {
         progressDialog.hide();
@@ -149,6 +163,7 @@ public class AccesoriosGeneral extends Fragment  implements SearchView.OnQueryTe
 
     }
 
+    //PARFA LA IMPLEMENTACION DE LAS BUSQUEDAS
     @Override
     public boolean onQueryTextSubmit(String s) {
         return false;
