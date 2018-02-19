@@ -67,6 +67,7 @@ public class carritoAdapter extends BaseAdapter {
             modelo.setText(getItem(i).getModelo());
             precio.setText(getItem(i).getPrecio());
             cantidad.setText(getItem(i).getCantidad());
+
             btnsumar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
