@@ -146,7 +146,7 @@ public class TelefonosGeneral extends Fragment implements SearchView.OnQueryText
         mListener = null;
     }
 
-    //RESPUESTA DE 
+    //RESPUESTA DE
     @Override
     public void onErrorResponse(VolleyError error) {
         progressDialog.hide();
@@ -154,7 +154,6 @@ public class TelefonosGeneral extends Fragment implements SearchView.OnQueryText
         //Toast.makeText(getContext(),"Chips   "+ url, Toast.LENGTH_SHORT).show();
 
     }
-
     @Override
     public void onResponse(JSONArray response) {
         progressDialog.hide();

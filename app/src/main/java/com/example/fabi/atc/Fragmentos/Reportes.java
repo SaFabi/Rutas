@@ -58,7 +58,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
     ArrayList<Modelo> modelo;
     String fechaActual;
     ListView listView;
-    String fechaInicial ="2017-08-12";
+    String fechaInicial;
     String fechaFinal;
     String opcionSeleccionada;
     private int dia,mes, ano,dayI, monthI, yearI,dayF, monthF, yearF;
@@ -114,8 +114,9 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
         mes = c.get(Calendar.MONTH) +1;
         ano=c.get(Calendar.YEAR);
         fechaActual = ano+"/"+mes+"/"+dia;
-        Toast.makeText(getContext(), fechaActual, Toast.LENGTH_SHORT).show();
-        fechaFinal = fechaActual;
+        fechaInicial = ano+"/"+mes+"/"+dia;
+       // Toast.makeText(getContext(), fechaActual, Toast.LENGTH_SHORT).show();
+        //fechaFinal = fechaActual;
 
 
         //ADAPTER DEL MENU DE OPCIONES DEL SPINNER
@@ -184,19 +185,21 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                         }catch (Exception e){
                                             jsonObject = new JSONObject();
                                         }
-
-
                                         try {
                                           puntoVenta= jsonObject.getString("0");
 
                                         }catch (Exception e){
                                             puntoVenta = null;
                                         }
+
+                                        Toast.makeText(getContext(),puntoVenta, Toast.LENGTH_SHORT).show();
                                         if (puntoVenta != null){
+                                            edtMonto.setText("TOTAL: $0.0");
                                             //SE ASIGNA EL RESULTADO DE LA CONSULTA EN EL EDITTEXT
+
+                                        }else {
                                             edtMonto.setText("TOTAL: $"+puntoVenta);
                                         }
-
                                     }
                                 }, new Response.ErrorListener() {
                                     @Override
@@ -288,8 +291,12 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                         }catch (Exception e){
                                             puntoVenta = null;
                                         }
+                                        Toast.makeText(getContext(),puntoVenta, Toast.LENGTH_SHORT).show();
                                         if (puntoVenta != null){
+                                            edtMonto.setText("TOTAL: $0.0");
                                             //SE ASIGNA EL RESULTADO DE LA CONSULTA  A UN EDITTEXT
+
+                                        }else{
                                             edtMonto.setText("TOTAL: $"+puntoVenta);
                                         }
 
@@ -433,7 +440,11 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                     }catch (Exception e){
                                         puntoVenta = null;
                                     }
-                                    if (puntoVenta != null){
+                                    Toast.makeText(getContext(),puntoVenta, Toast.LENGTH_SHORT).show();
+                                    if (puntoVenta == null){
+                                        edtMonto.setText("TOTAL: $0.0");
+
+                                    }else{
                                         edtMonto.setText("TOTAL: $"+puntoVenta);
                                     }
 
@@ -527,8 +538,13 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
 
                                     }catch (Exception e){
                                         puntoVenta = null;
+
                                     }
+                                    Toast.makeText(getContext(),puntoVenta, Toast.LENGTH_SHORT).show();
                                     if (puntoVenta != null){
+                                        edtMonto.setText("TOTAL: $0.0");
+
+                                    }else{
                                         edtMonto.setText("TOTAL: $"+puntoVenta);
                                     }
 

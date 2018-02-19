@@ -45,6 +45,7 @@ public class CarritoFragment extends Fragment implements Basic {
     //FRAGMENTO EN PROCESO, IMPLEMENTAR CARRITO PARA REGISTRAR VENTAS Y TERMINAR PEDIDOS
 
     //VARIABLES
+    double precioUnitario;
     double Montototal;
     static ArrayList<ModeloInventarioPersonal> carritoFinal;
 
@@ -62,7 +63,7 @@ public class CarritoFragment extends Fragment implements Basic {
 
     public CarritoFragment() {
     }
-    public static CarritoFragment newInstance(ArrayList<ModeloInventarioPersonal>carrito) {
+    public static CarritoFragment newInstance(int OrdenID) {
         CarritoFragment fragment = new CarritoFragment();
         Bundle args = new Bundle();
         return fragment;
@@ -91,10 +92,11 @@ public class CarritoFragment extends Fragment implements Basic {
         carritoAdapter = new carritoAdapter(carritoFinal,getContext());
         listView.setAdapter(carritoAdapter);
 
+
         //SI EL CARRITO TIENE PRODUCTOS SE CALCULA EL TOTAL
         if (carritoFinal.size() >0){
             for (int i=0;i<carritoFinal.size();i++){
-                double precioUnitario = Double.parseDouble(carritoFinal.get(i).getPrecio()) *Double.parseDouble(carritoFinal.get(i).getCantidad());
+                precioUnitario= Double.parseDouble(carritoFinal.get(i).getPrecio()) *Double.parseDouble(carritoFinal.get(i).getCantidad());
                 Montototal+=precioUnitario;
             }
         }else{

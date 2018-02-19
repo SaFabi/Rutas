@@ -18,10 +18,11 @@
         android:layout_height="50dp"/>
 
    <Button
+       android:drawableEnd="@drawable/ic_calendario1"
        android:layout_below="@id/spinnerReportes"
        android:id="@+id/btnFechaInicial"
        android:text="DE:"
-       android:layout_width="wrap_content"
+       android:layout_width="100dp"
        android:layout_height="wrap_content" />
     <EditText
         android:layout_toStartOf="@id/btnConsultar"
@@ -35,10 +36,11 @@
         android:layout_height="wrap_content" />
 
     <Button
+        android:drawableEnd="@drawable/ic_calendario1"
         android:layout_below="@id/btnFechaInicial"
         android:id="@+id/btnFechaFinal"
         android:text="HASTA:"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content" />
     <EditText
         android:layout_toStartOf="@id/btnConsultar"

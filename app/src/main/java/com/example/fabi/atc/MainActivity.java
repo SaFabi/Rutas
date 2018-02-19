@@ -109,14 +109,12 @@ public class MainActivity extends AppCompatActivity
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i("error",error.getMessage());
+               // Log.i("error",error.getMessage());
                 Toast.makeText(MainActivity.this, "Error en el web service consulta", Toast.LENGTH_SHORT).show();
 
             }
         });
         queue.add(stringRequest);
-
-
         //PARA SABER SI ENTRA POR EL LADO DE LA NOTIFICACION
         if (identificador != null){
             //Toast.makeText(this, identificador, Toast.LENGTH_SHORT).show();

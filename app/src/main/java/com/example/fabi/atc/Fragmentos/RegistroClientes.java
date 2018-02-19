@@ -119,7 +119,7 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
                             //PARA SACAR EL ID DEL CLIENTE QUE SE ACABA DE REGISTRAR
                             //Inicia la peticion
                             RequestQueue queue = Volley.newRequestQueue(getContext());
-                            String consulta = "SELECT id FROM cliente ORDER BY id desc limit 1";
+                            String consulta = "SELECT id FROM cliente WHERE nombre='"+edtNombre.getText().toString()+"' and telefono='"+edtTelefono.getText().toString()+"' and email='"+edtCorreo.getText().toString();
                             consulta = consulta.replace(" ", "%20");
                             String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
                             final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;

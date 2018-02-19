@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.fabi.atc.Clases.ModeloInventarioPersonal;
 import com.example.fabi.atc.R;
@@ -21,6 +22,9 @@ import java.util.ArrayList;
 public class carritoAdapter extends BaseAdapter {
     ArrayList<ModeloInventarioPersonal>carrito = new ArrayList<>();
      Context context;
+    Button btnEliminar;
+    Button btnsumar;
+    Button btnrestar;
 
     public carritoAdapter(ArrayList<ModeloInventarioPersonal> carrito, Context context) {
         this.carrito = carrito;
@@ -43,7 +47,7 @@ public class carritoAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(final int i, View view, ViewGroup viewGroup) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         View vista = view;
         if (vista == null) {
@@ -54,8 +58,10 @@ public class carritoAdapter extends BaseAdapter {
             TextView modelo = (TextView)vista.findViewById(R.id.txtMarcayModelo);
             TextView precio = (TextView)vista.findViewById(R.id.txtPrecioCarrito);
             final EditText cantidad = (EditText)vista.findViewById(R.id.edtCantidadCarrito);
-            Button btnsumar = (Button)vista.findViewById(R.id.btnSumarCarrito);
-            Button btnrestar = (Button)vista.findViewById(R.id.btnRestarCarrito);
+
+            btnsumar = (Button)vista.findViewById(R.id.btnSumarCarrito);
+            btnrestar = (Button)vista.findViewById(R.id.btnRestarCarrito);
+            btnEliminar = (Button)vista.findViewById(R.id.eliminarCarrito);
 
             marca.setText(getItem(i).getMarca());
             modelo.setText(getItem(i).getModelo());
@@ -74,7 +80,7 @@ public class carritoAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View view) {
                     int CantidadActual = Integer.parseInt(cantidad.getText().toString());
-                    if (CantidadActual ==0){
+                    if (CantidadActual == 0){
 
                     }else{
                         CantidadActual= CantidadActual-1;
@@ -82,6 +88,18 @@ public class carritoAdapter extends BaseAdapter {
                     }
                 }
             });
+
+        btnEliminar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                carrito.remove(i);
+                notifyDataSetChanged();
+            }
+        });
+        if (carrito.size() == 0){
+            Toast.makeText(context, "No hay articulos en el carrito", Toast.LENGTH_SHORT).show();
+        }
+
         return vista;
     }
 }

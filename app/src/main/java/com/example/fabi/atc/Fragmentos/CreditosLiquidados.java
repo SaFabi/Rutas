@@ -93,7 +93,7 @@ public class CreditosLiquidados extends Fragment implements Basic {
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 progressDialog.show();
 
-                //CONSULTA PATA OBTENER TODOS LOS CREDITOS REGISTRADOS DE UN CLIENTE EN ESPECIFICO
+                //CONSULTA PARA OBTENER TODOS LOS CREDITOS REGISTRADOS DE UN CLIENTE EN ESPECIFICO
                 RequestQueue queueCreditos = Volley.newRequestQueue(getContext());
                 String consultaCreditos = "select distinct ord.id,ord.folio,DATE(ord.fecha),CONCAT(pv.tipo,'-',cc.numero),cre.total, cli.id,cre.id"+
                         " from orden ord,credito cre, punto_venta pv, cliente cli, clave_cliente cc"+
