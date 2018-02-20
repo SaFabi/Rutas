@@ -295,7 +295,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                         }catch (Exception e){
                                             puntoVenta = null;
                                         }
-                                        Toast.makeText(getContext(),puntoVenta, Toast.LENGTH_SHORT).show();
+                                        //Toast.makeText(getContext(),puntoVenta, Toast.LENGTH_SHORT).show();
                                         if (puntoVenta.equals("")){
                                             edtMonto.setText("TOTAL: $0.0");
                                             //SE ASIGNA EL RESULTADO DE LA CONSULTA  A UN EDITTEXT
@@ -444,7 +444,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                     }catch (Exception e){
                                         puntoVenta = null;
                                     }
-                                    Toast.makeText(getContext(),puntoVenta, Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(getContext(),puntoVenta, Toast.LENGTH_SHORT).show();
                                     if (puntoVenta == null){
                                         edtMonto.setText("TOTAL: $0.0");
 
@@ -544,7 +544,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                         puntoVenta = null;
 
                                     }
-                                    Toast.makeText(getContext(),puntoVenta, Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(getContext(),puntoVenta, Toast.LENGTH_SHORT).show();
                                     if (puntoVenta != null){
                                         edtMonto.setText("TOTAL: $0.0");
 

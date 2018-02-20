@@ -42,214 +42,31 @@ import java.util.List;
 public class rutasLib implements  Basic {
 
     //URL de la ubicacion de las imagenes en el servidor
-      public static  String URL = "http://192.168.1.91/CatalogoATC/img/";
+    public static String URL = "http://192.168.1.91/CatalogoATC/img/";
 
-    //Ruta para las consultas
-    public static String Consulta = "http://192.168.1.91/CatalogoATC/";
 
     //Declaracion de Variables
-     private static ReportesAdapter adapter ;
-     private static  ProgressDialog progressDialog;
+    private static ReportesAdapter adapter;
+    private static ProgressDialog progressDialog;
 
     //Metodo para llenar un ViewPager con los titulos y los fragmentos
-    public  static CatalogoAdapter llenarViewPager(FragmentManager fragmentManager, List<Fragment> fragments,List<String> titulos) {
+    public static CatalogoAdapter llenarViewPager(FragmentManager fragmentManager, List<Fragment> fragments, List<String> titulos) {
         CatalogoAdapter adapter = new CatalogoAdapter(fragmentManager);
-            adapter.agregarFragmentos(fragments,titulos);
-        return adapter;
-    }
-    //Consulta para regresar los clientes que estan activos de una ruta en especifico
-    public static ReportesAdapter ConsultaClientesActivos(final Context context) {
-
-        //Inicializa el progres dialog
-        progressDialog = new ProgressDialog(context);
-        progressDialog.setTitle("En Proceso");
-        progressDialog.setMessage("Un momento...");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.show();
-
-        //Inicia la peticion
-        RequestQueue queue = Volley.newRequestQueue(context);
-         String consulta = "select cl.id,cl.nombre, cl.direccion,cl.telefono,CONCAT(pv.tipo,'-',cc.numero) " +
-                "from cliente cl, clave_cliente cc, punto_venta pv " +
-                "where cc.puntoVenta_id = pv.id " +
-                "and cc.cliente_id = cl.id " +
-                " and pv.id="+usuarioID+" and cc.activo = true";
-        consulta = consulta.replace(" ", "%20");
-        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
-         final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
-        Log.i("info", url);
-
-        //Hace la petición String
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                progressDialog.hide();
-                 //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
-               adapter = new ReportesAdapter(response,context);
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progressDialog.hide();
-                Toast.makeText(context, "Error en el WebService", Toast.LENGTH_SHORT).show();
-                Toast.makeText(context,  "Activos   "+url, Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-        //Agrega y ejecuta la cola
-        queue.add(request);
-        return adapter;
-    }
-    //Consulta para regresar los clientes que estan activos de una ruta en especifico
-    public static ReportesAdapter ReporteComisiones(final Context context, String fechaInicial, String fechaFinal, int idPuntoVenta) {
-
-        //Inicializa el progres dialog
-        progressDialog = new ProgressDialog(context);
-        progressDialog.setTitle("En Proceso");
-        progressDialog.setMessage("Un momento...");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.show();
-
-        //Inicia la peticion
-        RequestQueue queue = Volley.newRequestQueue(context);
-        String consulta = "select ord.folio,CONCAT('$',tac.total),DATE(ord.fecha),pv.tipo " +
-                "from totalarticulo_comision tac,orden ord,punto_venta pv " +
-                "where tac.orden_id=ord.id " +
-                "and ord.puntoVenta_id=pv.id " +
-                "and pv.id="+idPuntoVenta+
-                " and tac.total>0"+
-                " and DATE(ord.fecha)>"+"'"+fechaInicial+"'"+
-                " and DATE(ord.fecha)<"+"'"+fechaFinal+"'";
-        consulta = consulta.replace(" ", "%20");
-        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
-        final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
-        Log.i("info", url);
-
-        //Hace la petición String
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                progressDialog.hide();
-                //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
-                adapter = new ReportesAdapter(response,context);
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progressDialog.hide();
-                Toast.makeText(context, "Error en el WebService", Toast.LENGTH_SHORT).show();
-                Toast.makeText(context,  "Activos   "+url, Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-        //Agrega y ejecuta la cola
-        queue.add(request);
+        adapter.agregarFragmentos(fragments, titulos);
         return adapter;
     }
 
-    //Consulta para regresar los clientes que estan activos de una ruta en especifico
-    public static ReportesAdapter ReporteVentas(final Context context, String fechaInicial, String fechaFinal, int idPuntoVenta) {
+    public String generarFolio(String folio, Context context){
+        String nuevoFolio="";
+        int position=0;
+        for (int i=0; i<folio.length();i++){
+           if (folio.charAt(i) == '/'){
+               Toast.makeText(context,String.valueOf(i), Toast.LENGTH_SHORT).show();
 
-        //Inicializa el progres dialog
-        progressDialog = new ProgressDialog(context);
-        progressDialog.setTitle("En Proceso");
-        progressDialog.setMessage("Un momento...");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.show();
+           }
 
-        //Inicia la peticion
-        RequestQueue queue = Volley.newRequestQueue(context);
-        String consulta = "select distinct ord.folio, CONCAT('$',ordc.total),DATE(ord.fecha),CONCAT(pv.tipo,'-',cc.numero) " +
-                "from orden ord, orden_completa ordc, punto_venta pv, cliente cli, clave_cliente cc " +
-                "where ordc.orden_id = ord.id " +
-                "and ord.puntoVenta_id = pv.id " +
-                "and ord.cliente_id = cli.id " +
-                "and cc.cliente_id =cli.id " +
-                " and pv.id="+idPuntoVenta+
-                " and ordc.total>0"+
-                " and DATE(ord.fecha)>"+"'"+fechaInicial+"'"+
-                " and DATE(ord.fecha)<"+"'"+fechaFinal+"'";
-        consulta = consulta.replace(" ", "%20");
-        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
-        final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
-        Log.i("info", url);
+        }
 
-        //Hace la petición String
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                progressDialog.hide();
-                //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
-                adapter = new ReportesAdapter(response,context);
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progressDialog.hide();
-                Toast.makeText(context, "Error en el WebService", Toast.LENGTH_SHORT).show();
-                Toast.makeText(context,  "Activos   "+url, Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-        //Agrega y ejecuta la cola
-        queue.add(request);
-        return adapter;
+        return nuevoFolio;
     }
-
-    //Consulta para regresar los clientes que estan activos de una ruta en especifico
-    public static ReportesAdapter ReporteCreditos(final Context context,String claveCliente, int idPuntoVenta) {
-
-        //Inicializa el progres dialog
-        progressDialog = new ProgressDialog(context);
-        progressDialog.setTitle("En Proceso");
-        progressDialog.setMessage("Un momento...");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.show();
-
-        //Inicia la peticion
-        RequestQueue queue = Volley.newRequestQueue(context);
-        String consulta = "select distinct ord.folio, CONCAT('$',cre.total),DATE(ord.fecha),CONCAT(pv.tipo,'-',cc.numero) " +
-                            "from orden ord,credito cre, punto_venta pv, cliente cli, clave_cliente cc " +
-                            "where cre.orden_id = ord.id " +
-                            "and ord.puntoVenta_id = pv.id  " +
-                            "and ord.cliente_id = cli.id  " +
-                            "and cc.cliente_id =cli.id  " +
-                            "and pv.id=" +idPuntoVenta+
-                            " and cre.total>0 " +
-                            "and cc.numero ="+claveCliente;
-        consulta = consulta.replace(" ", "%20");
-        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
-        final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
-        Log.i("info", url);
-
-        //Hace la petición String
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                progressDialog.hide();
-                //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
-                adapter = new ReportesAdapter(response,context);
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progressDialog.hide();
-                Toast.makeText(context, "Error en el WebService", Toast.LENGTH_SHORT).show();
-                Toast.makeText(context,  "Activos   "+url, Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-        //Agrega y ejecuta la cola
-        queue.add(request);
-        return adapter;
-    }
-
 }

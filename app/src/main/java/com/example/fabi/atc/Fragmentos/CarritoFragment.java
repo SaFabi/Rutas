@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
@@ -33,6 +34,7 @@ import com.example.fabi.atc.Clases.ModeloCarrito;
 import com.example.fabi.atc.Clases.ModeloClientes;
 import com.example.fabi.atc.Clases.ModeloInventarioPersonal;
 import com.example.fabi.atc.Clases.ModeloPedidos;
+import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
 
 import org.json.JSONArray;
@@ -53,12 +55,14 @@ public class CarritoFragment extends Fragment implements Basic {
     double precioUnitario;
     double Montototal;
     static ArrayList<ModeloInventarioPersonal> carritoFinal;
+    rutasLib rutasObj =new rutasLib();
 
     //CONTROLES
     ProgressDialog progressDialog;
     ListView listView;
     Spinner spinnerClientes;
     TextView txtMonto;
+    Button btnTerminarVenta;
 
     //ADAPTERS
     AdapterClientes adapter;
@@ -94,6 +98,58 @@ public class CarritoFragment extends Fragment implements Basic {
         listView = (ListView)view.findViewById(R.id.listaproductoscarrito);
         spinnerClientes = (Spinner)view.findViewById(R.id.spinnerclientescarrito);
         txtMonto = (TextView)view.findViewById(R.id.montototalcarrito);
+        btnTerminarVenta = (Button)view.findViewById(R.id.btnterminarcompra);
+
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setTitle("En Proceso");
+        progressDialog.setMessage("Un momento...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
+
+        //PARA TERMINAR LA VENTA
+        btnTerminarVenta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                RequestQueue queue = Volley.newRequestQueue(getContext());
+                String consulta = "select folio from orden ORDER BY id desc LIMIT 1;";
+                consulta = consulta.replace(" ", "%20");
+                String cadenaClaveCliente = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+                String  url = SERVER + RUTA + "consultaGeneral.php" + cadenaClaveCliente;
+                Log.i("info", url);
+                JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        String folio;
+                        String nuevoFolio;
+                        JSONObject jsonObject;
+                        try {
+                            jsonObject =response.getJSONObject(0);
+                        }catch (Exception e){
+                            jsonObject = new JSONObject();
+                        }
+                        try {
+                           folio= jsonObject.getString("0");
+
+                        }catch (Exception e){
+                            folio = null;
+                        }
+                        rutasObj.generarFolio(folio,getContext());
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                });
+                queue.add(request);
+
+
+            }
+
+
+        });
 
         Toast.makeText(getContext(),String.valueOf(OrdenID), Toast.LENGTH_SHORT).show();
         if (OrdenID == 0){
@@ -116,14 +172,10 @@ public class CarritoFragment extends Fragment implements Basic {
             }
             txtMonto.setText("Total: $"+String.valueOf(Montototal));
         }else{
+
             //SI ENTRA POR LA PARTE DE PEDIDO
-            //SE INICIALIZA EL PROGRESS DIALOG
-            progressDialog = new ProgressDialog(getContext());
-            progressDialog.setTitle("En Proceso");
-            progressDialog.setMessage("Un momento...");
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.show();
-            //PARA LA CONSULTA DE LAS CLAVES DE LOS CLIENTES EN EL SPINNER
+
+            //EJECUTA LA CONSULTA PARA OBTENER LOS DETALLES DE ESE PEDIDO
             RequestQueue queue = Volley.newRequestQueue(getContext());
             String consulta = " SELECT orddesc.id,ma.nombre,mo.nombre,orddesc.precio_final,orddesc.cantidad" +
                     " FROM orden ord, marca ma, modelo mo, orden_descripcion orddesc,cantidad ca,articulo art" +
@@ -144,6 +196,7 @@ public class CarritoFragment extends Fragment implements Basic {
                     carritoAdapter= new carritoAdapter(carritoFinal,getContext());
                     listView.setAdapter(carritoAdapter);
 
+                    //EJECUTA LA CONSULTA PARA SUMAR EL TOTAL DE ESE PEDIDO
                     RequestQueue queueSuma = Volley.newRequestQueue(getContext());
                     String consultaSuma = " SELECT sum(orddesc.cantidad * orddesc.precio_final)" +
                             " FROM orden ord, marca ma, modelo mo, orden_descripcion orddesc,cantidad ca,articulo art" +
@@ -157,9 +210,10 @@ public class CarritoFragment extends Fragment implements Basic {
                     String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaSuma;
                     String  urlSuma = SERVER + RUTA + "consultaGeneral.php" + cadena;
                     Log.i("info", urlSuma);
-                    final JsonArrayRequest requestSuma = new JsonArrayRequest(Request.Method.GET, urlSuma, null, new Response.Listener<JSONArray>() {
+                    JsonArrayRequest requestSuma = new JsonArrayRequest(Request.Method.GET, urlSuma, null, new Response.Listener<JSONArray>() {
                         @Override
                         public void onResponse(JSONArray response) {
+                            //CALCULA EL TOTAL DE ESE PEDIDO
                             String resultadoSuma;
                             JSONObject jsonObject;
                             try {
@@ -167,19 +221,16 @@ public class CarritoFragment extends Fragment implements Basic {
                             }catch (Exception e){
                                 jsonObject = new JSONObject();
                             }
-
-
                             try {
                                 resultadoSuma= jsonObject.getString("0");
 
                             }catch (Exception e){
                                 resultadoSuma = null;
                             }
-                            Toast.makeText(getContext(),resultadoSuma, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getContext(),resultadoSuma, Toast.LENGTH_SHORT).show();
                             if (resultadoSuma.equals("")){
-                                txtMonto.setText("TOTAL: $0.0");
                                 //SE ASIGNA EL RESULTADO DE LA CONSULTA  A UN EDITTEXT
-
+                                txtMonto.setText("TOTAL: $0.0");
                             }else{
                                 txtMonto.setText("TOTAL: $"+resultadoSuma);
                             }
