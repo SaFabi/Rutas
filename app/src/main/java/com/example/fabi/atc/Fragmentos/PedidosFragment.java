@@ -122,7 +122,7 @@ public class PedidosFragment extends Fragment implements Basic {
             @Override
             public void onResponse(JSONArray response) {
                 progressDialog.hide();
-                pedidosAdapter = new PedidosAdapter(getContext(), ModeloPedidos.sacarListaClientes(response));
+                pedidosAdapter = new PedidosAdapter(getContext(), ModeloPedidos.sacarListaClientes(response),getFragmentManager());
                 listView.setAdapter(pedidosAdapter);
 
 

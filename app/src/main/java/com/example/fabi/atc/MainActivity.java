@@ -206,7 +206,10 @@ public class MainActivity extends AppCompatActivity
         }else if (id == R.id.Pedidos){
             miFragment = new PedidosFragment();
             fragmentSeleccionado = true;
+        }else if (id == R.id.Localizacion){
+
         }
+
 
         if (fragmentSeleccionado == true){
             getSupportFragmentManager().beginTransaction().replace(R.id.content_main,miFragment).addToBackStack(null).commit();

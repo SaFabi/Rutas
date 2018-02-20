@@ -8,29 +8,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Fabi on 22/01/2018.
+ * Created by Fabi on 20/02/2018.
  */
 
-public class ModeloInventarioPersonal {
-    int CantidadID;
+public class ModeloCarrito {
+    int OrdenDescID;
+    String marca,modelo,precio,cantidad;
 
-    String marca, modelo, precio, cantidad;
-
-    public ModeloInventarioPersonal(int CantidadID,String marca, String modelo, String precio, String cantidad) {
+    public ModeloCarrito(int ordenDescID, String marca, String modelo, String precio, String cantidad) {
+        OrdenDescID = ordenDescID;
         this.marca = marca;
         this.modelo = modelo;
         this.precio = precio;
         this.cantidad = cantidad;
-        this.CantidadID = CantidadID;
     }
 
-
-    public int getCantidadID() {
-        return CantidadID;
+    public int getOrdenDescID() {
+        return OrdenDescID;
     }
 
-    public void setCantidadID(int cantidadID) {
-        CantidadID = cantidadID;
+    public void setOrdenDescID(int ordenDescID) {
+        OrdenDescID = ordenDescID;
     }
 
     public String getMarca() {
@@ -65,15 +63,15 @@ public class ModeloInventarioPersonal {
         this.cantidad = cantidad;
     }
 
-    public static ArrayList<ModeloInventarioPersonal> sacarListaproductos(JSONArray array)
+    public static List<ModeloClientes> sacarListaCarrito(JSONArray array)
     {
-        ArrayList<ModeloInventarioPersonal>  lista = new ArrayList<>();
+        List<ModeloClientes> lista = new ArrayList<>();
         try
         {
             for (int i = 0; i < array.length(); i++)
             {
                 JSONObject jsonObject = array.getJSONObject(i);
-                ModeloInventarioPersonal cliente = new ModeloInventarioPersonal(Integer.parseInt(jsonObject.getString("0")), jsonObject.getString("1"), jsonObject.getString("2"),
+                ModeloClientes cliente = new ModeloClientes(Integer.parseInt(jsonObject.getString("0")), jsonObject.getString("1"), jsonObject.getString("2"),
                         jsonObject.getString("3"), jsonObject.getString("4"));
                 lista.add(cliente);
             }
@@ -85,5 +83,4 @@ public class ModeloInventarioPersonal {
 
         return lista;
     }
-
 }

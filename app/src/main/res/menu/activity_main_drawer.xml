@@ -32,6 +32,10 @@
             android:id="@+id/InventarioG"
             android:icon="@drawable/catalogo"
             android:title="Inventario General" />
+        <item
+            android:id="@+id/Localizacion"
+            android:icon="@drawable/gps"
+            android:title="Localización" />
     </group>
 
     <item android:title="Communicate">

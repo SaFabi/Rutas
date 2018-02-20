@@ -1,6 +1,9 @@
 package com.example.fabi.atc.Adapters;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +12,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.fabi.atc.Clases.ModeloPedidos;
+import com.example.fabi.atc.Fragmentos.CarritoFragment;
+import com.example.fabi.atc.Fragmentos.DetallesPedidos;
 import com.example.fabi.atc.R;
 
 import java.util.List;
@@ -20,10 +25,12 @@ import java.util.List;
 public class PedidosAdapter extends BaseAdapter {
     Context context;
     List<ModeloPedidos>elementos;
+    FragmentManager fragmentManager;
 
-    public PedidosAdapter(Context context, List<ModeloPedidos> elementos) {
+    public PedidosAdapter(Context context, List<ModeloPedidos> elementos, FragmentManager fragmentManager) {
         this.context = context;
         this.elementos = elementos;
+        this.fragmentManager = fragmentManager;
     }
 
     @Override
@@ -42,7 +49,7 @@ public class PedidosAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(final int i, View view, ViewGroup viewGroup) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         View vista = view;
         if (vista == null){
@@ -57,6 +64,11 @@ public class PedidosAdapter extends BaseAdapter {
         btnTerminarVenta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Fragment fragment = CarritoFragment.newInstance(getItem(i).getOrdenID());
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.content_main,fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
 
             }
         });

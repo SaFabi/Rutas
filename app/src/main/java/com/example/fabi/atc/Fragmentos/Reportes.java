@@ -115,8 +115,12 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
         ano=c.get(Calendar.YEAR);
         fechaActual = ano+"/"+mes+"/"+dia;
         fechaInicial = ano+"/"+mes+"/"+dia;
+        fechaFinal=ano+"/"+mes+"/"+dia;
        // Toast.makeText(getContext(), fechaActual, Toast.LENGTH_SHORT).show();
         //fechaFinal = fechaActual;
+
+        edtFechaInicio.setText(fechaActual);
+        edtFechaFin.setText(fechaActual);
 
 
         //ADAPTER DEL MENU DE OPCIONES DEL SPINNER
@@ -192,7 +196,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                             puntoVenta = null;
                                         }
 
-                                        Toast.makeText(getContext(),puntoVenta, Toast.LENGTH_SHORT).show();
+                                       // Toast.makeText(getContext(),puntoVenta, Toast.LENGTH_SHORT).show();
                                         if (puntoVenta != null){
                                             edtMonto.setText("TOTAL: $0.0");
                                             //SE ASIGNA EL RESULTADO DE LA CONSULTA EN EL EDITTEXT
@@ -292,7 +296,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                             puntoVenta = null;
                                         }
                                         Toast.makeText(getContext(),puntoVenta, Toast.LENGTH_SHORT).show();
-                                        if (puntoVenta != null){
+                                        if (puntoVenta.equals("")){
                                             edtMonto.setText("TOTAL: $0.0");
                                             //SE ASIGNA EL RESULTADO DE LA CONSULTA  A UN EDITTEXT
 
