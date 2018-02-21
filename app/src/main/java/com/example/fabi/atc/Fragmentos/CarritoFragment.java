@@ -1,7 +1,9 @@
 package com.example.fabi.atc.Fragmentos;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -58,6 +60,9 @@ public class CarritoFragment extends Fragment implements Basic {
     double Montototal;
     static ArrayList<ModeloInventarioPersonal> carritoFinal;
     rutasLib rutasObj =new rutasLib();
+    int clienteID;
+    int usuarioID;
+    
 
     //CONTROLES
     ProgressDialog progressDialog;
@@ -110,43 +115,63 @@ public class CarritoFragment extends Fragment implements Basic {
         btnTerminarVenta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //VERIFICA QUE EL CARRITO TENGA PRODUCTOS AGREGADOS
+                if (carritoFinal.size() > 0) {
+                    //INICIA LA CONSULTA PARA SACAR EL ULTIMO FOLIO
+                    RequestQueue queue = Volley.newRequestQueue(getContext());
+                    String consulta = "select folio from orden ORDER BY id desc LIMIT 1;";
+                    consulta = consulta.replace(" ", "%20");
+                    String cadenaClaveCliente = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+                    String url = SERVER + RUTA + "consultaGeneral.php" + cadenaClaveCliente;
+                    Log.i("info", url);
+                    JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                        @RequiresApi(api = Build.VERSION_CODES.N)
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            String folio;
+                            String nuevoFolio;
+                            JSONObject jsonObject;
+                            try {
+                                jsonObject = response.getJSONObject(0);
+                            } catch (Exception e) {
+                                jsonObject = new JSONObject();
+                            }
+                            try {
+                                folio = jsonObject.getString("0");
 
-                RequestQueue queue = Volley.newRequestQueue(getContext());
-                String consulta = "select folio from orden ORDER BY id desc LIMIT 1;";
-                consulta = consulta.replace(" ", "%20");
-                String cadenaClaveCliente = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
-                String  url = SERVER + RUTA + "consultaGeneral.php" + cadenaClaveCliente;
-                Log.i("info", url);
-                JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-                    @RequiresApi(api = Build.VERSION_CODES.N)
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        String folio;
-                        String nuevoFolio;
-                        JSONObject jsonObject;
-                        try {
-                            jsonObject =response.getJSONObject(0);
-                        }catch (Exception e){
-                            jsonObject = new JSONObject();
+                            } catch (Exception e) {
+                                folio = null;
+                            }
+                            //SE GENERA EL FOLIO NUEVO
+                            nuevoFolio = rutasObj.generarFolio(folio, getContext(), PUNTOVENTA);
+
+                            Toast.makeText(getContext(),nuevoFolio , Toast.LENGTH_SHORT).show();
+
                         }
-                        try {
-                           folio= jsonObject.getString("0");
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
 
-                        }catch (Exception e){
-                            folio = null;
                         }
+                    });
+                    queue.add(request);
 
-                        Toast.makeText(getContext(),rutasObj.generarFolio(folio,getContext(),PUNTOVENTA), Toast.LENGTH_SHORT).show();
 
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+                }else{
+                    AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getContext());
+                    dialogo1.setIcon(R.drawable.cancelar);
+                    dialogo1.setTitle("Importante");
+                    dialogo1.setMessage("No hay articulos agregados");
+                    dialogo1.setCancelable(false);
+                    dialogo1.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
 
-                    }
-                });
-                queue.add(request);
+                        }
+                    });
+                    dialogo1.show();
 
+                }
 
             }
 
