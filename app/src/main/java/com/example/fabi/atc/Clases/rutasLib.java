@@ -70,6 +70,7 @@ public class rutasLib implements  Basic {
         String []partes =folio.split("/");
         String parteNumerica;
         int tamañoCadena;
+
         //VERIFICA QUE EL TAMAÑO DEL FOLIO SOLO SE DIVIDA EN DOS PARTES
         if (partes.length == 2){
             parte1 = partes[0];
@@ -78,20 +79,40 @@ public class rutasLib implements  Basic {
             parte1 = partes[1];
             year = partes[2];
         }
+
         //VERIFICA QUE EL AÑO ACTUAL SEA EL MISMO AL DEL FOLIO
         if (year == String.valueOf(ano)){
+
             //GENERA LA PARTE NUMERICA DEL FOLIO
             parteNumerica = String.valueOf(Integer.parseInt(parte1)+1);
             tamañoCadena = parteNumerica.length();
+
             //GENERA LA PARTE DE LOS CEROS
-                if (tamañoCadena <6){
-                    
-                }
 
+                    for (int i=0; i<6;i++){
+                        if (tamañoCadena < 6) {
+                            parteNumerica = "0"+parteNumerica;
+                        }
+                        tamañoCadena = parteNumerica.length();
 
+                    }
             nuevoFolio = puntoVenta+"/"+parteNumerica+"/"+year;
         }else{
-            nuevoFolio = puntoVenta+"/"+(Integer.parseInt(parte1)+1)+"/"+ano;
+            parteNumerica =String.valueOf(Integer.parseInt(parte1)+1);
+            tamañoCadena = parteNumerica.length();
+
+            //GENERA LA PARTE DE LOS CEROS
+
+            for (int i=0; i<6;i++){
+                if (tamañoCadena < 6) {
+                    parteNumerica = "0"+parteNumerica;
+                }
+                tamañoCadena = parteNumerica.length();
+
+            }
+
+
+            nuevoFolio = puntoVenta+"/"+parteNumerica+"/"+ano;
         }
 
         return nuevoFolio;
