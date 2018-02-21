@@ -3,8 +3,10 @@ package com.example.fabi.atc.Fragmentos;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -80,7 +82,6 @@ public class CarritoFragment extends Fragment implements Basic {
         fragment.setArguments(args);
         return fragment;
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +89,6 @@ public class CarritoFragment extends Fragment implements Basic {
             OrdenID = getArguments().getInt("ordenID");
         }
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -118,6 +118,7 @@ public class CarritoFragment extends Fragment implements Basic {
                 String  url = SERVER + RUTA + "consultaGeneral.php" + cadenaClaveCliente;
                 Log.i("info", url);
                 JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onResponse(JSONArray response) {
                         String folio;
@@ -134,7 +135,8 @@ public class CarritoFragment extends Fragment implements Basic {
                         }catch (Exception e){
                             folio = null;
                         }
-                        rutasObj.generarFolio(folio,getContext());
+
+                        Toast.makeText(getContext(),rutasObj.generarFolio(folio,getContext(),PUNTOVENTA), Toast.LENGTH_SHORT).show();
 
                     }
                 }, new Response.ErrorListener() {

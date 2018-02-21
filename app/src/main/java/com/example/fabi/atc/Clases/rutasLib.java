@@ -3,6 +3,9 @@ package com.example.fabi.atc.Clases;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.icu.util.Calendar;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -41,13 +44,12 @@ import java.util.List;
 
 public class rutasLib implements  Basic {
 
+    //CLASE QUE CONTIENE LOS METODOS NECESARIOS A IMPLEMENTAR
+
     //URL de la ubicacion de las imagenes en el servidor
     public static String URL = "http://192.168.1.91/CatalogoATC/img/";
 
-
     //Declaracion de Variables
-    private static ReportesAdapter adapter;
-    private static ProgressDialog progressDialog;
 
     //Metodo para llenar un ViewPager con los titulos y los fragmentos
     public static CatalogoAdapter llenarViewPager(FragmentManager fragmentManager, List<Fragment> fragments, List<String> titulos) {
@@ -56,15 +58,40 @@ public class rutasLib implements  Basic {
         return adapter;
     }
 
-    public String generarFolio(String folio, Context context){
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public String generarFolio(String folio, Context context, String puntoVenta){
+        //PARA OBTENER LA FECHA ACTUAL
+        final Calendar c = Calendar.getInstance();
+        int ano=c.get(Calendar.YEAR);
+
         String nuevoFolio="";
-        int position=0;
-        for (int i=0; i<folio.length();i++){
-           if (folio.charAt(i) == '/'){
-               Toast.makeText(context,String.valueOf(i), Toast.LENGTH_SHORT).show();
+        String parte1;
+        String year;
+        String []partes =folio.split("/");
+        String parteNumerica;
+        int tamañoCadena;
+        //VERIFICA QUE EL TAMAÑO DEL FOLIO SOLO SE DIVIDA EN DOS PARTES
+        if (partes.length == 2){
+            parte1 = partes[0];
+            year = partes[1];
+        }else{
+            parte1 = partes[1];
+            year = partes[2];
+        }
+        //VERIFICA QUE EL AÑO ACTUAL SEA EL MISMO AL DEL FOLIO
+        if (year == String.valueOf(ano)){
+            //GENERA LA PARTE NUMERICA DEL FOLIO
+            parteNumerica = String.valueOf(Integer.parseInt(parte1)+1);
+            tamañoCadena = parteNumerica.length();
+            //GENERA LA PARTE DE LOS CEROS
+                if (tamañoCadena <6){
+                    
+                }
 
-           }
 
+            nuevoFolio = puntoVenta+"/"+parteNumerica+"/"+year;
+        }else{
+            nuevoFolio = puntoVenta+"/"+(Integer.parseInt(parte1)+1)+"/"+ano;
         }
 
         return nuevoFolio;
