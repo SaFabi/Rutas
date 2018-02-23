@@ -45,11 +45,14 @@ import com.example.fabi.atc.R;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Locale;
 
 
 public class CarritoFragment extends Fragment implements Basic {
@@ -73,7 +76,7 @@ public class CarritoFragment extends Fragment implements Basic {
     Button btnTerminarVenta;
 
     //ADAPTERS
-    SpinnerAdapter spinnerAdapter;
+    spinnerAdapter spinnerAdapter;
     AdapterClientes adapter;
     carritoAdapter carritoAdapter;
 
@@ -108,12 +111,19 @@ public class CarritoFragment extends Fragment implements Basic {
         txtMonto = (TextView)view.findViewById(R.id.montototalcarrito);
         btnTerminarVenta = (Button)view.findViewById(R.id.btnterminarcompra);
 
+        //PARA OBTENER LA FECHA Y H9OTA ACTUAL
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+
+        final String fecha = dateFormat.format(date);
+        Toast.makeText(getContext(),fecha, Toast.LENGTH_SHORT).show();
+
         //PARA SACAR EL ID DEL CLIENTE QUE ESTE SELECCIONADO
 
         spinnerClientes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                clienteID =(int)spinnerAdapter.getItem(i);
+                clienteID = (int) spinnerAdapter.getItemId(i);
             }
 
             @Override
@@ -146,7 +156,7 @@ public class CarritoFragment extends Fragment implements Basic {
                         @Override
                         public void onResponse(JSONArray response) {
                             String folio;
-                            String nuevoFolio;
+                            final String nuevoFolio;
                             JSONObject jsonObject;
                             try {
                                 jsonObject = response.getJSONObject(0);
@@ -184,11 +194,25 @@ public class CarritoFragment extends Fragment implements Basic {
                                     }catch (Exception e){
                                         usuarioRuta = 0;
                                     }
+                                    RequestQueue queueInsertarOrden = Volley.newRequestQueue(getContext());
+                                    String consultaInsertar = "INSERT INTO orden(folio,fecha,cliente_id,puntoVenta_id,usuario_id)VALUES('"+nuevoFolio+"','"+fecha+"',"+clienteID+","+usuarioID+","+usuarioRuta+")";
+                                    consultaInsertar = consultaInsertar.replace(" ", "%20");
+                                    String cadenaInsertar = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaInsertar;
+                                    String urlInsertar = SERVER + RUTA + "consultaGeneral.php" + cadenaInsertar;
+                                    Log.i("info", urlInsertar);
+                                    JsonArrayRequest jsonInsertarOrden = new JsonArrayRequest(Request.Method.GET, urlInsertar, null, new Response.Listener<JSONArray>() {
+                                        @Override
+                                        public void onResponse(JSONArray response) {
+                                            Toast.makeText(getContext(), "Se inserto la orden", Toast.LENGTH_SHORT).show();
 
+                                        }
+                                    }, new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
 
-
-
-
+                                        }
+                                    });
+                                    queueInsertarOrden.add(jsonInsertarOrden);
 
                                 }
                             }, new Response.ErrorListener() {
