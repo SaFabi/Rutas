@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -61,8 +62,8 @@ public class CarritoFragment extends Fragment implements Basic {
     static ArrayList<ModeloInventarioPersonal> carritoFinal;
     rutasLib rutasObj =new rutasLib();
     int clienteID;
-    int usuarioID;
-    
+    int usuarioRuta;
+
 
     //CONTROLES
     ProgressDialog progressDialog;
@@ -72,6 +73,7 @@ public class CarritoFragment extends Fragment implements Basic {
     Button btnTerminarVenta;
 
     //ADAPTERS
+    SpinnerAdapter spinnerAdapter;
     AdapterClientes adapter;
     carritoAdapter carritoAdapter;
 
@@ -79,6 +81,7 @@ public class CarritoFragment extends Fragment implements Basic {
     private OnFragmentInteractionListener mListener;
 
     public CarritoFragment() {
+
     }
     public static CarritoFragment newInstance(int OrdenID) {
         CarritoFragment fragment = new CarritoFragment();
@@ -104,6 +107,20 @@ public class CarritoFragment extends Fragment implements Basic {
         spinnerClientes = (Spinner)view.findViewById(R.id.spinnerclientescarrito);
         txtMonto = (TextView)view.findViewById(R.id.montototalcarrito);
         btnTerminarVenta = (Button)view.findViewById(R.id.btnterminarcompra);
+
+        //PARA SACAR EL ID DEL CLIENTE QUE ESTE SELECCIONADO
+
+        spinnerClientes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                clienteID =(int)spinnerAdapter.getItem(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
@@ -145,6 +162,43 @@ public class CarritoFragment extends Fragment implements Basic {
                             //SE GENERA EL FOLIO NUEVO
                             nuevoFolio = rutasObj.generarFolio(folio, getContext(), PUNTOVENTA);
 
+                            //SE SACA EL ID DEL RESPONSABLE DE LA RUTA
+                            RequestQueue queueUsuario = Volley.newRequestQueue(getContext());
+                            String consultaUsuario = "SELECT usuario_id FROM puntoventa_usuario WHERE puntoVenta_id ="+usuarioID;
+                            consultaUsuario = consultaUsuario.replace(" ", "%20");
+                            String cadenaUsuario = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaUsuario;
+                            String urlUsuario = SERVER + RUTA + "consultaGeneral.php" + cadenaUsuario;
+                            Log.i("info", urlUsuario);
+
+                            JsonArrayRequest requestUsuario = new JsonArrayRequest(Request.Method.GET, urlUsuario, null, new Response.Listener<JSONArray>() {
+                                @Override
+                                public void onResponse(JSONArray response) {
+                                    JSONObject jsonObject1;
+                                    try {
+                                        jsonObject1=response.getJSONObject(0);
+                                    }catch (Exception e){
+                                        jsonObject1 = new JSONObject();
+                                    }
+                                    try {
+                                        usuarioRuta = Integer.parseInt(jsonObject1.getString("0"));
+                                    }catch (Exception e){
+                                        usuarioRuta = 0;
+                                    }
+
+
+
+
+
+
+                                }
+                            }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+
+                                }
+                            });
+                            queueUsuario.add(requestUsuario);
+
                             Toast.makeText(getContext(),nuevoFolio , Toast.LENGTH_SHORT).show();
 
                         }
@@ -158,6 +212,7 @@ public class CarritoFragment extends Fragment implements Basic {
 
 
                 }else{
+                    //SI NO HAY ARTICULOS AGREGADOS MANDA UNN ALERT DIALOG
                     AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getContext());
                     dialogo1.setIcon(R.drawable.cancelar);
                     dialogo1.setTitle("Importante");
@@ -295,7 +350,7 @@ public class CarritoFragment extends Fragment implements Basic {
             @Override
             public void onResponse(JSONArray response) {
                 progressDialog.hide();
-                SpinnerAdapter spinnerAdapter= new spinnerAdapter(getContext(), Modelo.ListaSpinner(response));
+                spinnerAdapter= new spinnerAdapter(getContext(), Modelo.ListaSpinner(response));
                 spinnerClientes.setAdapter(spinnerAdapter);
 
             }
