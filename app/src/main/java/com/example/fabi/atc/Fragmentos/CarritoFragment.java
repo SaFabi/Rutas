@@ -194,6 +194,7 @@ public class CarritoFragment extends Fragment implements Basic {
                                     }catch (Exception e){
                                         usuarioRuta = 0;
                                     }
+                                    //INSERTA EN LA TABLA ORDEN
                                     RequestQueue queueInsertarOrden = Volley.newRequestQueue(getContext());
                                     String consultaInsertar = "INSERT INTO orden(folio,fecha,cliente_id,puntoVenta_id,usuario_id)VALUES('"+nuevoFolio+"','"+fecha+"',"+clienteID+","+usuarioID+","+usuarioRuta+")";
                                     consultaInsertar = consultaInsertar.replace(" ", "%20");
@@ -205,6 +206,31 @@ public class CarritoFragment extends Fragment implements Basic {
                                         public void onResponse(JSONArray response) {
                                             Toast.makeText(getContext(), "Se inserto la orden", Toast.LENGTH_SHORT).show();
 
+                                            // CONSULTA PARA SACAR EL PRECIO DEL CLIENTE
+                                            RequestQueue queuePrecioCliente = Volley.newRequestQueue(getContext());
+                                            String consultaPrecioCliente = "SELECT precio FROM precio_cliente where id ="+clienteID;
+                                            consultaPrecioCliente = consultaPrecioCliente.replace(" ", "%20");
+                                            String cadenaPrecioCliente= "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaPrecioCliente;
+                                            String urlPrecioCliente = SERVER + RUTA + "consultaGeneral.php" + cadenaPrecioCliente;
+                                            Log.i("info", urlPrecioCliente);
+
+                                            JsonArrayRequest jsonPrecioCliente = new JsonArrayRequest(Request.Method.GET, urlPrecioCliente, null, new Response.Listener<JSONArray>() {
+                                                @Override
+                                                public void onResponse(JSONArray response) {
+
+
+                                                }
+                                            }, new Response.ErrorListener() {
+                                                @Override
+                                                public void onErrorResponse(VolleyError error) {
+
+                                                }
+                                            });
+                                            //TERMINA LA CONSULTA DE SACAR EL PRECIO CLIENTE
+                                            queuePrecioCliente.add(jsonPrecioCliente);
+
+
+
                                         }
                                     }, new Response.ErrorListener() {
                                         @Override
@@ -212,6 +238,7 @@ public class CarritoFragment extends Fragment implements Basic {
 
                                         }
                                     });
+                                    //TERMINA LA CONSULTA DE INSERTAR EN LA ORDEN
                                     queueInsertarOrden.add(jsonInsertarOrden);
 
                                 }
@@ -221,6 +248,7 @@ public class CarritoFragment extends Fragment implements Basic {
 
                                 }
                             });
+                            //TERMINA LA CONSULTA PARA SACAR EL ID DEL USUARIO
                             queueUsuario.add(requestUsuario);
 
                             Toast.makeText(getContext(),nuevoFolio , Toast.LENGTH_SHORT).show();
@@ -232,6 +260,7 @@ public class CarritoFragment extends Fragment implements Basic {
 
                         }
                     });
+                    //TERMINA LA CONSULTA PARA SACAR EL ULTIMO FOLIO
                     queue.add(request);
 
 
@@ -256,6 +285,7 @@ public class CarritoFragment extends Fragment implements Basic {
 
 
         });
+
 
         Toast.makeText(getContext(),String.valueOf(OrdenID), Toast.LENGTH_SHORT).show();
         if (OrdenID == 0){
