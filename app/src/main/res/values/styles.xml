@@ -1,5 +1,4 @@
 <resources>
-
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
@@ -17,4 +16,23 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <!-- Tema Botones -->
+    <style name="StyleButton" parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">@color/colorPrimary</item>
+        <item name="colorButtonNormal">@color/colorAccent</item>
+    </style>
+
+
+    <!-- Tema Botones Menu -->
+    <style name="StyleButtonGris" parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">@color/colorGris</item>
+        <item name="colorButtonNormal">@color/colorGrisCalro</item>
+    </style>
+
+
+    <!-- Tema Botones Menu -->
+    <style name="StyleButtonMenu" parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">@color/colorAccent</item>
+        <item name="colorButtonNormal">@color/transparent</item>
+    </style>
 </resources>

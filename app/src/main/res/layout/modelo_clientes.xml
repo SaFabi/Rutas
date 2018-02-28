@@ -1,38 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="@dimen/margen_padding"
+    >
 
     <TextView
-        android:textColor="@color/colorPrimary"
-        android:fontFamily="cursive"
         android:layout_alignParentRight="true"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:text="R1-001"
         android:id="@+id/claveR"
+        android:layout_margin="@dimen/margen_margin"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/primaryText"
+        android:textStyle="bold"/>
     <TextView
-        android:fontFamily="serif"
         android:textSize="18dp"
         android:id="@+id/nombreCliente"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nombre"/>
+        android:layout_marginStart="@dimen/margen_margin"
+        android:text="Nombre"
+        android:textColor="@color/primaryText"
+        android:textStyle="bold"/>
 
     <TextView
-        android:textSize="14dp"
         android:id="@+id/ciudadCliente"
         android:text="Ciudad"
+        android:textSize="@dimen/texto_pequeno"
         android:layout_below="@+id/nombreCliente"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margen_margin"
+        />
 
     <TextView
-        android:textSize="14dp"
+        android:textSize="@dimen/texto_pequeno"
         android:id="@+id/telefonoCliente"
         android:layout_below="@id/ciudadCliente"
         android:text="Teléfono"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margen_margin"
+        android:textColor="@color/primaryText"
+        android:textStyle="bold"/>
 </RelativeLayout>

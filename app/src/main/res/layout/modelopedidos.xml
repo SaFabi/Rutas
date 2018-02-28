@@ -4,16 +4,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     card_view:cardCornerRadius="8dp"
     card_view:cardUseCompatPadding="true"
-    android:layout_marginBottom="16dp"
-    >
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="@dimen/margen_padding"
+    android:elevation="@dimen/elevacion_card">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorGris">
+    android:layout_margin="@dimen/margen_margin"
+    android:padding="@dimen/margen_padding">
 
     <TextView
         android:textStyle="bold"
@@ -21,12 +23,13 @@
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:text="Folio"
         android:layout_width="match_parent"
+        android:textColor="@color/primaryText"
         android:layout_height="wrap_content" />
     <TextView
         android:layout_marginTop="10dp"
         android:id="@+id/clientepedido"
-        android:textColor="@color/colorPrimary"
-        android:fontFamily="monospace"
+        android:textColor="@color/primaryText"
+        android:textStyle="bold"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:text="Cliente"
         android:layout_below="@id/foliopedido"
@@ -36,16 +39,18 @@
     <TextView
         android:layout_marginTop="10dp"
         android:id="@+id/Montopedido"
-        android:textSize="18dp"
+        android:textSize="@dimen/texto_generico"
         android:layout_below="@id/clientepedido"
         android:text="Monto"
+        android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <TextView
         android:id="@+id/fechapedido"
         android:layout_marginTop="10dp"
-        android:textSize="17dp"
+        android:textSize="@dimen/texto_generico"
         android:text="Fecha"
+        android:textStyle="bold"
         android:layout_below="@id/Montopedido"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -53,12 +58,16 @@
     <Button
         android:focusableInTouchMode="false"
         android:focusable="false"
-       android:id="@+id/btnTerminarVenta"
+        android:id="@+id/btnTerminarVenta"
         android:layout_centerVertical="true"
-        android:background="@drawable/aceptar"
+        android:drawableTop="@drawable/ic_check_blanco"
         android:layout_alignParentRight="true"
-        android:layout_width="50dp"
-        android:layout_height="50dp" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorBlanco"
+        android:textAllCaps="false"
+        android:text="@string/texto_aceptar"
+        android:theme="@style/StyleButton"/>
 
 </RelativeLayout>
 </android.support.v7.widget.CardView>

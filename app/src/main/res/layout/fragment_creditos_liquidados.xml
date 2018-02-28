@@ -6,23 +6,26 @@
     tools:context="com.example.fabi.atc.Fragmentos.CreditosLiquidados">
 
     <TextView
-        android:layout_marginTop="10dp"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:id="@+id/puntoVentaCreditosLiquidados"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margen_margin"
+        android:padding="@dimen/margen_margin"
+        android:textColor="@color/primaryText"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+/>
     <Spinner
-        android:layout_marginTop="10dp"
-        android:paddingLeft="50dp"
-        android:layout_toEndOf="@id/puntoVentaCreditosLiquidados"
         android:id="@+id/spinnerClavesCreditosLiquidados"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margen_margin"
+        android:padding="@dimen/margen_padding"
+        android:textColor="@color/primaryText"
+        android:layout_toEndOf="@id/puntoVentaCreditosLiquidados"/>
     <ListView
         android:id="@+id/CreditoClientesCreditosLiquidados"
         android:layout_below="@id/spinnerClavesCreditosLiquidados"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>

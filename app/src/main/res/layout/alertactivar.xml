@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<TableLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/margen_padding"
+    >
 
     <ImageView
         android:id="@+id/eliminar"
-        android:layout_alignParentLeft="true"
-        android:src="@drawable/aceptar"
-        android:layout_width="50dp"
-        android:layout_height="50dp" />
-    <TextView
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:textAlignment="center"
-        android:text="¿Desea restaurar este elemento?"
-        android:layout_toRightOf="@id/eliminar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_chec"
+        android:gravity="center_vertical"
+        android:contentDescription="@string/texto_restaurar" />
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/texto_restaurar"
+        android:gravity="center"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
+</TableLayout>

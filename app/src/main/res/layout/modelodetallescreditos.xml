@@ -3,36 +3,39 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     card_view:cardCornerRadius="8dp"
     card_view:cardUseCompatPadding="true"
-    android:layout_marginBottom="16dp"
+    android:padding="@dimen/margen_padding"
+    android:elevation="@dimen/elevacion_card"
     >
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorGris"
-        android:paddingBottom="4dp">
+        android:padding="@dimen/margen_padding"
+        android:layout_margin="@dimen/margen_margin"
+        >
 
         <TextView
-            android:fontFamily="serif"
             android:id="@+id/tipoArticulo"
             android:layout_toEndOf="@id/img"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+            android:textSize="@dimen/titulos_H1"
             android:text="Tipo Articulo"
+            android:textColor="@color/primaryText"
+            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
-            android:fontFamily="serif-monospace"
             android:id="@+id/marca"
             android:textSize="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Marca"
             android:layout_alignTop="@+id/monto"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:textStyle="bold"
+            android:textColor="@color/secondarText"/>
         <TextView
-            android:fontFamily="serif-monospace"
             android:id="@+id/modelo"
             android:layout_toEndOf="@id/img"
             android:textSize="15dp"
@@ -41,26 +44,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Modelo"
+            android:textStyle="bold"
+            android:textColor="@color/secondarText"
             />
         <TextView
             android:textSize="18dp"
-            android:fontFamily="serif"
             android:text="Cantidad"
             android:id="@+id/Cantidad"
             android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_margin="@dimen/margen_margin"
+            android:textColor="@color/primaryText"/>
 
         <TextView
             android:id="@+id/monto"
-            android:textSize="20dp"
-            android:fontFamily="serif"
+            android:textSize="@dimen/texto_generico"
             android:text="$3000"
             android:layout_marginTop="20dp"
             android:layout_alignParentRight="true"
             android:layout_below="@id/Cantidad"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@color/primaryText"
+            android:textStyle="bold"/>
 
 
 

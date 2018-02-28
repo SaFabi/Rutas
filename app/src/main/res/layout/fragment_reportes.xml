@@ -3,27 +3,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/margen_padding"
     android:background="@color/colorBlanco"
     tools:context="com.example.fabi.atc.Fragmentos.Reportes">
+
   <Spinner
       android:id="@+id/spinnerReportes"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"/>
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/margen_margin"/>
     <Button
-        android:background="@drawable/buscar"
+        android:drawableTop="@drawable/ic_lupa"
         android:layout_alignParentRight="true"
         android:layout_below="@id/spinnerReportes"
         android:id="@+id/btnConsultar"
-        android:layout_width="50dp"
-        android:layout_height="50dp"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/texto_buscar"
+        android:textColor="@color/colorBlanco"
+        android:textAllCaps="false"
+        android:layout_margin="@dimen/margen_margin"
+        android:theme="@style/StyleButton"
+        android:elevation="@dimen/elevacion_raised_buttom"
+        />
 
    <Button
        android:drawableEnd="@drawable/ic_calendario1"
        android:layout_below="@id/spinnerReportes"
        android:id="@+id/btnFechaInicial"
-       android:text="DE:"
+       android:text="@string/texto_fecha_inicial"
+       android:textAllCaps="false"
+       android:textSize="@dimen/texto_generico"
        android:layout_width="100dp"
-       android:layout_height="wrap_content" />
+       android:layout_height="wrap_content"
+       android:theme="@style/StyleButtonGris"/>
+
     <EditText
         android:layout_toStartOf="@id/btnConsultar"
         android:textAlignment="center"
@@ -33,15 +47,19 @@
         android:layout_toEndOf="@id/btnFechaInicial"
         android:layout_below="@id/spinnerReportes"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        />
 
     <Button
         android:drawableEnd="@drawable/ic_calendario1"
         android:layout_below="@id/btnFechaInicial"
         android:id="@+id/btnFechaFinal"
-        android:text="HASTA:"
+        android:text="@string/texto_fecha_final"
+        android:textAllCaps="false"
+        android:textSize="@dimen/texto_pequeno"
         android:layout_width="100dp"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:theme="@style/StyleButtonGris"/>
     <EditText
         android:layout_toStartOf="@id/btnConsultar"
         android:textAlignment="center"
@@ -58,7 +76,8 @@
         android:id="@+id/listReportes"
         android:layout_below="@id/btnFechaFinal"
         android:layout_width="match_parent"
-        android:layout_height="350dp" />
+        android:layout_height="350dp"
+        android:layout_margin="@dimen/margen_margin"/>
     <TextView
         android:id="@+id/edttotalcomisiones"
         android:fontFamily="monospace"
@@ -66,6 +85,8 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/primaryText"
+        android:textStyle="bold"/>
 
 </RelativeLayout>
