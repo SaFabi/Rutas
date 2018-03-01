@@ -25,6 +25,7 @@
             android:textColor="@color/primaryText"
             android:textStyle="bold"
             />
+
         <TextView
             android:id="@+id/folio"
             android:layout_toEndOf="@id/img"

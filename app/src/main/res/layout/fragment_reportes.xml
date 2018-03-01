@@ -48,6 +48,8 @@
         android:layout_below="@id/spinnerReportes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/primaryText"
+        android:textStyle="bold"
         />
 
     <Button
@@ -69,7 +71,9 @@
         android:layout_toEndOf="@id/btnFechaInicial"
         android:layout_below="@id/edtFechaInicial"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/primaryText"
+        android:textStyle="bold"/>
 
 
     <ListView
