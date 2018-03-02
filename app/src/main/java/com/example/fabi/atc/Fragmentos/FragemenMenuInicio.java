@@ -71,7 +71,7 @@ public class FragemenMenuInicio extends Fragment {
         // Inflate the layout for this fragment
 
 
-        View view= inflater.inflate(R.layout.fragment_menu_inicio, container, false);
+        View view= inflater.inflate(R.layout.fragment_fragemen_menu_inicio, container, false);
         /*
         final Animation animScale = AnimationUtils.loadAnimation(getContext(),R.anim.scaele_animacion);
         Button btnCatalogo = (Button)view.findViewById(R.id.idCatalogo);
