@@ -19,8 +19,6 @@
     <string name="texto_caja_comentarios">Para nosotros tu opinión es muy importante, por favor déjanos tus comentarios.</string>
 
 
-
-
     <string name="texto_compras_contado">Compras al Contado</string>
 
     <string name="texto_total_a_pagar">Total a pagar:</string>
@@ -54,7 +52,6 @@
     <string name="texto_fecha_inicial">De:</string>
     <string name="texto_fecha_final">Hasta:</string>
     <string name="texto_aceptar">Aceptar</string>
-
 
 
 </resources>

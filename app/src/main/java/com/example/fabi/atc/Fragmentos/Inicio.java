@@ -61,7 +61,6 @@ public class Inicio extends Fragment  implements SwipeRefreshLayout.OnRefreshLis
     InventarioPersonalAdapter inventarioPersonalAdapter;
 
 
-
     private OnFragmentInteractionListener mListener;
 
     public Inicio() {

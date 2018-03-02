@@ -1,0 +1,33 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.fabi.atc.Fragmentos.FragemenMenuInicio">
+
+    <!-- TODO: Update blank fragment layout -->
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <Button
+        android:id="@+id/idCatalogo"
+        android:text="Catalogo"
+
+        style="@style/BotonesMenu"
+        />
+
+    <Button
+        android:id="@+id/idPedidos"
+        android:text="Pedidos"
+
+        style="@style/BotonesMenu"
+        />
+
+    <Button
+        android:id="@+id/idHistorial"
+        android:text="Historial"
+
+        style="@style/BotonesMenu"/>
+</LinearLayout>
+
+</RelativeLayout>
