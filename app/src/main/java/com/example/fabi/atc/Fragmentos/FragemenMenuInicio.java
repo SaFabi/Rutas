@@ -74,15 +74,22 @@ public class FragemenMenuInicio extends Fragment {
         View view= inflater.inflate(R.layout.fragment_fragemen_menu_inicio, container, false);
 
         final Animation animScale = AnimationUtils.loadAnimation(getContext(),R.anim.scaele_animacion);
-        Button btnCatalogo = (Button)view.findViewById(R.id.idCatalogo);
-        Button btnPedidos = (Button)view.findViewById(R.id.idPedidos);
-        Button btnReportes = (Button)view.findViewById(R.id.idReportes);
-        Button btnClientes= (Button)view.findViewById(R.id.idClientes);
+        Button btnCatalogo = view.findViewById(R.id.idBtnCatalogo);
+        Button btnPedidos = view.findViewById(R.id.idBtnPedidos);
+        Button btnReportes = view.findViewById(R.id.idBtnReportes);
+        Button btnClientes= view.findViewById(R.id.idBtnClientes);
 
         btnCatalogo.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View arg0) {
                 arg0.startAnimation(animScale);
+
+
+                Fragment fragment = Catalogo.newInstance(0);
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.content_main,fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
 
             }});
 
@@ -102,12 +109,24 @@ public class FragemenMenuInicio extends Fragment {
             @Override
             public void onClick(View arg0) {
                 arg0.startAnimation(animScale);
+
+                Fragment fragment = Reportes.newInstance(0);
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.content_main,fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
             }});
 
         btnClientes.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View arg0) {
                 arg0.startAnimation(animScale);
+
+                Fragment fragment = Clientes.newInstance(0);
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.content_main,fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
             }});
         return view;
     }

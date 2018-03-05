@@ -56,7 +56,7 @@
 
     <!-- Texto Generico-->
     <string name="texto_catalogo">Catalogo</string>
-    <string name="texto_clirntes">Clientes</string>
+    <string name="texto_clientes">Clientes</string>
     <string name="texto_pedidos">Pedidos</string>
     <string name="texto_reportes">Reportes</string>
 
