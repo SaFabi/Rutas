@@ -34,6 +34,7 @@ import com.example.fabi.atc.Fragmentos.Contenedor;
 import com.example.fabi.atc.Fragmentos.ContenedorInventarioGeneral;
 import com.example.fabi.atc.Fragmentos.CreditosContenedor;
 import com.example.fabi.atc.Fragmentos.CreditosPendientes;
+import com.example.fabi.atc.Fragmentos.FragemenMenuInicio;
 import com.example.fabi.atc.Fragmentos.Inicio;
 import com.example.fabi.atc.Fragmentos.PedidosFragment;
 import com.example.fabi.atc.Fragmentos.Reportes;
@@ -134,6 +135,11 @@ public class MainActivity extends AppCompatActivity
         navigationView.setItemIconTintList(null);
 
 
+
+        Fragment miFragment = new FragemenMenuInicio();
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_main,miFragment).addToBackStack(null).commit();
+
+
     }
 
     @Override
@@ -173,7 +179,7 @@ public class MainActivity extends AppCompatActivity
         boolean fragmentSeleccionado=false;
 
         if (id == R.id.Inicio){
-            miFragment = new Inicio();
+            miFragment = new FragemenMenuInicio();
             fragmentSeleccionado = true;
         } else if (id == R.id.Catalogo) {
             miFragment = new Contenedor();
