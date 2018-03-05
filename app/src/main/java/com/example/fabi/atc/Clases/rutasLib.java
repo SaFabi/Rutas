@@ -31,9 +31,11 @@ import com.example.fabi.atc.Fragmentos.Contenedor;
 import com.example.fabi.atc.Fragmentos.Inicio;
 import com.example.fabi.atc.Fragmentos.Reportes;
 import com.example.fabi.atc.R;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,4 +119,96 @@ public class rutasLib implements  Basic {
 
         return nuevoFolio;
     }
+
+    //METODO QUE VERIFICA SI EXISTE EL TOKEN DEL USUARIO DE RUTA
+    public void verificarTokenUsuario(final int rutaID, final Context context){
+        //Inicia la peticion
+        RequestQueue queue = Volley.newRequestQueue(context);
+        String consulta = "SELECT id FROM token_usuarios WHERE usuario_id="+rutaID;
+        consulta = consulta.replace(" ", "%20");
+        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+        String url= SERVER + RUTA + "consultaGeneral.php" + cadena;
+        Log.i("info", url);
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                //VERIFICA SI NO EXISTE EL TOKEN
+                if (response.length() == 0){
+                    final String token = FirebaseInstanceId.getInstance().getToken();
+                    //Inicia la peticion
+                    RequestQueue queueInsertar = Volley.newRequestQueue(context);
+                    String consultaInsertar = "INSERT INTO token_usuario(token,usuario_id)VALUES('"+token+"',"+rutaID+");";
+                    consultaInsertar = consultaInsertar.replace(" ", "%20");
+                    String cadenaInsertar = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaInsertar;
+                    String urlInsertar= SERVER + RUTA + "consultaGeneral.php" + cadenaInsertar;
+                    Log.i("info", urlInsertar);
+                    JsonArrayRequest jsonArrayRequestInsertar = new JsonArrayRequest(Request.Method.GET, urlInsertar, null, new Response.Listener<JSONArray>() {
+                        @Override
+                        public void onResponse(JSONArray response) {
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+
+                        }
+                    });
+                    queueInsertar.add(jsonArrayRequestInsertar);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        queue.add(jsonArrayRequest);
+    }
+
+
+
+    //METODO QUE VERIFICA SI EXISTE EL TOKEN DEL CLIENTE
+    public void verificarTokenCliente(final int clienteID, final Context context){
+        //Inicia la peticion
+        RequestQueue queue = Volley.newRequestQueue(context);
+        String consulta = "SELECT id FROM token_clientes WHERE claveCliente_id="+clienteID;
+        consulta = consulta.replace(" ", "%20");
+        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+        String url= SERVER + RUTA + "consultaGeneral.php" + cadena;
+        Log.i("info", url);
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                //VERIFICA SI NO EXISTE EL TOKEN
+                if (response.length() == 0){
+                    final String token = FirebaseInstanceId.getInstance().getToken();
+                    //Inicia la peticion
+                    RequestQueue queueInsertar = Volley.newRequestQueue(context);
+                    String consultaInsertar = "INSERT INTO token_clientes(token,claveCliente_id)VALUES('"+token+"',"+clienteID+");";
+                    consultaInsertar = consultaInsertar.replace(" ", "%20");
+                    String cadenaInsertar = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaInsertar;
+                    String urlInsertar= SERVER + RUTA + "consultaGeneral.php" + cadenaInsertar;
+                    Log.i("info", urlInsertar);
+                    JsonArrayRequest jsonArrayRequestInsertar = new JsonArrayRequest(Request.Method.GET, urlInsertar, null, new Response.Listener<JSONArray>() {
+                        @Override
+                        public void onResponse(JSONArray response) {
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+
+                        }
+                    });
+                    queueInsertar.add(jsonArrayRequestInsertar);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        queue.add(jsonArrayRequest);
+    }
+
+
 }
