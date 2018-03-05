@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/fondo_app_02"
     tools:context="com.example.fabi.atc.Fragmentos.FragemenMenuInicio">
 
     <!-- TODO: Update blank fragment layout -->
@@ -13,23 +14,29 @@
 
     <Button
         android:id="@+id/idCatalogo"
-        android:text="Catalogo"
-
+        android:text="@string/texto_catalogo"
         style="@style/BotonesMenu"
+        android:background="@drawable/catalogo_style"
         />
 
     <Button
         android:id="@+id/idPedidos"
-        android:text="Pedidos"
-
+        android:text="@string/texto_pedidos"
+        android:background="@drawable/pedidos_style"
         style="@style/BotonesMenu"
         />
-
     <Button
-        android:id="@+id/idHistorial"
-        android:text="Historial"
-
+        android:id="@+id/idReportes"
+        android:text="@string/texto_reportes"
+        android:background="@drawable/reportes_style"
         style="@style/BotonesMenu"/>
+    <Button
+        android:id="@+id/idClientes"
+        android:text="@string/texto_clirntes"
+        android:background="@drawable/clientes_style"
+        style="@style/BotonesMenu"/>
+
 </LinearLayout>
+
 
 </RelativeLayout>
