@@ -60,10 +60,6 @@ public class Inicio extends Fragment  implements SwipeRefreshLayout.OnRefreshLis
     //ADAPTERS
     InventarioPersonalAdapter inventarioPersonalAdapter;
 
-
-
-    private OnFragmentInteractionListener mListener;
-
     public Inicio() {
         // Required empty public constructor
     }
@@ -149,12 +145,6 @@ public class Inicio extends Fragment  implements SwipeRefreshLayout.OnRefreshLis
         });
 
         return view;
-    }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
     //INFLA EL MENU DE OPCIONES
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -297,10 +287,5 @@ public class Inicio extends Fragment  implements SwipeRefreshLayout.OnRefreshLis
 
         //Agrega y ejecuta la cola
         queue.add(request);
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

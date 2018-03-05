@@ -4,10 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ATC.iml" filepath="$PROJECT_DIR$/ATC.iml" />
       <module fileurl="file://$PROJECT_DIR$/Rutas.iml" filepath="$PROJECT_DIR$/Rutas.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Rutas.iml" filepath="$PROJECT_DIR$/Rutas.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/lib/lib.iml" filepath="$PROJECT_DIR$/lib/lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/lib/lib.iml" filepath="$PROJECT_DIR$/lib/lib.iml" />
     </modules>
   </component>

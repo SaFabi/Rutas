@@ -49,7 +49,6 @@ public class TelefonosGeneral extends Fragment implements SearchView.OnQueryText
     //ADAPTERS
     ProductosAdapter adapter;
 
-    private OnFragmentInteractionListener mListener;
 
     public TelefonosGeneral() {
 
@@ -112,13 +111,6 @@ public class TelefonosGeneral extends Fragment implements SearchView.OnQueryText
 
         return view;
     }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
     //INFLA EL MENU DE OPCIONES
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -140,12 +132,6 @@ public class TelefonosGeneral extends Fragment implements SearchView.OnQueryText
             }
         });
     }
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
     //RESPUESTA DE
     @Override
     public void onErrorResponse(VolleyError error) {
@@ -197,8 +183,4 @@ public class TelefonosGeneral extends Fragment implements SearchView.OnQueryText
         return listaFiltrada;
     }
 
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 }

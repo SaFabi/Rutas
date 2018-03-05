@@ -61,17 +61,17 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
     String fechaInicial;
     String fechaFinal;
     String opcionSeleccionada;
-    private int dia,mes, ano,dayI, monthI, yearI,dayF, monthF, yearF;
+    private int dia, mes, ano, dayI, monthI, yearI, dayF, monthF, yearF;
+
     //CONTROLES
     Button btnFechaInicio, btnFechaFin, btnConsultar;
     EditText edtFechaInicio, edtFechaFin;
     Spinner spinner;
     ProgressDialog progressDialog;
     TextView edtMonto;
+
     //ADAPTERS
     ReportesAdapter adapter;
-
-    private OnFragmentInteractionListener mListener;
 
     public Reportes() {
     }
@@ -99,24 +99,24 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
         View view = inflater.inflate(R.layout.fragment_reportes, container, false);
         setHasOptionsMenu(true);
         //SE ASIGNAN LAS VARIABLES CON LOS CONTROLES DEL LAYOUT
-        edtFechaFin = (EditText)view.findViewById(R.id.edtFechaFinal);
-        edtFechaInicio= (EditText)view.findViewById(R.id.edtFechaInicial);
-        btnFechaFin = (Button)view.findViewById(R.id.btnFechaFinal);
-        btnFechaInicio = (Button)view.findViewById(R.id.btnFechaInicial);
-        btnConsultar = (Button)view.findViewById(R.id.btnConsultar);
-        spinner = (Spinner)view.findViewById(R.id.spinnerReportes);
-        listView = (ListView)view.findViewById(R.id.listReportes);
-        edtMonto = (TextView)view.findViewById(R.id.edttotalcomisiones);
+        edtFechaFin = (EditText) view.findViewById(R.id.edtFechaFinal);
+        edtFechaInicio = (EditText) view.findViewById(R.id.edtFechaInicial);
+        btnFechaFin = (Button) view.findViewById(R.id.btnFechaFinal);
+        btnFechaInicio = (Button) view.findViewById(R.id.btnFechaInicial);
+        btnConsultar = (Button) view.findViewById(R.id.btnConsultar);
+        spinner = (Spinner) view.findViewById(R.id.spinnerReportes);
+        listView = (ListView) view.findViewById(R.id.listReportes);
+        edtMonto = (TextView) view.findViewById(R.id.edttotalcomisiones);
 
         //PARA OBTENER LA FECHA ACTUAL
         final Calendar c = Calendar.getInstance();
-        dia=c.get(Calendar.DAY_OF_MONTH);
-        mes = c.get(Calendar.MONTH) +1;
-        ano=c.get(Calendar.YEAR);
-        fechaActual = ano+"/"+mes+"/"+dia;
-        fechaInicial = ano+"/"+mes+"/"+dia;
-        fechaFinal=ano+"/"+mes+"/"+dia;
-       // Toast.makeText(getContext(), fechaActual, Toast.LENGTH_SHORT).show();
+        dia = c.get(Calendar.DAY_OF_MONTH);
+        mes = c.get(Calendar.MONTH) + 1;
+        ano = c.get(Calendar.YEAR);
+        fechaActual = ano + "/" + mes + "/" + dia;
+        fechaInicial = ano + "/" + mes + "/" + dia;
+        fechaFinal = ano + "/" + mes + "/" + dia;
+        // Toast.makeText(getContext(), fechaActual, Toast.LENGTH_SHORT).show();
         //fechaFinal = fechaActual;
 
         edtFechaInicio.setText(fechaActual);
@@ -124,14 +124,14 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
 
 
         //ADAPTER DEL MENU DE OPCIONES DEL SPINNER
-        spinnerSencilloAdapter spinnerSencilloAdapter = new spinnerSencilloAdapter(listaReportes(),getContext());
+        spinnerSencilloAdapter spinnerSencilloAdapter = new spinnerSencilloAdapter(listaReportes(), getContext());
 
         spinner.setAdapter(spinnerSencilloAdapter);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(final AdapterView<?> adapterView, View view, int i, long l) {
-                switch (i){
+                switch (i) {
                     case 0:
                         //PARA LLENAR UN LISTVIEW CON LAS COMISIONES OBTENIDAS EN UN LAPSO DE TIEMPO
                         opcionSeleccionada = "Comisiones";
@@ -148,10 +148,10 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                 "from totalarticulo_comision tac,orden ord,punto_venta pv " +
                                 "where tac.orden_id=ord.id " +
                                 "and ord.puntoVenta_id=pv.id " +
-                                "and pv.id="+usuarioID+
-                                " and tac.total>0"+
-                                " and DATE(ord.fecha)>"+"'"+fechaInicial+"'"+
-                                " and DATE(ord.fecha)<"+"'"+fechaFinal+"'";
+                                "and pv.id=" + usuarioID +
+                                " and tac.total>0" +
+                                " and DATE(ord.fecha)>" + "'" + fechaInicial + "'" +
+                                " and DATE(ord.fecha)<" + "'" + fechaFinal + "'";
                         consulta = consulta.replace(" ", "%20");
                         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
                         final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
@@ -161,7 +161,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                             @Override
                             public void onResponse(JSONArray response) {
                                 //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
-                                adapter = new ReportesAdapter(response,getContext());
+                                adapter = new ReportesAdapter(response, getContext());
                                 listView.setAdapter(adapter);
                                 //PARA CALCULAR EL TOTAL DE COMISIONES GENERADAS EN UN LAPSO DE TIEMPO
                                 //Inicia la peticion
@@ -170,10 +170,10 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                         "from totalarticulo_comision tac,orden ord,punto_venta pv " +
                                         "where tac.orden_id=ord.id " +
                                         "and ord.puntoVenta_id=pv.id " +
-                                        "and pv.id="+usuarioID+
-                                        " and tac.total>0"+
-                                        " and DATE(ord.fecha)>"+"'"+fechaInicial+"'"+
-                                        " and DATE(ord.fecha)<"+"'"+fechaFinal+"'";
+                                        "and pv.id=" + usuarioID +
+                                        " and tac.total>0" +
+                                        " and DATE(ord.fecha)>" + "'" + fechaInicial + "'" +
+                                        " and DATE(ord.fecha)<" + "'" + fechaFinal + "'";
                                 consultatotal = consultatotal.replace(" ", "%20");
                                 String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultatotal;
                                 final String urlTotal = SERVER + RUTA + "consultaGeneral.php" + cadena;
@@ -182,33 +182,33 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                     @Override
                                     public void onResponse(JSONArray response) {
                                         progressDialog.hide();
-                                        String  puntoVenta;
+                                        String puntoVenta;
                                         JSONObject jsonObject;
                                         try {
-                                            jsonObject =response.getJSONObject(0);
-                                        }catch (Exception e){
+                                            jsonObject = response.getJSONObject(0);
+                                        } catch (Exception e) {
                                             jsonObject = new JSONObject();
                                         }
                                         try {
-                                          puntoVenta= jsonObject.getString("0");
+                                            puntoVenta = jsonObject.getString("0");
 
-                                        }catch (Exception e){
+                                        } catch (Exception e) {
                                             puntoVenta = null;
                                         }
 
-                                       // Toast.makeText(getContext(),puntoVenta, Toast.LENGTH_SHORT).show();
-                                        if (puntoVenta != null){
+                                        // Toast.makeText(getContext(),puntoVenta, Toast.LENGTH_SHORT).show();
+                                        if (puntoVenta != null) {
                                             edtMonto.setText("TOTAL: $0.0");
                                             //SE ASIGNA EL RESULTADO DE LA CONSULTA EN EL EDITTEXT
 
-                                        }else {
-                                            edtMonto.setText("TOTAL: $"+puntoVenta);
+                                        } else {
+                                            edtMonto.setText("TOTAL: $" + puntoVenta);
                                         }
                                     }
                                 }, new Response.ErrorListener() {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
-                                    progressDialog.hide();
+                                        progressDialog.hide();
                                     }
                                 });
                                 queuetotal.add(requestTotal);
@@ -220,7 +220,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                             public void onErrorResponse(VolleyError error) {
                                 progressDialog.hide();
                                 Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
-                                Toast.makeText(getContext(),  "Activos   "+url, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Activos   " + url, Toast.LENGTH_SHORT).show();
 
                             }
                         });
@@ -230,7 +230,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                         break;
                     case 1:
                         //PARA LLENAR EL LISTVIEW CON LAS VENTAS REALIZADAS EN UN LAPSO DE TIEMPO
-                        opcionSeleccionada="Ventas";
+                        opcionSeleccionada = "Ventas";
                         //Inicializa el progres dialog
                         progressDialog = new ProgressDialog(getContext());
                         progressDialog.setTitle("En Proceso");
@@ -246,10 +246,10 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                 "and ord.puntoVenta_id = pv.id " +
                                 "and ord.cliente_id = cli.id " +
                                 "and cc.cliente_id =cli.id " +
-                                " and pv.id="+usuarioID+
-                                " and ordc.total>0"+
-                                " and DATE(ord.fecha)>"+"'"+fechaInicial+"'"+
-                                " and DATE(ord.fecha)<"+"'"+fechaFinal+"'";
+                                " and pv.id=" + usuarioID +
+                                " and ordc.total>0" +
+                                " and DATE(ord.fecha)>" + "'" + fechaInicial + "'" +
+                                " and DATE(ord.fecha)<" + "'" + fechaFinal + "'";
                         consultaVentas = consultaVentas.replace(" ", "%20");
                         String cadenaVentas = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaVentas;
                         final String urlVentas = SERVER + RUTA + "consultaGeneral.php" + cadenaVentas;
@@ -259,19 +259,19 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                             @Override
                             public void onResponse(JSONArray response) {
                                 //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
-                                adapter = new ReportesAdapter(response,getContext());
+                                adapter = new ReportesAdapter(response, getContext());
                                 listView.setAdapter(adapter);
                                 //PARA CALCULAR EL TOTAL DE VENTAS REALIZADAS EN UN LAPSO DE TIEMPO
                                 //Inicia la peticion
                                 RequestQueue queuetotal = Volley.newRequestQueue(getContext());
-                                String consultatotal ="select sum(ordc.total) " +
+                                String consultatotal = "select sum(ordc.total) " +
                                         "from orden ord, orden_completa ordc, punto_venta pv " +
                                         "where ordc.orden_id = ord.id " +
                                         "and ord.puntoVenta_id = pv.id " +
-                                        " and pv.id="+usuarioID+
-                                        " and ordc.total>0"+
-                                        " and DATE(ord.fecha)>"+"'"+fechaInicial+"'"+
-                                        " and DATE(ord.fecha)<"+"'"+fechaFinal+"'";
+                                        " and pv.id=" + usuarioID +
+                                        " and ordc.total>0" +
+                                        " and DATE(ord.fecha)>" + "'" + fechaInicial + "'" +
+                                        " and DATE(ord.fecha)<" + "'" + fechaFinal + "'";
                                 consultatotal = consultatotal.replace(" ", "%20");
                                 String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultatotal;
                                 final String urlTotal = SERVER + RUTA + "consultaGeneral.php" + cadena;
@@ -280,28 +280,28 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                     @Override
                                     public void onResponse(JSONArray response) {
                                         progressDialog.hide();
-                                        String  puntoVenta;
+                                        String puntoVenta;
                                         JSONObject jsonObject;
                                         try {
-                                            jsonObject =response.getJSONObject(0);
-                                        }catch (Exception e){
+                                            jsonObject = response.getJSONObject(0);
+                                        } catch (Exception e) {
                                             jsonObject = new JSONObject();
                                         }
 
 
                                         try {
-                                            puntoVenta= jsonObject.getString("0");
+                                            puntoVenta = jsonObject.getString("0");
 
-                                        }catch (Exception e){
+                                        } catch (Exception e) {
                                             puntoVenta = null;
                                         }
                                         //Toast.makeText(getContext(),puntoVenta, Toast.LENGTH_SHORT).show();
-                                        if (puntoVenta.equals("")){
+                                        if (puntoVenta.equals("")) {
                                             edtMonto.setText("TOTAL: $0.0");
                                             //SE ASIGNA EL RESULTADO DE LA CONSULTA  A UN EDITTEXT
 
-                                        }else{
-                                            edtMonto.setText("TOTAL: $"+puntoVenta);
+                                        } else {
+                                            edtMonto.setText("TOTAL: $" + puntoVenta);
                                         }
 
                                     }
@@ -320,7 +320,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                             public void onErrorResponse(VolleyError error) {
                                 progressDialog.hide();
                                 Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
-                                Toast.makeText(getContext(),  "Activos   "+urlVentas, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Activos   " + urlVentas, Toast.LENGTH_SHORT).show();
                             }
                         });
                         //Agrega y ejecuta la cola
@@ -328,6 +328,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                         break;
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
@@ -341,9 +342,9 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                     @Override
                     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
                         dayF = datePicker.getDayOfMonth();
-                        monthF = datePicker.getMonth()+1;
+                        monthF = datePicker.getMonth() + 1;
                         yearF = datePicker.getYear();
-                        fechaFinal = String.valueOf(yearF)+"/"+String.valueOf(monthF)+"/"+String.valueOf(dayF);
+                        fechaFinal = String.valueOf(yearF) + "/" + String.valueOf(monthF) + "/" + String.valueOf(dayF);
                         edtFechaFin.setText(fechaFinal);
 
                     }
@@ -361,13 +362,13 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                     @Override
                     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
                         dayI = datePicker.getDayOfMonth();
-                        monthI = datePicker.getMonth()+1;
+                        monthI = datePicker.getMonth() + 1;
                         yearI = datePicker.getYear();
-                        fechaInicial= String.valueOf(yearI)+"/"+String.valueOf(monthI)+"/"+String.valueOf(dayI);
-                         edtFechaInicio.setText(fechaInicial);
+                        fechaInicial = String.valueOf(yearI) + "/" + String.valueOf(monthI) + "/" + String.valueOf(dayI);
+                        edtFechaInicio.setText(fechaInicial);
 
                     }
-                },ano,mes - 1,dia);
+                }, ano, mes - 1, dia);
                 datePickerDialog.show();
 
             }
@@ -392,10 +393,10 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                             "from totalarticulo_comision tac,orden ord,punto_venta pv " +
                             "where tac.orden_id=ord.id " +
                             "and ord.puntoVenta_id=pv.id " +
-                            "and pv.id="+usuarioID+
-                            " and tac.total>0"+
-                            " and DATE(ord.fecha)>"+"'"+fechaInicial+"'"+
-                            " and DATE(ord.fecha)<"+"'"+fechaFinal+"'";
+                            "and pv.id=" + usuarioID +
+                            " and tac.total>0" +
+                            " and DATE(ord.fecha)>" + "'" + fechaInicial + "'" +
+                            " and DATE(ord.fecha)<" + "'" + fechaFinal + "'";
                     consulta = consulta.replace(" ", "%20");
                     String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
                     final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
@@ -407,7 +408,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                         public void onResponse(JSONArray response) {
 
                             //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
-                            adapter = new ReportesAdapter(response,getContext());
+                            adapter = new ReportesAdapter(response, getContext());
                             listView.setAdapter(adapter);
 
                             //PARA CALCULAR EL TOTAL DE COMISIONES DURANTE UN LAPSO DE TIEMPO
@@ -417,10 +418,10 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                     "from totalarticulo_comision tac,orden ord,punto_venta pv " +
                                     "where tac.orden_id=ord.id " +
                                     "and ord.puntoVenta_id=pv.id " +
-                                    "and pv.id="+usuarioID+
-                                    " and tac.total>0"+
-                                    " and DATE(ord.fecha)>"+"'"+fechaInicial+"'"+
-                                    " and DATE(ord.fecha)<"+"'"+fechaFinal+"'";
+                                    "and pv.id=" + usuarioID +
+                                    " and tac.total>0" +
+                                    " and DATE(ord.fecha)>" + "'" + fechaInicial + "'" +
+                                    " and DATE(ord.fecha)<" + "'" + fechaFinal + "'";
                             consultatotal = consultatotal.replace(" ", "%20");
                             String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultatotal;
                             final String urlTotal = SERVER + RUTA + "consultaGeneral.php" + cadena;
@@ -429,27 +430,27 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                 @Override
                                 public void onResponse(JSONArray response) {
                                     progressDialog.hide();
-                                    String  puntoVenta;
+                                    String puntoVenta;
                                     JSONObject jsonObject;
                                     try {
-                                        jsonObject =response.getJSONObject(0);
-                                    }catch (Exception e){
+                                        jsonObject = response.getJSONObject(0);
+                                    } catch (Exception e) {
                                         jsonObject = new JSONObject();
                                     }
 
 
                                     try {
-                                        puntoVenta= jsonObject.getString("0");
+                                        puntoVenta = jsonObject.getString("0");
 
-                                    }catch (Exception e){
+                                    } catch (Exception e) {
                                         puntoVenta = null;
                                     }
                                     //Toast.makeText(getContext(),puntoVenta, Toast.LENGTH_SHORT).show();
-                                    if (puntoVenta == null){
+                                    if (puntoVenta == null) {
                                         edtMonto.setText("TOTAL: $0.0");
 
-                                    }else{
-                                        edtMonto.setText("TOTAL: $"+puntoVenta);
+                                    } else {
+                                        edtMonto.setText("TOTAL: $" + puntoVenta);
                                     }
 
                                 }
@@ -468,14 +469,14 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                         public void onErrorResponse(VolleyError error) {
                             progressDialog.hide();
                             Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
-                            Toast.makeText(getContext(),  "Activos   "+url, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Activos   " + url, Toast.LENGTH_SHORT).show();
 
                         }
                     });
 
                     //Agrega y ejecuta la cola
                     queue.add(request);
-                }else if (opcionSeleccionada.equals("Ventas")){
+                } else if (opcionSeleccionada.equals("Ventas")) {
                     //PARA LLENAR UN LISTVIEW CON EL TOTAL DE VENTAS DURANTE UN LAPSO DE TIEMPO
                     //Inicializa el progres dialog
                     progressDialog = new ProgressDialog(getContext());
@@ -492,10 +493,10 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                             "and ord.puntoVenta_id = pv.id " +
                             "and ord.cliente_id = cli.id " +
                             "and cc.cliente_id =cli.id " +
-                            " and pv.id="+usuarioID+
-                            " and ordc.total>0"+
-                            " and DATE(ord.fecha)>"+"'"+fechaInicial+"'"+
-                            " and DATE(ord.fecha)<"+"'"+fechaFinal+"'";
+                            " and pv.id=" + usuarioID +
+                            " and ordc.total>0" +
+                            " and DATE(ord.fecha)>" + "'" + fechaInicial + "'" +
+                            " and DATE(ord.fecha)<" + "'" + fechaFinal + "'";
                     consulta = consulta.replace(" ", "%20");
                     String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
                     final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
@@ -506,7 +507,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                         @Override
                         public void onResponse(JSONArray response) {
                             //Toast.makeText(context, "RutasLib    "+url, Toast.LENGTH_SHORT).show();
-                            adapter = new ReportesAdapter(response,getContext());
+                            adapter = new ReportesAdapter(response, getContext());
                             listView.setAdapter(adapter);
 
                             //PARA CALCULAR EL TOTAL DE VENTAS EN UN LAPSO DE TIEMPO
@@ -516,10 +517,10 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                     "from orden ord, orden_completa ordc, punto_venta pv " +
                                     "where ordc.orden_id = ord.id " +
                                     "and ord.puntoVenta_id = pv.id " +
-                                    " and pv.id="+usuarioID+
-                                    " and ordc.total>0"+
-                                    " and DATE(ord.fecha)>"+"'"+fechaInicial+"'"+
-                                    " and DATE(ord.fecha)<"+"'"+fechaFinal+"'";
+                                    " and pv.id=" + usuarioID +
+                                    " and ordc.total>0" +
+                                    " and DATE(ord.fecha)>" + "'" + fechaInicial + "'" +
+                                    " and DATE(ord.fecha)<" + "'" + fechaFinal + "'";
                             consultatotalVentas = consultatotalVentas.replace(" ", "%20");
                             String cadenaVemtas = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultatotalVentas;
                             final String urlTotalVentas = SERVER + RUTA + "consultaGeneral.php" + cadenaVemtas;
@@ -528,28 +529,28 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                 @Override
                                 public void onResponse(JSONArray response) {
                                     progressDialog.hide();
-                                    String  puntoVenta;
+                                    String puntoVenta;
                                     JSONObject jsonObject;
                                     try {
-                                        jsonObject =response.getJSONObject(0);
-                                    }catch (Exception e){
+                                        jsonObject = response.getJSONObject(0);
+                                    } catch (Exception e) {
                                         jsonObject = new JSONObject();
                                     }
 
 
                                     try {
-                                        puntoVenta= jsonObject.getString("0");
+                                        puntoVenta = jsonObject.getString("0");
 
-                                    }catch (Exception e){
+                                    } catch (Exception e) {
                                         puntoVenta = null;
 
                                     }
                                     //Toast.makeText(getContext(),puntoVenta, Toast.LENGTH_SHORT).show();
-                                    if (puntoVenta != null){
+                                    if (puntoVenta != null) {
                                         edtMonto.setText("TOTAL: $0.0");
 
-                                    }else{
-                                        edtMonto.setText("TOTAL: $"+puntoVenta);
+                                    } else {
+                                        edtMonto.setText("TOTAL: $" + puntoVenta);
                                     }
 
                                 }
@@ -568,7 +569,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                         public void onErrorResponse(VolleyError error) {
                             progressDialog.hide();
                             Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
-                            Toast.makeText(getContext(),  "Activos   "+url, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Activos   " + url, Toast.LENGTH_SHORT).show();
 
                         }
                     });
@@ -578,7 +579,6 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                 }
             }
         });
-
 
 
         return view;
@@ -595,20 +595,14 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
     }
 
 
-    public ArrayList<ModeloSpinnerGeneral>listaReportes(){
-        ArrayList<ModeloSpinnerGeneral>lista = new ArrayList<>();
+    public ArrayList<ModeloSpinnerGeneral> listaReportes() {
+        ArrayList<ModeloSpinnerGeneral> lista = new ArrayList<>();
         String[] nombre = getResources().getStringArray(R.array.opcionesReportes);
 
-        for (int i = 0; i <nombre.length; i++){
+        for (int i = 0; i < nombre.length; i++) {
             lista.add(new ModeloSpinnerGeneral(nombre[i]));
         }
         return lista;
-    }
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
@@ -621,8 +615,5 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
         return false;
     }
 
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
+
 }

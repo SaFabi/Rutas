@@ -83,9 +83,6 @@ public class CarritoFragment extends Fragment implements Basic {
     AdapterClientes adapter;
     carritoAdapter carritoAdapter;
 
-
-    private OnFragmentInteractionListener mListener;
-
     public CarritoFragment() {
 
     }
@@ -538,13 +535,4 @@ public class CarritoFragment extends Fragment implements Basic {
         return view;
     }
 
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
-    }
 }

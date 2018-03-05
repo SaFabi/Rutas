@@ -55,8 +55,6 @@ public class RegistrarAbono extends Fragment  implements Basic{
     //ADAPTERS
    AdapterAbonos adapter;
 
-    private OnFragmentInteractionListener mListener;
-
     public RegistrarAbono() {
         // Required empty public constructor
     }
@@ -346,17 +344,5 @@ public class RegistrarAbono extends Fragment  implements Basic{
 
 
         return vista;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

@@ -42,12 +42,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import org.json.JSONArray;
 
 public class MainActivity extends AppCompatActivity
-        implements Basic, NavigationView.OnNavigationItemSelectedListener,
-        Inicio.OnFragmentInteractionListener,Catalogo.OnFragmentInteractionListener,
-        Clientes.OnFragmentInteractionListener,
-        Contenedor.OnFragmentInteractionListener, ClientesContenedor.OnFragmentInteractionListener,
-        ContenedorInventarioGeneral.OnFragmentInteractionListener, Reportes.OnFragmentInteractionListener,
-        CreditosContenedor.OnFragmentInteractionListener, PedidosFragment.OnFragmentInteractionListener{
+        implements Basic, NavigationView.OnNavigationItemSelectedListener{
     MenuItem itemBuscar;
     MenuItem itemCarrito;
     Fragment miFragment =null;
@@ -217,9 +212,5 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
     }
 }

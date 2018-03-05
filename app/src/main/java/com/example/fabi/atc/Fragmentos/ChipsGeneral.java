@@ -50,8 +50,6 @@ public class ChipsGeneral extends Fragment  implements SearchView.OnQueryTextLis
     //ADAPTERS
     ProductosAdapter adapter;
 
-    private OnFragmentInteractionListener mListener;
-
     public ChipsGeneral() {
         // Required empty public constructor
     }
@@ -113,12 +111,6 @@ public class ChipsGeneral extends Fragment  implements SearchView.OnQueryTextLis
         queue.add(request);
         return view;
     }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
     //INFLA EL MENU DE OPCIONES
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -140,12 +132,6 @@ public class ChipsGeneral extends Fragment  implements SearchView.OnQueryTextLis
             }
         });
     }
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
     //REPSUESTA DE LA CONSULTA GENERAL
     @Override
     public void onErrorResponse(VolleyError error) {
@@ -196,10 +182,5 @@ public class ChipsGeneral extends Fragment  implements SearchView.OnQueryTextLis
             e.printStackTrace();
         }
         return listaFiltrada;
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

@@ -48,8 +48,6 @@ public class PedidosFragment extends Fragment implements Basic {
     PedidosAdapter pedidosAdapter;
 
 
-    private OnFragmentInteractionListener mListener;
-
     public PedidosFragment() {
         // Required empty public constructor
     }
@@ -136,14 +134,6 @@ public class PedidosFragment extends Fragment implements Basic {
         queue.add(request);
         return view;
     }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     //INFLA EL MENU DE OPCIONES
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -152,9 +142,5 @@ public class PedidosFragment extends Fragment implements Basic {
         MenuItem carrito = menu.findItem(R.id.carrito);
         carrito.setVisible(false);
         buscador.setVisible(false);
-    }
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

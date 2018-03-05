@@ -43,8 +43,6 @@ public class detallesCreditosPendientes extends Fragment  implements Basic{
     //ADAPTERS
     AdapterDetallesCreditos adapter;
 
-    private OnFragmentInteractionListener mListener;
-
     public detallesCreditosPendientes() {
         // Required empty public constructor
     }
@@ -154,14 +152,5 @@ public class detallesCreditosPendientes extends Fragment  implements Basic{
 
 
         return vista;
-    }
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

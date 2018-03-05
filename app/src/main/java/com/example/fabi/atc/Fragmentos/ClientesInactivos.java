@@ -61,8 +61,6 @@ public class ClientesInactivos extends Fragment implements SearchView.OnQueryTex
     //ADAPTERS
     AdapterClientes adapter;
 
-    private OnFragmentInteractionListener mListener;
-
     public ClientesInactivos() {
         // Required empty public constructor
     }
@@ -263,12 +261,6 @@ public class ClientesInactivos extends Fragment implements SearchView.OnQueryTex
 
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
     //INFLA EL MENU DE OPCIONES
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -362,9 +354,5 @@ public class ClientesInactivos extends Fragment implements SearchView.OnQueryTex
             e.printStackTrace();
         }
         return listaFiltrada;
-    }
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

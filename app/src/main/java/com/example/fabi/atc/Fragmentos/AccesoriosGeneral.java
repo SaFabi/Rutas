@@ -47,9 +47,6 @@ public class AccesoriosGeneral extends Fragment  implements SearchView.OnQueryTe
     ProductosAdapter adapter;
 
 
-
-    private OnFragmentInteractionListener mListener;
-
     public AccesoriosGeneral() {
     }
 
@@ -116,11 +113,7 @@ public class AccesoriosGeneral extends Fragment  implements SearchView.OnQueryTe
         queue.add(request);
         return view;
     }
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
+
 
     //INFLA EL MENU
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -198,8 +191,4 @@ public class AccesoriosGeneral extends Fragment  implements SearchView.OnQueryTe
         return listaFiltrada;
     }
 
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 }

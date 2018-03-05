@@ -61,8 +61,6 @@ public class Clientes extends Fragment implements SwipeRefreshLayout.OnRefreshLi
     //ADAPTERS
     InventarioPersonalAdapter inventarioPersonalAdapter;
 
-    private OnFragmentInteractionListener mListener;
-
     public Clientes() {
     }
 
@@ -150,12 +148,6 @@ public class Clientes extends Fragment implements SwipeRefreshLayout.OnRefreshLi
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
    //INFLA EL MENU DE OPCIONES
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -295,10 +287,5 @@ public class Clientes extends Fragment implements SwipeRefreshLayout.OnRefreshLi
 
         //Agrega y ejecuta la cola
         queue.add(request);
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

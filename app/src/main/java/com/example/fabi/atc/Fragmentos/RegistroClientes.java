@@ -57,7 +57,6 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
     //ADAPTERS
     spinnerAdapter adapter;
 
-    private OnFragmentInteractionListener mListener;
     public RegistroClientes() {
         // Required empty public constructor
     }
@@ -359,13 +358,6 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     //INFLA EL MENU DE OPCIONES
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -397,9 +389,4 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
         spinner.setAdapter(adapter);
     }
 
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 }

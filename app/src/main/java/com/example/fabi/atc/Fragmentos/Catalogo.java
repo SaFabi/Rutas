@@ -57,7 +57,6 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
     //ADAPTERS
     InventarioPersonalAdapter inventarioPersonalAdapter;
 
-    private OnFragmentInteractionListener mListener;
 
     public Catalogo() {
         // Required empty public constructor
@@ -149,13 +148,6 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
         return view;
     }
 
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
     //INFLA EL MENU DE OPCIONES DE LA TOOLBAR
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -295,8 +287,4 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
 
     }
 
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 }

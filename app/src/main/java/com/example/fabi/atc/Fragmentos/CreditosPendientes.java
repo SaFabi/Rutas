@@ -61,8 +61,6 @@ public class CreditosPendientes extends Fragment implements SwipeRefreshLayout.O
     spinnerAdapter spinnerAdapter;
     CreditosAdapter creditosAdapter;
 
-    private OnFragmentInteractionListener mListener;
-
     public CreditosPendientes() {
         // Required empty public constructor
     }
@@ -248,12 +246,6 @@ public class CreditosPendientes extends Fragment implements SwipeRefreshLayout.O
         return view;
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
 
     //Infla el menu para el carrito y el buscador
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -300,10 +292,5 @@ public class CreditosPendientes extends Fragment implements SwipeRefreshLayout.O
         });
         queueCreditos.add(requestCreditos);
 
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

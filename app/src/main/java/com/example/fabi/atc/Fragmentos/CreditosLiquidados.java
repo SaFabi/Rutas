@@ -55,8 +55,6 @@ public class CreditosLiquidados extends Fragment implements Basic {
     String puntoVenta;
     int ordenID;
 
-    private OnFragmentInteractionListener mListener;
-
     public CreditosLiquidados() {
         // Required empty public constructor
     }
@@ -203,11 +201,6 @@ public class CreditosLiquidados extends Fragment implements Basic {
 
        return vista;
     }
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
     //INFLA EL MENU DE OPCIONES
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -216,10 +209,5 @@ public class CreditosLiquidados extends Fragment implements Basic {
         MenuItem carrito = menu.findItem(R.id.carrito);
         carrito.setVisible(false);
         buscador.setVisible(false);
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }
