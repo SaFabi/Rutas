@@ -72,7 +72,7 @@ public class FragemenMenuInicio extends Fragment {
 
 
         View view= inflater.inflate(R.layout.fragment_fragemen_menu_inicio, container, false);
-        /*
+
         final Animation animScale = AnimationUtils.loadAnimation(getContext(),R.anim.scaele_animacion);
         Button btnCatalogo = (Button)view.findViewById(R.id.idCatalogo);
         Button btnPedidos = (Button)view.findViewById(R.id.idPedidos);
@@ -108,7 +108,7 @@ public class FragemenMenuInicio extends Fragment {
             @Override
             public void onClick(View arg0) {
                 arg0.startAnimation(animScale);
-            }});*/
+            }});
         return view;
     }
 
