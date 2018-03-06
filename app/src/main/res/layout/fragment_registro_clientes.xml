@@ -83,13 +83,11 @@
         android:textStyle="bold"
         />
     <Spinner
-        android:paddingLeft="50dp"
-        android:layout_toRightOf="@id/txtCiudad"
         android:textAlignment="center"
-        android:layout_margin="@dimen/margen_margin"
         android:id="@+id/Ciudades"
-        android:layout_below="@id/edtDireccion"
-        android:layout_width="match_parent"
+        android:layout_marginStart="@dimen/margen_derecha"
+        android:layout_below="@id/txtCiudad"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <EditText
         android:layout_marginTop="20dp"
