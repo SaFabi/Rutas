@@ -2,39 +2,44 @@
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     card_view:cardCornerRadius="8dp"
     card_view:cardUseCompatPadding="true"
-    android:layout_marginBottom="16dp"
+    android:padding="@dimen/margen_padding"
+    android:elevation="@dimen/elevacion_card"
     >
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorGris"
-        android:paddingBottom="4dp">
+        android:padding="@dimen/margen_padding"
+        android:layout_margin="@dimen/margen_margin">
 
         <TextView
-            android:fontFamily="serif"
             android:id="@+id/Total"
             android:layout_toEndOf="@id/img"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-            android:text="Total"
+            android:text="@string/texto_total"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@color/primaryText"
+            android:textStyle="bold"
+            />
+
         <TextView
-            android:fontFamily="serif-monospace"
             android:id="@+id/folio"
             android:layout_toEndOf="@id/img"
-            android:textSize="20dp"
+            android:textSize="@dimen/texto_generico"
             android:layout_marginTop="10dp"
             android:layout_below="@id/Total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Folio"
+            android:text="@string/texto_folio"
+            android:textColor="@color/secondarText"
+            android:textStyle="bold"
             />
+
         <TextView
-            android:fontFamily="serif-monospace"
             android:id="@+id/ClaveCliente"
             android:layout_toEndOf="@id/img"
             android:textSize="15dp"
@@ -43,16 +48,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Clave"
+            android:textColor="@color/secondarText"
+            android:textStyle="bold"
             />
         <TextView
             android:layout_centerVertical="true"
             android:textSize="18dp"
-            android:fontFamily="serif"
+
             android:text="Fecha"
             android:id="@+id/fechaCredito"
             android:layout_below="@id/ClaveCliente"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@color/primaryText"
+            android:textStyle="bold"
+            />
         <Button
             android:id="@+id/registrarAbono"
             android:focusableInTouchMode="false"

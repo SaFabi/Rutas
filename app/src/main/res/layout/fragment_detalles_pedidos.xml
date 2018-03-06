@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBlanco"
+    android:padding="@dimen/margen_padding"
     tools:context="com.example.fabi.atc.Fragmentos.DetallesPedidos">
     <ListView
         android:id="@+id/listadetallesPedidos"
@@ -12,9 +13,12 @@
         android:id="@+id/txtTotalpedidos"
         android:textSize="20sp"
         android:fontFamily="sans-serif-smallcaps"
-        android:text="Total:"
+        android:text="@string/texto_total"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
+        android:textColor="@color/primaryText"
+        android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
 </RelativeLayout>

@@ -3,27 +3,37 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="@dimen/elevacion_card"
     card_view:cardCornerRadius="8dp"
+    android:layout_margin="@dimen/margen_margin"
     card_view:cardUseCompatPadding="true"
-    android:layout_marginBottom="16dp"
     >
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/margen_padding">
     <ImageView
         android:src="@drawable/app_icono"
         android:id="@+id/imgGeneral"
-        android:layout_width="100dp"
-        android:layout_height="100dp" />
+        android:layout_width="@dimen/imagen_card"
+        android:layout_height="@dimen/imagen_card"
+        android:layout_marginEnd="@dimen/margen_derecha"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_toEndOf="@id/imgGeneral"
         android:id="@+id/marca"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:text="Marca"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:textColor="@color/primaryText"
+        android:textStyle="bold"
+ />
     <TextView
         android:layout_toEndOf="@id/imgGeneral"
         android:id="@+id/modelo"
@@ -33,16 +43,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Modelo"
+        android:textStyle="bold"
+        android:textColor="@color/secondarText"
         />
     <TextView
         android:layout_toEndOf="@id/imgGeneral"
         android:id="@+id/precioGeneral"
-        android:textSize="15dp"
+        android:textSize="@dimen/texto_pequeno"
         android:layout_marginTop="10dp"
         android:layout_below="@id/modelo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Precio"
+        android:textStyle="bold"
+        android:textColor="@color/primaryText"
         />
 
 </RelativeLayout>

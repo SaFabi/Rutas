@@ -3,20 +3,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:background="@color/colorBlanco"
+    android:layout_height="match_parent"
     tools:context="com.example.fabi.atc.Fragmentos.ClientesActivos">
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBlanco"
     tools:context="com.example.fabi.atc.Fragmentos.Clientes">
 
  <ListView
      android:id="@+id/lvFClientes"
      android:layout_width="match_parent"
-     android:layout_height="match_parent"></ListView>
+     android:layout_height="match_parent"
+     />
 
 </FrameLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

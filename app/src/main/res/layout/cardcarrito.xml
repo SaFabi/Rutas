@@ -2,34 +2,50 @@
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     card_view:cardCornerRadius="8dp"
     card_view:cardUseCompatPadding="true"
-    android:layout_marginBottom="16dp"
+    android:layout_margin="@dimen/margen_margin"
+    android:elevation="@dimen/elevacion_card"
     >
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/margen_padding">
 
     <ImageView
         android:id="@+id/imagenCarrito"
+        android:layout_width="@dimen/imagen_card"
+        android:layout_height="@dimen/imagen_card"
         android:src="@drawable/catalogo"
-        android:layout_width="110dp"
-        android:layout_height="110dp" />
+        android:layout_marginEnd="@dimen/margen_derecha"
+/>
     <TextView
         android:id="@+id/txtTipoArt"
-        android:text="Marca"
-        android:layout_toRightOf="@id/imagenCarrito"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="@string/texto_marca"
+        android:textColor="@color/primaryText"
+        android:layout_toRightOf="@id/imagenCarrito"
+        />
     <TextView
         android:id="@+id/txtMarcayModelo"
         android:layout_below="@id/txtTipoArt"
         android:layout_toRightOf="@id/imagenCarrito"
-        android:text="Modelo"
+        android:text="@string/texto_modelo"
+        android:textColor="@color/secondarText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/txtPrecioCarrito"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/texto_precio"
+        android:textColor="@color/primaryText"
+        android:layout_toRightOf="@id/imagenCarrito"
+        android:layout_below="@id/txtMarcayModelo"/>
     <Button
         android:id="@+id/btnSumarCarrito"
         android:layout_toRightOf="@id/imagenCarrito"
@@ -37,16 +53,18 @@
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:textStyle="bold"
         android:text="+"
+        android:layout_marginTop="@dimen/margen_margin"
         android:layout_width="50dp"
-        android:layout_height="50dp" />
+        android:layout_height="50dp"/>
+
     <EditText
         android:inputType="number"
         android:textAlignment="center"
         android:id="@+id/edtCantidadCarrito"
         android:layout_toRightOf="@id/btnSumarCarrito"
         android:layout_alignBottom="@id/imagenCarrito"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content" />
+        android:layout_width="@dimen/tamano_imagen"
+        android:layout_height="wrap_content"/>
     <Button
         android:id="@+id/btnRestarCarrito"
         android:layout_toRightOf="@id/edtCantidadCarrito"
@@ -57,18 +75,17 @@
         android:layout_width="50dp"
         android:layout_height="50dp" />
 
-    <TextView
-        android:id="@+id/txtPrecioCarrito"
-        android:text="$Precio"
-        android:layout_toRightOf="@id/imagenCarrito"
-        android:layout_below="@id/txtMarcayModelo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
     <Button
         android:id="@+id/eliminarCarrito"
-        android:background="@drawable/cancelar"
-        android:layout_alignParentRight="true"
-        android:layout_width="50dp"
-        android:layout_height="50dp" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_eliminar"
+        android:text="@string/texto_eliminar"
+        android:textColor="@color/colorBlanco"
+        android:textAllCaps="false"
+        android:theme="@style/StyleButton"
+        android:layout_below="@+id/txtMarcayModelo"
+        android:layout_alignParentEnd="true"
+        android:elevation="@dimen/elevacion_raised_buttom"/>
 </RelativeLayout>
 </android.support.v7.widget.CardView>

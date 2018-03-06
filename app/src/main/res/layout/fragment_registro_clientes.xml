@@ -3,12 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBlanco"
+    android:padding="@dimen/margen_padding"
     tools:context="com.example.fabi.atc.Fragmentos.RegistroClientes">
     <ImageView
         android:id="@+id/imgUsuario"
-        android:src="@drawable/usuario"
         android:layout_width="wrap_content"
-        android:layout_height="120dp" />
+        android:layout_height="wrap_content"
+        android:src="@drawable/usuario"
+        android:layout_margin="@dimen/margen_margin"/>
 
 
     <TextView
@@ -19,7 +21,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Clave del Cliente: "
-        android:textSize="20dp"
+        android:textSize="@dimen/texto_generico"
+        android:textColor="@color/primaryText"
+        android:layout_margin="@dimen/margen_margin"
+        android:textStyle="bold"
         />
 
  <EditText
@@ -29,7 +34,9 @@
      android:id="@+id/edtClave"
      android:textAlignment="center"
      android:layout_width="match_parent"
-     android:layout_height="wrap_content" />
+     android:layout_height="wrap_content"
+     android:textColor="@color/primaryText"
+     android:textStyle="bold"/>
 
     <EditText
         android:inputType=""
@@ -38,7 +45,12 @@
         android:layout_below="@id/imgUsuario"
         android:hint="Nombre"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/texto_generico"
+        android:textColor="@color/primaryText"
+        android:layout_margin="@dimen/margen_margin"
+        android:textStyle="bold"
+        />
 
     <EditText
         android:layout_marginTop="20dp"
@@ -47,20 +59,29 @@
         android:layout_below="@id/edtNombre"
         android:hint="Dirección"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/texto_generico"
+        android:textColor="@color/primaryText"
+        android:layout_margin="@dimen/margen_margin"
+        android:textStyle="bold"
+        />
     <TextView
         android:layout_marginTop="20dp"
         android:id="@+id/txtCiudad"
-        android:textSize="20dp"
         android:text="Ciudad"
         android:layout_below="@id/edtDireccion"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/texto_generico"
+        android:textColor="@color/primaryText"
+        android:layout_margin="@dimen/margen_margin"
+        android:textStyle="bold"
+        />
     <Spinner
         android:paddingLeft="50dp"
         android:layout_toRightOf="@id/txtCiudad"
-        android:layout_marginTop="20dp"
         android:textAlignment="center"
+        android:layout_margin="@dimen/margen_margin"
         android:id="@+id/Ciudades"
         android:layout_below="@id/edtDireccion"
         android:layout_width="match_parent"
@@ -73,7 +94,11 @@
         android:layout_below="@id/Ciudades"
         android:hint="Telefono"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/texto_generico"
+        android:textColor="@color/primaryText"
+        android:textStyle="bold"
+        />
 
     <EditText
         android:id="@+id/edtCorreo"
@@ -82,20 +107,23 @@
         android:layout_marginTop="20dp"
         android:layout_below="@id/edtTelefono"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <Button
-        android:drawableTop="@drawable/ic_aceptar_negro"
-        android:layout_alignParentBottom="true"
-        android:gravity="center"
-        android:text="Agregar"
-        android:layout_alignParentRight="true"
-        android:id="@+id/btnAgregarUsuario"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/texto_generico"
+        android:textColor="@color/primaryText"
+        android:textStyle="bold"/>
 
-
-
+    <Button
+        android:id="@+id/btnAgregarUsuario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/ic_check_blanco"
+        android:textAllCaps="false"
+        android:textColor="@color/colorBlanco"
+        android:text="@string/boton_agregar"
+        android:elevation="@dimen/elevacion_raised_buttom"
+        android:theme="@style/StyleButton"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
         />
-
 
 </RelativeLayout>

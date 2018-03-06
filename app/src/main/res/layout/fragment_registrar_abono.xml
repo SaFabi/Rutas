@@ -2,51 +2,74 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/margen_padding"
     android:background="@color/colorBlanco"
+    android:gravity="center"
     tools:context="com.example.fabi.atc.Fragmentos.RegistrarAbono">
 
     <TextView
         android:id="@+id/montoTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:text="Monto total actual"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:text="@string/texto_monto_actual"
+        android:textColor="@color/primaryText"
+        android:textSize="@dimen/titulos_H1"
+        android:layout_margin="@dimen/margen_margin"
+        android:textStyle="bold"
+ />
 
     <EditText
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:textAlignment="center"
         android:id="@+id/edtmontoTotal"
         android:enabled="false"
-        android:layout_below="@id/montoTotal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/montoTotal"
+        android:layout_alignParentStart="true"
+        android:textStyle="bold"/>
     <TextView
         android:id="@+id/montoAbono"
-        android:text="Monto del Abono"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/edtmontoTotal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="@string/texto_monto_bono"
+        android:textColor="@color/primaryText"
+        android:textSize="@dimen/titulos_H1"
+        android:layout_margin="@dimen/margen_margin"
+        android:textStyle="bold"
+
+        />
 
     <EditText
         android:id="@+id/edtABono"
         android:inputType="numberDecimal"
         android:layout_below="@id/montoAbono"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textStyle="bold"/>
     <Button
         android:id="@+id/btnAgregarAbono"
-        android:drawableTop="@drawable/ic_aceptar_negro"
-        android:text="Agregar"
-        android:layout_below="@id/edtABono"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/ic_check_blanco"
+        android:textAllCaps="false"
+        android:textColor="@color/colorBlanco"
+        android:text="@string/boton_agregar"
+        android:elevation="@dimen/elevacion_raised_buttom"
+        android:theme="@style/StyleButton"
+        android:layout_below="@+id/edtABono"
+        android:layout_centerHorizontal="true" />
     <ListView
         android:id="@+id/Abonos"
         android:layout_below="@id/btnAgregarAbono"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margen_margin"
+        />
 
 </RelativeLayout>

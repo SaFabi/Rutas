@@ -12,4 +12,49 @@
         <item>Ventas</item>
     </string-array>
 
+
+    <!-- Texto usado dentro del XML fragment_buzon-->
+    <string name="titulo_caja_comentarios">Comentarios</string>
+    <string name="titulo_carrito">Carrito</string>
+    <string name="texto_caja_comentarios">Para nosotros tu opinión es muy importante, por favor déjanos tus comentarios.</string>
+
+
+
+
+    <string name="texto_compras_contado">Compras al Contado</string>
+
+    <string name="texto_total_a_pagar">Total a pagar:</string>
+    <string name="texto_total">Total:</string>
+
+    <!-- Texto Generico-->
+    <string name="texto_nombre">Nombre:</string>
+    <string name="texto_direccion">Dirección:</string>
+    <string name="texto_telefono">Teléfono:</string>
+    <string name="texto_fecha">Fecha</string>
+    <string name="texto_folio">Folio</string>
+    <string name="texto_estado">Estado</string>
+    <string name="texto_articulo">Articulo</string>
+    <string name="texto_marca">Marca:</string>
+    <string name="texto_modelo">Modelo:</string>
+    <string name="texto_precio">Precio:</string>
+    <string name="texto_existencia">Existencia:</string>
+    <string name="boton_agregar">Agregar</string>
+    <string name="boton_articulo">Articulo</string>
+    <string name="texto_cantidad">Cantidad:</string>
+    <string name="texto_tipo">Tipo</string>
+    <string name="texto_eliminar">Eliminar</string>
+    <string name="texto_detalles">Detalles</string>
+    <string name="texto_creditos">Creditos</string>
+    <string name="texto_restaurar">¿Desea restaurar este elemento?</string>
+    <string name="texto_eliminar_elemento">¿Desea eliminar este elemento?</string>
+    <string name="sin_conxion">Sin Conexion</string>
+    <string name="texto_monto_actual"> Monto total actual</string>
+    <string name="texto_monto_bono"> Monto del bono</string>
+    <string name="texto_buscar">Buscar</string>
+    <string name="texto_fecha_inicial">De:</string>
+    <string name="texto_fecha_final">Hasta:</string>
+    <string name="texto_aceptar">Aceptar</string>
+
+
+
 </resources>
