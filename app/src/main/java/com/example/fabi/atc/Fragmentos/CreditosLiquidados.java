@@ -208,7 +208,9 @@ public class CreditosLiquidados extends Fragment implements Basic {
             mListener.onFragmentInteraction(uri);
         }
     }
+
     //INFLA EL MENU DE OPCIONES
+
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         //inflater.inflate(R.menu.menu_buscador,menu);
