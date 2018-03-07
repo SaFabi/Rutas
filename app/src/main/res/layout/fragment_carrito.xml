@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:background="@color/colorBlanco"
     android:padding="@dimen/margen_padding"
-    tools:context="com.example.fabi.atc.Fragmentos.CarritoFragment">ç
+    tools:context="com.example.fabi.atc.Fragmentos.CarritoFragment">
     <TextView
         android:fontFamily="sans-serif"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Folio: " />
+
     <TextView
         android:id="@+id/txtclientecarrito"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
@@ -22,6 +23,7 @@
         android:layout_below="@id/txtfoliocarrito"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
     <Spinner
         android:id="@+id/spinnerclientescarrito"
         android:paddingLeft="20dp"
@@ -29,23 +31,29 @@
         android:layout_toEndOf="@id/txtclientecarrito"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
     <Button
         android:id="@+id/btnterminarcompra"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:background="@drawable/reporte"
+        android:layout_margin="@dimen/margen_margin"
         android:layout_width="50dp"
         android:layout_height="50dp" />
+
     <TextView
         android:id="@+id/montototalcarrito"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:layout_toStartOf="@id/btnterminarcompra"
         android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/margen_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
     <ListView
         android:layout_below="@id/spinnerclientescarrito"
         android:id="@+id/listaproductoscarrito"
         android:layout_width="match_parent"
-        android:layout_height="400dp"/>
+        android:layout_height="wrap_content"/>
+
 </LinearLayout>

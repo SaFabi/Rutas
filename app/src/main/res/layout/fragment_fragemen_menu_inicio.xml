@@ -4,39 +4,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/fondo_app_02"
+    android:gravity="center"
     tools:context="com.example.fabi.atc.Fragmentos.FragemenMenuInicio">
 
-<LinearLayout
+<TableLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_centerHorizontal="true">
+    >
+    <TableRow>
+        <Button
+            android:id="@+id/idBtnCatalogo"
+            android:text="@string/texto_catalogo"
+            style="@style/BotonesMenu"
+            android:background="@drawable/catalogo_style"
+            />
+        <Button
+            android:id="@+id/idBtnPedidos"
+            android:text="@string/texto_pedidos"
+            android:background="@drawable/pedidos_style"
+            style="@style/BotonesMenu"
+            />
+    </TableRow>
 
-    <Button
-        android:id="@+id/idBtnCatalogo"
-        android:text="@string/texto_catalogo"
-        style="@style/BotonesMenu"
-        android:background="@drawable/catalogo_style"
-        />
+    <TableRow>
 
-    <Button
-        android:id="@+id/idBtnPedidos"
-        android:text="@string/texto_pedidos"
-        android:background="@drawable/pedidos_style"
-        style="@style/BotonesMenu"
-        />
+        <Button
+            android:id="@+id/idBtnReportes"
+            android:text="@string/texto_reportes"
+            android:background="@drawable/reportes_style"
+            style="@style/BotonesMenu"/>
 
-    <Button
-        android:id="@+id/idBtnReportes"
-        android:text="@string/texto_reportes"
-        android:background="@drawable/reportes_style"
-        style="@style/BotonesMenu"/>
+        <Button
+            android:id="@+id/idBtnClientes"
+            android:text="@string/texto_clientes"
+            android:background="@drawable/clientes_style"
+            style="@style/BotonesMenu"/>
+    </TableRow>
 
-    <Button
-        android:id="@+id/idBtnClientes"
-        android:text="@string/texto_clientes"
-        android:background="@drawable/clientes_style"
-        style="@style/BotonesMenu"/>
 
-</LinearLayout>
+</TableLayout>
 </RelativeLayout>

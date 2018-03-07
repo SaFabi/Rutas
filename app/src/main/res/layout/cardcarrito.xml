@@ -79,12 +79,11 @@
         android:id="@+id/eliminarCarrito"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_eliminar"
         android:text="@string/texto_eliminar"
         android:textColor="@color/colorBlanco"
         android:textAllCaps="false"
         android:theme="@style/StyleButton"
-        android:layout_below="@+id/txtMarcayModelo"
+        android:layout_above="@+id/btnRestarCarrito"
         android:layout_alignParentEnd="true"
         android:elevation="@dimen/elevacion_raised_buttom"/>
 </RelativeLayout>

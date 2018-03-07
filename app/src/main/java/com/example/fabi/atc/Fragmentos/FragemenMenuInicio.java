@@ -86,7 +86,6 @@ public class FragemenMenuInicio extends Fragment {
             @Override
             public void onClick(View arg0) {
                 arg0.startAnimation(animScale);
-
                 Fragment fragment = ClientesContenedor.newInstance();
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.content_main,fragment);
