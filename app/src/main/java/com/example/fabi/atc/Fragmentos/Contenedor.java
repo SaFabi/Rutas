@@ -46,7 +46,7 @@ public class Contenedor extends Fragment {
 
 
 
-    public static Contenedor newInstance(String param1, String param2) {
+    public static Contenedor newInstance() {
         Contenedor fragment = new Contenedor();
         Bundle args = new Bundle();
         return fragment;

@@ -41,9 +41,7 @@ public class ClientesContenedor extends Fragment {
         // Required empty public constructor
     }
 
-
-    // TODO: Rename and change types and number of parameters
-    public static ClientesContenedor newInstance(String param1, String param2) {
+    public static ClientesContenedor newInstance() {
         ClientesContenedor fragment = new ClientesContenedor();
         Bundle args = new Bundle();
         return fragment;
