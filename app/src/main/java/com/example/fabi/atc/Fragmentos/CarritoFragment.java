@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +46,7 @@ import com.example.fabi.atc.R;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.security.spec.ECField;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -172,168 +174,44 @@ public class CarritoFragment extends Fragment implements Basic {
                             //SE GENERA EL FOLIO NUEVO
                             nuevoFolio = rutasObj.generarFolio(folio, getContext(), PUNTOVENTA);
 
-                            //SE SACA EL ID DEL RESPONSABLE DE LA RUTA
-                            RequestQueue queueUsuario = Volley.newRequestQueue(getContext());
-                            String consultaUsuario = "SELECT usuario_id FROM puntoventa_usuario WHERE puntoVenta_id ="+usuarioID;
-                            consultaUsuario = consultaUsuario.replace(" ", "%20");
-                            String cadenaUsuario = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaUsuario;
-                            String urlUsuario = SERVER + RUTA + "consultaGeneral.php" + cadenaUsuario;
-                            Log.i("info", urlUsuario);
-
-                            JsonArrayRequest requestUsuario = new JsonArrayRequest(Request.Method.GET, urlUsuario, null, new Response.Listener<JSONArray>() {
+                            //SE MANDA LLAMAR
+                            RequestQueue queue = Volley.newRequestQueue(getContext());
+                            String consulta = "CALL procesoOrden('"+nuevoFolio+"',"+usuarioID+","+clienteID+");";
+                            consulta = consulta.replace(" ", "%20");
+                            String cadenaClaveCliente = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+                            String url = SERVER + RUTA + "consultaGeneral.php" + cadenaClaveCliente;
+                            Log.i("info", url);
+                            JsonArrayRequest JsonprocesoOrden = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
                                 @Override
                                 public void onResponse(JSONArray response) {
-                                    JSONObject jsonObject1;
+                                    JSONObject jsonOrden;
                                     try {
-                                        jsonObject1=response.getJSONObject(0);
+                                        jsonOrden = response.getJSONObject(0);
                                     }catch (Exception e){
-                                        jsonObject1 = new JSONObject();
+                                        jsonOrden=new JSONObject();
+
                                     }
                                     try {
-                                        usuarioRuta = Integer.parseInt(jsonObject1.getString("0"));
+                                        OrdenID =Integer.parseInt(jsonOrden.getString("0"));
+
                                     }catch (Exception e){
-                                        usuarioRuta = 0;
+                                        OrdenID = 0;
+
                                     }
-                                    //INSERTA EN LA TABLA ORDEN
-                                    RequestQueue queueInsertarOrden = Volley.newRequestQueue(getContext());
-                                    String consultaInsertar = "INSERT INTO orden(folio,fecha,cliente_id,puntoVenta_id,usuario_id)VALUES('"+nuevoFolio+"','"+fecha+"',"+clienteID+","+usuarioID+","+usuarioRuta+")";
-                                    consultaInsertar = consultaInsertar.replace(" ", "%20");
-                                    String cadenaInsertar = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaInsertar;
-                                    String urlInsertar = SERVER + RUTA + "consultaGeneral.php" + cadenaInsertar;
-                                    Log.i("info", urlInsertar);
-                                     JsonArrayRequest jsonInsertarOrden = new JsonArrayRequest(Request.Method.GET, urlInsertar, null, new Response.Listener<JSONArray>() {
-                                        @Override
-                                        public void onResponse(final JSONArray response) {
-                                            Toast.makeText(getContext(), "Se inserto la orden", Toast.LENGTH_SHORT).show();
-                                            //CONSULTA PARA SACAR EL ID DE LA ULTIMA ORDEN REGISTRADA
-                                            RequestQueue queueOrdenID = Volley.newRequestQueue(getContext());
-                                            String consultaOrdenID = "SELECT id FROM orden where puntoVenta_id =" +usuarioID+" order by id desc limit 1;";
-                                            consultaOrdenID = consultaOrdenID.replace(" ","%20");
-                                            String cadenaOrdenID = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaOrdenID;
-                                            String urlOrdenID = SERVER + RUTA + "consultaGeneral.php" + cadenaOrdenID;
-                                            Log.i("info",urlOrdenID);
-                                            JsonArrayRequest jsonOrdenID = new JsonArrayRequest(Request.Method.GET, urlOrdenID, null, new Response.Listener<JSONArray>() {
+
+                                    if (OrdenID == 0){
+                                        //INICIA EL CICLO PARA RECORRER EL ARREGLO DEL CARRITO
+                                        for (int i =0 ;i<carritoFinal.size();i++){
+                                            Toast.makeText(getContext(), "Hubo erores", Toast.LENGTH_SHORT).show();
+                                            RequestQueue queueOrdenDesc = Volley.newRequestQueue(getContext());
+                                            String consultaOrdenDesc = "CALL procesoOrdenDescripcionRutas("+OrdenID+","+usuarioID+","+clienteID+","+carritoFinal.get(i).getCantidadID()+","+carritoFinal.get(i).getCantidad()+",";
+                                            consultaOrdenDesc = consultaOrdenDesc.replace(" ", "%20");
+                                            String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaOrdenDesc;
+                                            String urlOrdenDesc = SERVER + RUTA + "consultaGeneral.php" + cadena;
+                                            Log.i("info", urlOrdenDesc);
+                                            JsonArrayRequest JsonOrdenDesc = new JsonArrayRequest(Request.Method.GET, urlOrdenDesc, null, new Response.Listener<JSONArray>() {
                                                 @Override
                                                 public void onResponse(JSONArray response) {
-                                                    JSONObject jsonOrden;
-                                                    try {
-                                                        jsonOrden = response.getJSONObject(0);
-                                                    }catch (Exception e){
-                                                        jsonOrden = new JSONObject();
-
-                                                    }
-                                                    try {
-                                                        OrdenID = Integer.parseInt(jsonOrden.getString("0"));
-                                                    }catch ( Exception e){
-                                                        OrdenID =0;
-                                                    }
-
-                                                    // CONSULTA PARA SACAR EL PRECIO DEL CLIENTE
-                                                    RequestQueue queuePrecioCliente = Volley.newRequestQueue(getContext());
-                                                    String consultaPrecioCliente = "SELECT precio FROM precio_cliente where id ="+clienteID;
-                                                    consultaPrecioCliente = consultaPrecioCliente.replace(" ", "%20");
-                                                    String cadenaPrecioCliente= "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaPrecioCliente;
-                                                    String urlPrecioCliente = SERVER + RUTA + "consultaGeneral.php" + cadenaPrecioCliente;
-                                                    Log.i("info", urlPrecioCliente);
-
-                                                    JsonArrayRequest jsonPrecioCliente = new JsonArrayRequest(Request.Method.GET, urlPrecioCliente, null, new Response.Listener<JSONArray>() {
-                                                        @Override
-                                                        public void onResponse(JSONArray response) {
-                                                            int precio;
-                                                            JSONObject jsonObject2;
-                                                            try {
-                                                                jsonObject2 =response.getJSONObject(0);
-                                                            }catch (Exception e){
-                                                                jsonObject2 = new JSONObject();
-                                                            }
-
-                                                            try {
-                                                                precio = Integer.parseInt(jsonObject2.getString("0"));
-
-                                                            }catch (Exception e){
-                                                                precio = 0;
-                                                            }
-
-                                                            if (precio != 0){
-                                                                precioCliente =precio;
-
-                                                            }else {
-                                                                precioCliente = 0;
-                                                            }
-                                                            // CONSULTA PARA SACAR EL ID DEL REQUERIMIENTO
-                                                            RequestQueue queueRequerimiento = Volley.newRequestQueue(getContext());
-                                                            String consultaRequerimiento = "SELECT id FROM requerimiento WHERE tipo='Articulo'";
-                                                            consultaRequerimiento = consultaRequerimiento.replace(" ","%20");
-                                                            String cadenaRequerimiento = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaRequerimiento;
-                                                            String urlRequerimiento =  SERVER + RUTA + "consultaGeneral.php" + cadenaRequerimiento;
-                                                            Log.i("info",urlRequerimiento);
-                                                            JsonArrayRequest jsonRequerimiento = new JsonArrayRequest(Request.Method.GET, urlRequerimiento, null, new Response.Listener<JSONArray>() {
-                                                                @Override
-                                                                public void onResponse(JSONArray response) {
-                                                                    JSONObject jsonObject3;
-                                                                    try {
-                                                                        jsonObject3 = response.getJSONObject(0);
-                                                                    }catch (Exception e){
-                                                                        jsonObject3 = new JSONObject();
-                                                                    }
-
-                                                                    try {
-                                                                        requerimientoID = Integer.parseInt(jsonObject3.getString("0"));
-                                                                    }catch (Exception e){
-                                                                        requerimientoID =0;
-                                                                    }
-
-                                                                    //CONSULTA PARA INSERTAR EN ORDEN_DESCRIPCION
-                                                                    RequestQueue queueOrdenDes = Volley.newRequestQueue(getContext());
-                                                                    //INSERTA LO QUE TENGA EL CARRITO DE COMPRAS
-                                                                    for (int i = 0; i< carritoFinal.size();i++){
-                                                                        ganancia = Integer.parseInt(carritoFinal.get(i).getCantidad() )*Integer.parseInt(carritoFinal.get(i).getPrecio());
-
-                                                                        String consultaOrdenDes = "INSERT INTO orden_descripcion(tipoVentaId,cantidad,precio_sugerido,precio_final,ganancia,orden_id,requerimiento_id)VALUES" +
-                                                                                "("+carritoFinal.get(i).getCantidadID()+","+carritoFinal.get(i).getCantidad()+","+precioCliente+","+carritoFinal.get(i).getPrecio()+","+ganancia+","+OrdenID+","+requerimientoID+");";
-                                                                        consultaOrdenDes = consultaOrdenDes.replace(" ","%20");
-                                                                        String cadenaOrdenDes = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaOrdenDes;
-                                                                        String urlOrdenDes =  SERVER + RUTA + "consultaGeneral.php" + cadenaOrdenDes;
-                                                                        Log.i("info",urlOrdenDes);
-                                                                        JsonArrayRequest jsonOrdenDes = new JsonArrayRequest(Request.Method.GET, urlOrdenDes, null, new Response.Listener<JSONArray>() {
-                                                                            @Override
-                                                                            public void onResponse(JSONArray response) {
-
-                                                                            }
-                                                                        }, new Response.ErrorListener() {
-                                                                            @Override
-                                                                            public void onErrorResponse(VolleyError error) {
-
-                                                                            }
-                                                                        });
-                                                                        //TERMINA LA CONSULTA PARA INSERTAR EN ORDEN_DESCRIPCION
-                                                                        queueOrdenDes.add(jsonOrdenDes);
-                                                                    }
-
-
-                                                                }
-                                                            }, new Response.ErrorListener() {
-                                                                @Override
-                                                                public void onErrorResponse(VolleyError error) {
-
-                                                                }
-                                                            });
-                                                            //TERMINA LA CONSULTA PARA SACAR EL ID DEL REQUERIMIENTO
-                                                            queueRequerimiento.add(jsonRequerimiento);
-
-
-
-                                                        }
-                                                    }, new Response.ErrorListener() {
-                                                        @Override
-                                                        public void onErrorResponse(VolleyError error) {
-
-                                                        }
-                                                    });
-                                                    //TERMINA LA CONSULTA DE SACAR EL PRECIO CLIENTE
-                                                    queuePrecioCliente.add(jsonPrecioCliente);
-
-
 
                                                 }
                                             }, new Response.ErrorListener() {
@@ -342,20 +220,11 @@ public class CarritoFragment extends Fragment implements Basic {
 
                                                 }
                                             });
-                                            //TERMINA LA CONSULTA PARA SACAR EL ID DE LA ORDEN
-                                            queueOrdenID.add(jsonOrdenID);
-
-
-
+                                            queueOrdenDesc.add(JsonOrdenDesc);
                                         }
-                                    }, new Response.ErrorListener() {
-                                        @Override
-                                        public void onErrorResponse(VolleyError error) {
 
-                                        }
-                                    });
-                                    //TERMINA LA CONSULTA DE INSERTAR EN LA ORDEN
-                                    queueInsertarOrden.add(jsonInsertarOrden);
+                                    }
+
 
                                 }
                             }, new Response.ErrorListener() {
@@ -364,11 +233,7 @@ public class CarritoFragment extends Fragment implements Basic {
 
                                 }
                             });
-                            //TERMINA LA CONSULTA PARA SACAR EL ID DEL USUARIO
-                            queueUsuario.add(requestUsuario);
-
-                            Toast.makeText(getContext(),nuevoFolio , Toast.LENGTH_SHORT).show();
-
+                            queue.add(JsonprocesoOrden);
                         }
                     }, new Response.ErrorListener() {
                         @Override

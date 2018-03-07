@@ -1,7 +1,9 @@
 package com.example.fabi.atc.Fragmentos;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -122,6 +124,21 @@ public class PedidosFragment extends Fragment implements Basic {
                 progressDialog.hide();
                 pedidosAdapter = new PedidosAdapter(getContext(), ModeloPedidos.sacarListaClientes(response),getFragmentManager());
                 listView.setAdapter(pedidosAdapter);
+                if (response.length() == 0){
+                    AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
+                    dialogo1.setTitle("Importante");
+                    dialogo1.setCancelable(false);
+                    dialogo1.setIcon(R.drawable.cancelar);
+                    dialogo1.setMessage("No hay pedidos pendientes");
+                    dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+                    dialogo1.show();
+
+                }
 
 
             }

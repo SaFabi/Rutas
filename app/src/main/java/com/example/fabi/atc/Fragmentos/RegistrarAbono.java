@@ -255,7 +255,6 @@ public class RegistrarAbono extends Fragment  implements Basic{
                     dialogo1.setCancelable(false);
                     dialogo1.setIcon(R.drawable.cancelar);
                     dialogo1.setMessage("Introduza una cantidad");
-                    dialogo1.setView(vistaAlertEliminar);
                     dialogo1.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
