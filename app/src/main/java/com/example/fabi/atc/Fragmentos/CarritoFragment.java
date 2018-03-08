@@ -71,6 +71,8 @@ public class CarritoFragment extends Fragment implements Basic {
     int precioCliente;
     int requerimientoID;
     int ganancia;
+    String opcionCompra;
+    int calculoGanancia;
 
 
     //CONTROLES
@@ -144,8 +146,28 @@ public class CarritoFragment extends Fragment implements Basic {
         btnTerminarVenta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 //VERIFICA QUE EL CARRITO TENGA PRODUCTOS AGREGADOS
                 if (carritoFinal.size() > 0) {
+                    //PARA SABER SI LA COMPRA SERA A CREDITO O CONTADO
+                    AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getContext());
+                    dialogo1.setIcon(R.drawable.reporte);
+                    dialogo1.setMessage("¿La compra sera a contado?");
+                    dialogo1.setCancelable(false);
+                    dialogo1.setPositiveButton("SI", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            opcionCompra = "Contado";
+
+                        }
+                    });
+                    dialogo1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            opcionCompra = "Credito";
+                        }
+                    });
+                    dialogo1.show();
                     //INICIA LA CONSULTA PARA SACAR EL ULTIMO FOLIO
                     RequestQueue queue = Volley.newRequestQueue(getContext());
                     String consulta = "select folio from orden ORDER BY id desc LIMIT 1;";
@@ -174,7 +196,7 @@ public class CarritoFragment extends Fragment implements Basic {
                             //SE GENERA EL FOLIO NUEVO
                             nuevoFolio = rutasObj.generarFolio(folio, getContext(), PUNTOVENTA);
 
-                            //SE MANDA LLAMAR
+                            //SE MANDA LLAMAR EL PROCEDIMIENTO PARA LA ORDEN
                             RequestQueue queue = Volley.newRequestQueue(getContext());
                             String consulta = "CALL procesoOrden('"+nuevoFolio+"',"+usuarioID+","+clienteID+");";
                             consulta = consulta.replace(" ", "%20");
@@ -199,12 +221,15 @@ public class CarritoFragment extends Fragment implements Basic {
 
                                     }
 
-                                    if (OrdenID == 0){
-                                        //INICIA EL CICLO PARA RECORRER EL ARREGLO DEL CARRITO
+                                        //INICIA EL CICLO PARA RECORRER EL ARREGLO DEL CARRITO Y SE MANDA LLAMAR EL PROCESO DE ORDEN DESCRIPCION
                                         for (int i =0 ;i<carritoFinal.size();i++){
-                                            Toast.makeText(getContext(), "Hubo erores", Toast.LENGTH_SHORT).show();
+                                            calculoGanancia = Integer.parseInt(carritoFinal.get(i).getCantidad()) * Integer.parseInt(carritoFinal.get(i).getPrecio());
+
+                                            //Toast.makeText(getContext(), "Hubo erores", Toast.LENGTH_SHORT).show();
                                             RequestQueue queueOrdenDesc = Volley.newRequestQueue(getContext());
-                                            String consultaOrdenDesc = "CALL procesoOrdenDescripcionRutas("+OrdenID+","+usuarioID+","+clienteID+","+carritoFinal.get(i).getCantidadID()+","+carritoFinal.get(i).getCantidad()+",";
+                                            String consultaOrdenDesc = "CALL procesoOrdenDescripcionRutas("+OrdenID+","+usuarioID+","+clienteID+","+
+                                                    carritoFinal.get(i).getCantidadID()+","+carritoFinal.get(i).getCantidad()+","+
+                                                    carritoFinal.get(i).getPrecio()+","+calculoGanancia+",'Articulo');";
                                             consultaOrdenDesc = consultaOrdenDesc.replace(" ", "%20");
                                             String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaOrdenDesc;
                                             String urlOrdenDesc = SERVER + RUTA + "consultaGeneral.php" + cadena;
@@ -212,6 +237,18 @@ public class CarritoFragment extends Fragment implements Basic {
                                             JsonArrayRequest JsonOrdenDesc = new JsonArrayRequest(Request.Method.GET, urlOrdenDesc, null, new Response.Listener<JSONArray>() {
                                                 @Override
                                                 public void onResponse(JSONArray response) {
+                                                    if (response.length() ==0){
+                                                        Toast.makeText(getContext(), "No se puede completar la venta", Toast.LENGTH_SHORT).show();
+
+                                                    }
+                                                    if (opcionCompra.equals("Contado")){
+                                                        Toast.makeText(getContext(), opcionCompra, Toast.LENGTH_SHORT).show();
+
+                                                    }else if (opcionCompra.equals("Credito")){
+                                                        Toast.makeText(getContext(), opcionCompra, Toast.LENGTH_SHORT).show();
+
+                                                    }
+
 
                                                 }
                                             }, new Response.ErrorListener() {
@@ -220,10 +257,11 @@ public class CarritoFragment extends Fragment implements Basic {
 
                                                 }
                                             });
+                                            //TERMINA EL PROCESO DE ORDEN DESCRIPCION
                                             queueOrdenDesc.add(JsonOrdenDesc);
                                         }
 
-                                    }
+
 
 
                                 }
@@ -233,6 +271,7 @@ public class CarritoFragment extends Fragment implements Basic {
 
                                 }
                             });
+                            //TERMINA EL PROCESO DE ORDEN
                             queue.add(JsonprocesoOrden);
                         }
                     }, new Response.ErrorListener() {

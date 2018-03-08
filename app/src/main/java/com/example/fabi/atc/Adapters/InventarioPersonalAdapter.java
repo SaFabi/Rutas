@@ -103,10 +103,26 @@ public class InventarioPersonalAdapter extends BaseAdapter {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             if (textoBusqueda.getText().length() >0){
                                 Cantidad =Integer.parseInt(textoBusqueda.getText().toString());
-                                carrito.add(new ModeloInventarioPersonal(CantidadID,marca,modelo,precio,String.valueOf(Cantidad)));
-                               Toast.makeText(context,marca+" "+modelo,Toast.LENGTH_SHORT).show();
-                                Toast.makeText(context, "Se agrego al carrito ", Toast.LENGTH_SHORT).show();
-                                Toast.makeText(context,String.valueOf(Cantidad), Toast.LENGTH_SHORT).show();
+                                AlertDialog.Builder dialogoCantidad = new AlertDialog.Builder(context);
+                                final EditText cantidad = new EditText(context);
+                                dialogoCantidad.setIcon(R.drawable.agregar);
+                                dialogoCantidad.setTitle("Cantidad");
+                                cantidad.setInputType(InputType.TYPE_CLASS_NUMBER);
+                                dialogoCantidad.setView(cantidad);
+                                dialogoCantidad.setCancelable(false);
+                                dialogoCantidad.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        precio = cantidad.getText().toString();
+                                        carrito.add(new ModeloInventarioPersonal(CantidadID,marca,modelo,precio,String.valueOf(Cantidad)));
+                                        Toast.makeText(context,marca+" "+modelo,Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, "Se agrego al carrito ", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context,String.valueOf(Cantidad), Toast.LENGTH_SHORT).show();
+
+                                    }
+                                });
+                                dialogoCantidad.show();
+
                             }else{
                                 Toast.makeText(context, "Introduzca una cantidad", Toast.LENGTH_SHORT).show();
                             }
@@ -121,10 +137,16 @@ public class InventarioPersonalAdapter extends BaseAdapter {
                         }
                     });
                     dialogo1.show();
+
+
                 }
+
+
             });
 
+
         }else{
+
             //SI LOS ARTICULOS NO SON CHIPS SE SIGUE ESTE PROCEDIMIENTO
             btncarrito.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -156,9 +178,25 @@ public class InventarioPersonalAdapter extends BaseAdapter {
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                carrito.add(new ModeloInventarioPersonal(CantidadID,marca,modelo,precio,String.valueOf(Cantidad)));
-                Toast.makeText(context,marca+" "+modelo,Toast.LENGTH_SHORT).show();
-                Toast.makeText(context, "Se agrego al carrito ", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder dialogoCantidad = new AlertDialog.Builder(context);
+                final EditText cantidad = new EditText(context);
+                dialogoCantidad.setIcon(R.drawable.agregar);
+                dialogoCantidad.setTitle("Inserte el precio");
+                cantidad.setInputType(InputType.TYPE_CLASS_NUMBER);
+                dialogoCantidad.setView(cantidad);
+                dialogoCantidad.setCancelable(false);
+                dialogoCantidad.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        precio = cantidad.getText().toString();
+                        carrito.add(new ModeloInventarioPersonal(CantidadID,marca,modelo,precio,String.valueOf(Cantidad)));
+                        Toast.makeText(context,marca+" "+modelo,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Se agrego al carrito ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,String.valueOf(Cantidad), Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+                dialogoCantidad.show();
             }
         });
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
