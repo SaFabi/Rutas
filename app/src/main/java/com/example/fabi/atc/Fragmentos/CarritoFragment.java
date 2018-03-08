@@ -11,12 +11,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
@@ -266,31 +268,49 @@ public class CarritoFragment extends Fragment implements Basic {
 
                                                     }else if (opcionCompra.equals("Credito")){
                                                         Toast.makeText(getContext(), opcionCompra, Toast.LENGTH_SHORT).show();
-                                                        RequestQueue queueCredito = Volley.newRequestQueue(getContext());
-                                                        String consultaCredito = "CALL terminarVentaContado("+OrdenID+");";
-                                                        consultaCredito = consultaCredito.replace(" ","%20");
-                                                        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaCredito;
-                                                        String urlContado = SERVER + RUTA + "consultaGeneral.php" + cadena;
-                                                        Log.i("info", urlContado);
-                                                        JsonArrayRequest jsonCredito = new JsonArrayRequest(Request.Method.GET, urlContado, null, new Response.Listener<JSONArray>() {
-                                                            @Override
-                                                            public void onResponse(JSONArray response) {
                                                                 if (response.length() == 0){
                                                                     Toast.makeText(getContext(), "Hubo un problema", Toast.LENGTH_SHORT).show();
                                                                 }else{
-                                                                    Toast.makeText(getContext(), "Se termino la venta", Toast.LENGTH_SHORT).show();
+                                                                    AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getContext());
+                                                                    dialogo1.setIcon(R.drawable.reporte);
+                                                                    dialogo1.setMessage("Abono Inicial");
+                                                                    final EditText cantidad = new EditText(getContext());
+                                                                    cantidad.setText("0");
+                                                                    dialogo1.setView(cantidad);
+                                                                    cantidad.setInputType(InputType.TYPE_CLASS_NUMBER);
+                                                                    dialogo1.setCancelable(false);
+                                                                    dialogo1.setPositiveButton("SI", new DialogInterface.OnClickListener() {
+                                                                        @Override
+                                                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                                                            RequestQueue queueCredito = Volley.newRequestQueue(getContext());
+                                                                            String consultaCredito = "CALL terminarVentaCredito("+OrdenID+","+cantidad.getText().toString()+");";
+                                                                            consultaCredito = consultaCredito.replace(" ","%20");
+                                                                            String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaCredito;
+                                                                            String urlContado = SERVER + RUTA + "consultaGeneral.php" + cadena;
+                                                                            Log.i("info", urlContado);
+                                                                            JsonArrayRequest jsonCredito = new JsonArrayRequest(Request.Method.GET, urlContado, null, new Response.Listener<JSONArray>() {
+                                                                                @Override
+                                                                                public void onResponse(JSONArray response) {
+                                                                                    Toast.makeText(getContext(), "Se termino la venta", Toast.LENGTH_SHORT).show();
+                                                                                }
+                                                                            }, new Response.ErrorListener() {
+                                                                                @Override
+                                                                                public void onErrorResponse(VolleyError error) {
+
+                                                                                }
+                                                                            });
+                                                                            //TERMINA LA CONSULTA PARA TERMINAR UNA VENTA DE CREDITO
+                                                                            queueCredito.add(jsonCredito);
+                                                                                }
+
+
+                                                                    });
+                                                                    dialogo1.show();
+
                                                                 }
 
 
-                                                            }
-                                                        }, new Response.ErrorListener() {
-                                                            @Override
-                                                            public void onErrorResponse(VolleyError error) {
 
-                                                            }
-                                                        });
-                                                        //TERMINA LA CONSULTA PARA TERMINAR UNA VENTA DE CONTADO
-                                                        queueCredito.add(jsonCredito);
 
                                                     }
 
