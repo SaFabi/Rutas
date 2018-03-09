@@ -308,10 +308,6 @@ public class CarritoFragment extends Fragment implements Basic {
                                                                     dialogo1.show();
 
                                                                 }
-
-
-
-
                                                     }
 
 

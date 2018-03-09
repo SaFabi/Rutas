@@ -210,5 +210,15 @@ public class rutasLib implements  Basic {
         queue.add(jsonArrayRequest);
     }
 
-
+    public String sacarPuntoVenta(String cadena) {
+        String ruta = "";
+        if (cadena.length() > 2) {
+            for (int i = 0; i < cadena.length() -1; i++) {
+                ruta += String.valueOf(cadena.charAt(i));
+            }
+        }else{
+            ruta = cadena;
+        }
+        return ruta;
+    }
 }
