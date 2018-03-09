@@ -34,6 +34,7 @@ import com.example.fabi.atc.Adapters.spinnerAdapter;
 import com.example.fabi.atc.Clases.Basic;
 import com.example.fabi.atc.Clases.Modelo;
 import com.example.fabi.atc.Clases.ModeloClientes;
+import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
 
 import org.json.JSONArray;
@@ -55,6 +56,7 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
     String puntoVenta;
     String ultimoUsuario;
     //ADAPTERS
+    rutasLib rutasObj;
     spinnerAdapter adapter;
 
     public RegistroClientes() {
@@ -85,6 +87,7 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
         edtCorreo = (EditText)view.findViewById(R.id.edtCorreo);
         edtTelefono = (EditText)view.findViewById(R.id.edtTelefono);
         edtClave = (EditText)view.findViewById(R.id.edtClave);
+        puntoVenta = rutasObj.sacarPuntoVenta(PUNTOVENTA);
 
         //FUNCIONALIDAD DEL BOTON PARA AGREGAR UN CLIENTE
         btnAgregar.setOnClickListener(new View.OnClickListener() {
@@ -314,7 +317,6 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
         urlClave = SERVER + RUTA + "consultaGeneral.php" + cadenaClave;
         Log.i("info", urlClave);
 
-        //Hace la petición String para la consulta de las ciudades
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, this, this);
 
         //Para el proceso de obtencion de la ultima clave del cliente

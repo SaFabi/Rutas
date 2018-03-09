@@ -75,6 +75,7 @@ public class CarritoFragment extends Fragment implements Basic {
     int ganancia;
     String opcionCompra;
     int calculoGanancia;
+    String puntoVenta;
 
 
     //CONTROLES
@@ -83,6 +84,7 @@ public class CarritoFragment extends Fragment implements Basic {
     Spinner spinnerClientes;
     TextView txtMonto;
     Button btnTerminarVenta;
+    TextView txtfolio;
 
     //ADAPTERS
     spinnerAdapter spinnerAdapter;
@@ -116,6 +118,7 @@ public class CarritoFragment extends Fragment implements Basic {
         spinnerClientes = (Spinner)view.findViewById(R.id.spinnerclientescarrito);
         txtMonto = (TextView)view.findViewById(R.id.montototalcarrito);
         btnTerminarVenta = (Button)view.findViewById(R.id.btnterminarcompra);
+        txtfolio = (TextView)view.findViewById(R.id.txtfoliocarrito);
 
         //PARA OBTENER LA FECHA Y HORA ACTUAL
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -196,9 +199,13 @@ public class CarritoFragment extends Fragment implements Basic {
                                 folio = null;
                             }
                             //SE GENERA EL FOLIO NUEVO
-                            nuevoFolio = rutasObj.generarFolio(folio, getContext(), PUNTOVENTA);
+                            puntoVenta = rutasObj.sacarPuntoVenta(PUNTOVENTA);
+                            nuevoFolio = rutasObj.generarFolio(folio, getContext(), puntoVenta);
+                            txtfolio.setText(nuevoFolio);
+
 
                             //SE MANDA LLAMAR EL PROCEDIMIENTO PARA LA ORDEN
+
                             RequestQueue queue = Volley.newRequestQueue(getContext());
                             String consulta = "CALL procesoOrden('"+nuevoFolio+"',"+usuarioID+","+clienteID+");";
                             consulta = consulta.replace(" ", "%20");

@@ -11,8 +11,8 @@ import com.example.fabi.atc.Adapters.ClientesAdapter;
 public interface Basic {
     String SERVER = "http://atc.mx/";
     String RUTA = "Android/test/ejercicioApp/";
-    int usuarioID = 2;
-    String PUNTOVENTA="R1";
+    int usuarioID = 11;
+    String PUNTOVENTA="R1B";
     String HOST = "localhost";
     String USER = "root";
     String PASS = "";
