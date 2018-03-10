@@ -35,6 +35,7 @@ import com.example.fabi.atc.Adapters.ClientesAdapter;
 import com.example.fabi.atc.Adapters.ProductosAdapter;
 import com.example.fabi.atc.Clases.Basic;
 import com.example.fabi.atc.Clases.ModeloClientes;
+import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
 
 import org.json.JSONArray;
@@ -48,6 +49,7 @@ public class ClientesInactivos extends Fragment implements SearchView.OnQueryTex
     //FRAGMENTO PROBADO.ESTA EN CLIENTESCONTENEDOR. MUESTRA LOS CLIENTES QUE NO ESTAN ACTIVOS
 
     //VARIABLES
+    String puntoVenta;
     String url;
     int clienteID;
     List<ModeloClientes> lista;
@@ -59,6 +61,7 @@ public class ClientesInactivos extends Fragment implements SearchView.OnQueryTex
     View vistaAlertActivar;
 
     //ADAPTERS
+    rutasLib rutasobj = new rutasLib();
     AdapterClientes adapter;
 
     public ClientesInactivos() {
@@ -88,6 +91,7 @@ public class ClientesInactivos extends Fragment implements SearchView.OnQueryTex
         contenedorClientesI = (SwipeRefreshLayout)view.findViewById(R.id.contenedorClientesInactivos);
         contenedorClientesI.setOnRefreshListener(this);
         listView = (ListView)view.findViewById(R.id.clientesInactivos);
+        puntoVenta = rutasobj.sacarPuntoVenta(PUNTOVENTA);
 
         //PARA LENAR EL LISTVIEW CON LOS CLIENTES QUE ESTAN DESHABILITADOS
         //Se declara el progress dialog para ejecutar despues la consulta
@@ -103,7 +107,7 @@ public class ClientesInactivos extends Fragment implements SearchView.OnQueryTex
                 "from cliente cl, clave_cliente cc, punto_venta pv " +
                 "where cc.puntoVenta_id = pv.id " +
                 "and cc.cliente_id = cl.id " +
-                " and pv.id="+usuarioID+" and cc.activo = false";
+                " and pv.tipo='"+puntoVenta+"' and cc.activo = false";
         consulta = consulta.replace(" ", "%20");
         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
         url = SERVER + RUTA + "consultaGeneral.php" + cadena;
@@ -182,7 +186,7 @@ public class ClientesInactivos extends Fragment implements SearchView.OnQueryTex
                                         "from cliente cl, clave_cliente cc, punto_venta pv " +
                                         "where cc.puntoVenta_id = pv.id " +
                                         "and cc.cliente_id = cl.id " +
-                                        " and pv.id="+usuarioID+" and cc.activo =false";
+                                        " and pv.tipo='"+puntoVenta+"' and cc.activo =false";
                                 consulta = consulta.replace(" ", "%20");
                                 String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
                                 final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
@@ -293,7 +297,7 @@ public class ClientesInactivos extends Fragment implements SearchView.OnQueryTex
                 "from cliente cl, clave_cliente cc, punto_venta pv " +
                 "where cc.puntoVenta_id = pv.id " +
                 "and cc.cliente_id = cl.id " +
-                " and pv.id="+usuarioID+" and cc.activo = false";
+                " and pv.tipo='"+puntoVenta+"' and cc.activo = false";
         consulta = consulta.replace(" ", "%20");
         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
         url = SERVER + RUTA + "consultaGeneral.php" + cadena;

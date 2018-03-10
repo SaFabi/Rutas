@@ -75,7 +75,8 @@ public class CarritoFragment extends Fragment implements Basic {
     int ganancia;
     String opcionCompra;
     int calculoGanancia;
-    String puntoVenta;
+    final String puntoVenta =rutasObj.sacarPuntoVenta(PUNTOVENTA);
+     String nuevoFolio;
 
 
     //CONTROLES
@@ -140,6 +141,44 @@ public class CarritoFragment extends Fragment implements Basic {
 
             }
         });
+        //INICIA LA CONSULTA PARA SACAR EL ULTIMO FOLIO
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String consulta = "select folio from orden ORDER BY id desc LIMIT 1;";
+        consulta = consulta.replace(" ", "%20");
+        String cadenaClaveCliente = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+        String url = SERVER + RUTA + "consultaGeneral.php" + cadenaClaveCliente;
+        Log.i("info", url);
+
+        JsonArrayRequest requestFolio = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onResponse(JSONArray response) {
+                String folio;
+                JSONObject jsonObject;
+                try {
+                    jsonObject = response.getJSONObject(0);
+                } catch (Exception e) {
+                    jsonObject = new JSONObject();
+                }
+                try {
+                    folio = jsonObject.getString("0");
+
+                } catch (Exception e) {
+                    folio = null;
+                }
+                //SE GENERA EL FOLIO NUEVO
+
+                nuevoFolio = rutasObj.generarFolio(folio, getContext(), puntoVenta);
+                txtfolio.setText(nuevoFolio);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        queue.add(requestFolio);
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
@@ -173,37 +212,6 @@ public class CarritoFragment extends Fragment implements Basic {
                         }
                     });
                     dialogo1.show();
-                    //INICIA LA CONSULTA PARA SACAR EL ULTIMO FOLIO
-                    RequestQueue queue = Volley.newRequestQueue(getContext());
-                    String consulta = "select folio from orden ORDER BY id desc LIMIT 1;";
-                    consulta = consulta.replace(" ", "%20");
-                    String cadenaClaveCliente = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
-                    String url = SERVER + RUTA + "consultaGeneral.php" + cadenaClaveCliente;
-                    Log.i("info", url);
-                    JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-                        @RequiresApi(api = Build.VERSION_CODES.N)
-                        @Override
-                        public void onResponse(JSONArray response) {
-                            String folio;
-                            final String nuevoFolio;
-                            JSONObject jsonObject;
-                            try {
-                                jsonObject = response.getJSONObject(0);
-                            } catch (Exception e) {
-                                jsonObject = new JSONObject();
-                            }
-                            try {
-                                folio = jsonObject.getString("0");
-
-                            } catch (Exception e) {
-                                folio = null;
-                            }
-                            //SE GENERA EL FOLIO NUEVO
-                            puntoVenta = rutasObj.sacarPuntoVenta(PUNTOVENTA);
-                            nuevoFolio = rutasObj.generarFolio(folio, getContext(), puntoVenta);
-                            txtfolio.setText(nuevoFolio);
-
-
                             //SE MANDA LLAMAR EL PROCEDIMIENTO PARA LA ORDEN
 
                             RequestQueue queue = Volley.newRequestQueue(getContext());
@@ -341,15 +349,6 @@ public class CarritoFragment extends Fragment implements Basic {
                             });
                             //TERMINA EL PROCESO DE ORDEN
                             queue.add(JsonprocesoOrden);
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-
-                        }
-                    });
-                    //TERMINA LA CONSULTA PARA SACAR EL ULTIMO FOLIO
-                    queue.add(request);
 
 
                 }else{
@@ -400,8 +399,8 @@ public class CarritoFragment extends Fragment implements Basic {
             //SI ENTRA POR LA PARTE DE PEDIDO
 
             //EJECUTA LA CONSULTA PARA OBTENER LOS DETALLES DE UN PEDIDO
-            RequestQueue queue = Volley.newRequestQueue(getContext());
-            String consulta = " SELECT orddesc.id,ma.nombre,mo.nombre,orddesc.precio_final,orddesc.cantidad" +
+            RequestQueue queuepedido = Volley.newRequestQueue(getContext());
+            String consultapedido = " SELECT orddesc.id,ma.nombre,mo.nombre,orddesc.precio_final,orddesc.cantidad" +
                     " FROM orden ord, marca ma, modelo mo, orden_descripcion orddesc,cantidad ca,articulo art" +
                     " WHERE orddesc.orden_id = ord.id" +
                     " AND orddesc.tipoVentaId = ca.id" +
@@ -409,11 +408,11 @@ public class CarritoFragment extends Fragment implements Basic {
                     " AND art.modelo_id = mo.id" +
                     " AND mo.marca_id = ma.id" +
                     " AND ord.id ="+OrdenID;
-            consulta = consulta.replace(" ", "%20");
-            String cadenaClaveCliente = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
-            String  url = SERVER + RUTA + "consultaGeneral.php" + cadenaClaveCliente;
-            Log.i("info", url);
-            JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            consultapedido = consultapedido.replace(" ", "%20");
+            String cadenapedido = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultapedido;
+            String  urlpedido = SERVER + RUTA + "consultaGeneral.php" + cadenapedido;
+            Log.i("info", urlpedido);
+            JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, urlpedido, null, new Response.Listener<JSONArray>() {
                 @Override
                 public void onResponse(JSONArray response) {
                     carritoFinal = ModeloInventarioPersonal.sacarListaproductos(response);
@@ -478,17 +477,17 @@ public class CarritoFragment extends Fragment implements Basic {
 
         }
         //CONSULTA PARA LLENAR EL SPINNER CON LOS CLIENTES
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-        String consulta = "select cl.id, cc.numero "+
+        RequestQueue queueClientes = Volley.newRequestQueue(getContext());
+        String consultaClientes = "select cl.id, cc.numero "+
                 " from cliente cl, clave_cliente cc, punto_venta pv"+
                 " where cc.cliente_id = cl.id"+
                 " and  cc.puntoVenta_id = pv.id"+
-                " and pv.id ="+usuarioID;
-        consulta = consulta.replace(" ", "%20");
-        String cadena = "?host=" + HOST + "&db="+DB+ "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
-        String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
-        Log.i("info", url);
-        JsonArrayRequest requestClaveCliente = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                " and pv.tipo ='"+puntoVenta+"'";
+        consultaClientes = consultaClientes.replace(" ", "%20");
+        String cadenaClientes = "?host=" + HOST + "&db="+DB+ "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaClientes;
+        String urlClientes = SERVER + RUTA + "consultaGeneral.php" + cadenaClientes;
+        Log.i("info", urlClientes);
+        JsonArrayRequest requestClaveCliente = new JsonArrayRequest(Request.Method.GET, urlClientes, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 progressDialog.hide();
@@ -502,7 +501,7 @@ public class CarritoFragment extends Fragment implements Basic {
 
             }
         });
-        queue.add(requestClaveCliente);
+        queueClientes.add(requestClaveCliente);
 
         return view;
     }
