@@ -56,7 +56,7 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
     String puntoVenta;
     String ultimoUsuario;
     //ADAPTERS
-    rutasLib rutasObj;
+    rutasLib rutasObj = new rutasLib();
     spinnerAdapter adapter;
 
     public RegistroClientes() {
@@ -105,160 +105,46 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
                     progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                     progressDialog.show();
                     //Inicia la peticion
-                    //INSERTAR EN LA TABLA CLIENTE
+                    //INICIA LA CONSULTA PARA REGISTRAR UN NUEVO CLIENTE
                     RequestQueue queue = Volley.newRequestQueue(getContext());
-                    String consulta = "INSERT INTO cliente (nombre,direccion,telefono,email,activo,ciudad_id) values('"+edtNombre.getText().toString()+
-                            "','"+edtDireccion.getText().toString()+"','"+edtTelefono.getText().toString()+"','"+edtCorreo.getText().toString()+"',1,"+String.valueOf(ciudadID)+");";
+                    String consulta = "CALL registroCliente("+Nuevaclave+",'"+puntoVenta+"','"+edtNombre.getText().toString()+"','"+edtDireccion.getText().toString()
+                            +"','"+edtTelefono.getText().toString()+"','"+edtCorreo.getText().toString()+"',"+1+","+ciudadID+");";
                     consulta = consulta.replace(" ", "%20");
                     String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
-                    final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
+                    String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
                     Log.i("info", url);
                     //Hace la petición String
                     JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
                         @Override
                         public void onResponse(JSONArray response) {
+                            JSONObject jsonObject;
+                            try {
+                                jsonObject =response.getJSONObject(0);
+                            }catch (Exception e){
+                                jsonObject = new JSONObject();
+                            }
 
-                            //PARA SACAR EL ID DEL CLIENTE QUE SE ACABA DE REGISTRAR
-                            //Inicia la peticion
-                            RequestQueue queue = Volley.newRequestQueue(getContext());
-                            String consulta = "SELECT id FROM cliente WHERE nombre='"+edtNombre.getText().toString()+"' and telefono='"+edtTelefono.getText().toString()+"' and email='"+edtCorreo.getText().toString();
-                            consulta = consulta.replace(" ", "%20");
-                            String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
-                            final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
-                            Log.i("info", url);
-                            //Hace la petición String
-                            JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-                                @Override
-                                public void onResponse(JSONArray response) {
-                                    JSONObject jsonObject;
-                                    try {
-                                        jsonObject =response.getJSONObject(0);
-                                    }catch (Exception e){
-                                        jsonObject = new JSONObject();
-                                    }
-                                    try {
-                                        ultimoUsuario= jsonObject.getString("0");
 
-                                    }catch (Exception e){
-                                        ultimoUsuario = null;
-                                    }
-                                    if (ultimoUsuario != null){
-                                        //INSERTAR EN CLAVE CLIENTE
-                                        //Inicia la peticion
-                                        RequestQueue queue = Volley.newRequestQueue(getContext());
-                                        String consulta = "INSERT INTO clave_cliente(numero,activo,cliente_id,puntoVenta_id) values ('"+Nuevaclave+"',1,"+ultimoUsuario+","+usuarioID+");";
-                                        consulta = consulta.replace(" ", "%20");
-                                        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
-                                        final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
-                                        Log.i("info", url);
-                                        JsonArrayRequest requestCC = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-                                            @Override
-                                            public void onResponse(JSONArray response) {
-                                                progressDialog.hide();
-                                                AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
-                                                dialogo1.setIcon(R.drawable.aceptar);
-                                                dialogo1.setTitle("Importante");
-                                                dialogo1.setMessage("Se agrego correctamente");
-                                                dialogo1.setCancelable(false);
-                                                dialogo1.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialogInterface, int i) {
+                            try {
+                                Nuevaclave = jsonObject.getString("1");
 
-                                                    }
-                                                });
-                                                dialogo1.show();
-                                                edtClave.setText("");
-                                                edtDireccion.setText("");
-                                                edtCorreo.setText("");
-                                                edtTelefono.setText("");
-                                                edtNombre.setText("");
+                            }catch (Exception e){
+                                puntoVenta = null;
+                            }
+                            if (Nuevaclave != null){
+                                edtClave.setText(puntoVenta + "-" + Nuevaclave);
+                            }
 
-                                                //PARA REGRESAR EL FOCO AL PRIMER EDITTEXT
-                                                edtNombre.requestFocus();
-
-                                                //INICIA LA PETICION PARA OBTENER LA ULTIMA CLAVE DEL CLIENTE
-                                                RequestQueue queueClave = Volley.newRequestQueue(getContext());
-                                                String consultaClave ="select pv.tipo,cc.numero%2B1 "+
-                                                        "from clave_cliente cc, punto_Venta pv "+
-                                                        "where cc.puntoVenta_id  = pv.id "+
-                                                        "and pv.id ="+usuarioID+
-                                                        " order by cc.numero DESC limit 1";
-                                                consultaClave = consultaClave.replace(" ", "%20");
-                                                String cadenaClave = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaClave;
-                                                urlClave = SERVER + RUTA + "consultaGeneral.php" + cadenaClave;
-                                                Log.i("info", urlClave);
-
-                                                //Para el proceso de obtencion de la ultima clave del cliente
-                                                JsonArrayRequest requestClave = new JsonArrayRequest(Request.Method.GET, urlClave, null, new Response.Listener<JSONArray>() {
-                                                    @Override
-                                                    public void onResponse(JSONArray response) {
-                                                        // Toast.makeText(getContext(), urlClave, Toast.LENGTH_SHORT).show();
-                                                        JSONObject jsonObject;
-                                                        try {
-                                                            jsonObject =response.getJSONObject(0);
-                                                        }catch (Exception e){
-                                                            jsonObject = new JSONObject();
-                                                        }
-                                                        try {
-                                                            puntoVenta = jsonObject.getString("0");
-                                                            Nuevaclave = jsonObject.getString("1");
-
-                                                        }catch (Exception e){
-                                                            Nuevaclave = null;
-                                                            puntoVenta = null;
-                                                        }
-                                                        if (Nuevaclave != null){
-                                                            edtClave.setText(puntoVenta + "-" + Nuevaclave);
-                                                        }
-
-                                                    }
-                                                }, new Response.ErrorListener() {
-                                                    @Override
-                                                    public void onErrorResponse(VolleyError error) {
-                                                        Toast.makeText(getContext(), urlClave, Toast.LENGTH_SHORT).show();
-                                                        Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
-                                                queueClave.add(requestClave);
-                                            }
-                                        }, new Response.ErrorListener() {
-                                            @Override
-                                            public void onErrorResponse(VolleyError error) {
-                                                Toast.makeText(getContext(), url, Toast.LENGTH_SHORT).show();
-                                                Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
-
-                                            }
-                                        });
-                                        //Agrega y ejecuta la cola
-                                        queue.add(requestCC);
-                                    }
-                                }
-                            }, new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    progressDialog.hide();
-                                    Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
-                                    Toast.makeText(getContext(),  "Activos   "+url, Toast.LENGTH_SHORT).show();
-
-                                }
-                            });
-
-                            //Agrega y ejecuta la cola
-                            queue.add(request);
 
                         }
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            progressDialog.hide();
-                            Toast.makeText(getContext(), "Error en el WebService", Toast.LENGTH_SHORT).show();
-                            Toast.makeText(getContext(),  "Activos   "+url, Toast.LENGTH_SHORT).show();
 
                         }
                     });
-
-                    //Agrega y ejecuta la cola
                     queue.add(request);
+
                 }else{
                     AlertDialog.Builder dialogo1 = new AlertDialog.Builder(getActivity());
                     dialogo1.setIcon(R.drawable.cancelar);
@@ -310,8 +196,8 @@ public class RegistroClientes extends Fragment implements Basic, Response.Listen
         String consultaClave ="select pv.tipo,cc.numero%2B1 "+
        "from clave_cliente cc, punto_Venta pv "+
         "where cc.puntoVenta_id  = pv.id "+
-        "and pv.id ="+usuarioID+
-        " order by cc.numero DESC limit 1";
+        "and pv.tipo ='"+puntoVenta+
+        "' order by cc.numero DESC limit 1";
         consultaClave = consultaClave.replace(" ", "%20");
         String cadenaClave = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaClave;
         urlClave = SERVER + RUTA + "consultaGeneral.php" + cadenaClave;

@@ -48,6 +48,7 @@ public class ClientesActivos extends Fragment implements SearchView.OnQueryTextL
     //FRAGMENTO PROBADO.ESTA DENTRO DE CLIENTESCONTENEDOR.MUESTRA LOS CLIENTES ACTIVOS
 
     //VARIABLES
+    String puntoVenta;
     String url;
     int clienteID;
     List<ModeloClientes> lista;
@@ -58,6 +59,7 @@ public class ClientesActivos extends Fragment implements SearchView.OnQueryTextL
     SwipeRefreshLayout contenedorClientesA;
 
     //ADAPTERS
+    rutasLib rutasobj = new rutasLib();
     AdapterClientes adapter;
 
     public ClientesActivos() {
@@ -99,6 +101,7 @@ public class ClientesActivos extends Fragment implements SearchView.OnQueryTextL
         progressDialog.setMessage("Un momento...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.show();
+        puntoVenta= rutasobj.sacarPuntoVenta(PUNTOVENTA);
 
         //Inicia la peticion
         RequestQueue queue = Volley.newRequestQueue(getContext());
@@ -106,7 +109,7 @@ public class ClientesActivos extends Fragment implements SearchView.OnQueryTextL
                 "from cliente cl, clave_cliente cc, punto_venta pv " +
                 "where cc.puntoVenta_id = pv.id " +
                 "and cc.cliente_id = cl.id " +
-                " and pv.id="+usuarioID+" and cc.activo = true";
+                " and pv.tipo='"+puntoVenta+"' and cc.activo = true";
         consulta = consulta.replace(" ", "%20");
         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
         final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
@@ -180,7 +183,7 @@ public class ClientesActivos extends Fragment implements SearchView.OnQueryTextL
                                         "from cliente cl, clave_cliente cc, punto_venta pv " +
                                         "where cc.puntoVenta_id = pv.id " +
                                         "and cc.cliente_id = cl.id " +
-                                        " and pv.id="+usuarioID+" and cc.activo = true";
+                                        " and pv.tipo='"+puntoVenta+"' and cc.activo = true";
                                 consulta = consulta.replace(" ", "%20");
                                 String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
                                 final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
@@ -289,7 +292,7 @@ public class ClientesActivos extends Fragment implements SearchView.OnQueryTextL
                 "from cliente cl, clave_cliente cc, punto_venta pv " +
                 "where cc.puntoVenta_id = pv.id " +
                 "and cc.cliente_id = cl.id " +
-                " and pv.id="+usuarioID+" and cc.activo = true";
+                " and pv.tipo='"+puntoVenta+"' and cc.activo = true";
         consulta = consulta.replace(" ", "%20");
         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
         final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
