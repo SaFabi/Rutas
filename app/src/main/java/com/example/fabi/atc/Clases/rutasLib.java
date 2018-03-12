@@ -59,7 +59,7 @@ public class rutasLib implements  Basic {
         adapter.agregarFragmentos(fragments, titulos);
         return adapter;
     }
-
+/*
     @RequiresApi(api = Build.VERSION_CODES.N)
     public String generarFolio(String folio, Context context, String puntoVenta){
         //PARA OBTENER LA FECHA ACTUAL
@@ -119,6 +119,7 @@ public class rutasLib implements  Basic {
 
         return nuevoFolio;
     }
+    */
 
     //METODO QUE VERIFICA SI EXISTE EL TOKEN DEL USUARIO DE RUTA
     public void verificarTokenUsuario(final int rutaID, final Context context){

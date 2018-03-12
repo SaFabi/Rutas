@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.icu.util.Calendar;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.text.InputType;
+import android.text.style.TtsSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,21 +65,21 @@ public class CarritoFragment extends Fragment implements Basic {
     //FRAGMENTO EN PROCESO, IMPLEMENTAR CARRITO PARA REGISTRAR VENTAS Y TERMINAR PEDIDOS
 
     //VARIABLES
+    int IDpuntoVentaComisiones;
+    int IDpuntoVentaInventario;
     int OrdenID;
     double precioUnitario;
     double Montototal;
     static ArrayList<ModeloInventarioPersonal> carritoFinal;
     rutasLib rutasObj =new rutasLib();
     int clienteID;
-    int usuarioRuta;
-    int precioCliente;
-    int requerimientoID;
-    int ganancia;
     String opcionCompra;
     int calculoGanancia;
-    final String puntoVenta =rutasObj.sacarPuntoVenta(PUNTOVENTA);
-     String nuevoFolio;
+    String nuevoFolio;
+    String PUNTOVENTALOGIN;
 
+    //SACA EL NOMBRE DEL PUNTO DE VENTA DE LA RUTA DE VENTAS
+    final String puntoVenta =rutasObj.sacarPuntoVenta(PUNTOVENTALOGIN);
 
     //CONTROLES
     ProgressDialog progressDialog;
@@ -107,6 +109,8 @@ public class CarritoFragment extends Fragment implements Basic {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             OrdenID = getArguments().getInt("ordenID");
+            IDpuntoVentaInventario = getArguments().getInt("IDpuntoVentaInventario");
+            PUNTOVENTALOGIN = getArguments().getString("puntoVentaLogin");
         }
     }
     @Override
@@ -121,15 +125,14 @@ public class CarritoFragment extends Fragment implements Basic {
         btnTerminarVenta = (Button)view.findViewById(R.id.btnterminarcompra);
         txtfolio = (TextView)view.findViewById(R.id.txtfoliocarrito);
 
-        //PARA OBTENER LA FECHA Y HORA ACTUAL
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        //PARA OBTENER LA HORA ACTUAL
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         Date date = new Date();
 
         final String fecha = dateFormat.format(date);
         Toast.makeText(getContext(),fecha, Toast.LENGTH_SHORT).show();
 
         //PARA SACAR EL ID DEL CLIENTE QUE ESTE SELECCIONADO
-
         spinnerClientes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -141,9 +144,10 @@ public class CarritoFragment extends Fragment implements Basic {
 
             }
         });
+
         //INICIA LA CONSULTA PARA SACAR EL ULTIMO FOLIO
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-        String consulta = "select folio from orden ORDER BY id desc LIMIT 1;";
+        RequestQueue queuepv = Volley.newRequestQueue(getContext());
+        String consulta = "select id from punto_venta WHERE tipo='"+puntoVenta+"';";
         consulta = consulta.replace(" ", "%20");
         String cadenaClaveCliente = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
         String url = SERVER + RUTA + "consultaGeneral.php" + cadenaClaveCliente;
@@ -153,7 +157,6 @@ public class CarritoFragment extends Fragment implements Basic {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onResponse(JSONArray response) {
-                String folio;
                 JSONObject jsonObject;
                 try {
                     jsonObject = response.getJSONObject(0);
@@ -161,15 +164,11 @@ public class CarritoFragment extends Fragment implements Basic {
                     jsonObject = new JSONObject();
                 }
                 try {
-                    folio = jsonObject.getString("0");
+                    IDpuntoVentaComisiones=Integer.parseInt(jsonObject.getString("0"));
 
                 } catch (Exception e) {
-                    folio = null;
+                    IDpuntoVentaComisiones = 0;
                 }
-                //SE GENERA EL FOLIO NUEVO
-
-                nuevoFolio = rutasObj.generarFolio(folio, getContext(), puntoVenta);
-                txtfolio.setText(nuevoFolio);
 
             }
         }, new Response.ErrorListener() {
@@ -178,7 +177,7 @@ public class CarritoFragment extends Fragment implements Basic {
 
             }
         });
-        queue.add(requestFolio);
+        queuepv.add(requestFolio);
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
@@ -214,8 +213,9 @@ public class CarritoFragment extends Fragment implements Basic {
                     dialogo1.show();
                             //SE MANDA LLAMAR EL PROCEDIMIENTO PARA LA ORDEN
 
+
                             RequestQueue queue = Volley.newRequestQueue(getContext());
-                            String consulta = "CALL procesoOrden('"+nuevoFolio+"',"+usuarioID+","+clienteID+");";
+                            String consulta = "CALL procesoOrden('"+nuevoFolio+"',"+IDpuntoVentaComisiones+","+clienteID+");";
                             consulta = consulta.replace(" ", "%20");
                             String cadenaClaveCliente = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
                             String url = SERVER + RUTA + "consultaGeneral.php" + cadenaClaveCliente;
@@ -374,6 +374,7 @@ public class CarritoFragment extends Fragment implements Basic {
         });
 
 
+        //CALCULA EL TOTAL DE LOS ARTICULOS AGREGADOS EN EL CARRITO
         Toast.makeText(getContext(),String.valueOf(OrdenID), Toast.LENGTH_SHORT).show();
         if (OrdenID == 0){
             //SI ENTRA POR LA PARTE DE VENTAS
@@ -465,6 +466,7 @@ public class CarritoFragment extends Fragment implements Basic {
 
                         }
                     });
+                    //TERMINA LA CONSULTA DE LA SUMA DEL TOTAL DEL PEDIDO
                     queueSuma.add(requestSuma);
                 }
             }, new Response.ErrorListener() {
@@ -473,7 +475,8 @@ public class CarritoFragment extends Fragment implements Basic {
 
                 }
             });
-            queue.add(request);
+            //TERMINA LA CONSULTA DE PEDIDOS
+            queuepedido.add(request);
 
         }
         //CONSULTA PARA LLENAR EL SPINNER CON LOS CLIENTES

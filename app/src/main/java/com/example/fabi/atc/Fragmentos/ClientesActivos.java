@@ -65,9 +65,6 @@ public class ClientesActivos extends Fragment implements SearchView.OnQueryTextL
     public ClientesActivos() {
         // Required empty public constructor
     }
-
-
-    // TODO: Rename and change types and number of parameters
     public static ClientesActivos newInstance(int position) {
         ClientesActivos fragment = new ClientesActivos();
         Bundle args = new Bundle();
@@ -158,7 +155,7 @@ public class ClientesActivos extends Fragment implements SearchView.OnQueryTextL
                     //
                     public void onClick(DialogInterface dialogo1, int id) {
 
-                        //Inicializa el progres dialog
+                        //Inicializa el progress dialog
                         progressDialog = new ProgressDialog(getContext());
                         progressDialog.setTitle("En Proceso");
                         progressDialog.setMessage("Un momento...");
