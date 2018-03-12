@@ -125,13 +125,6 @@ public class CarritoFragment extends Fragment implements Basic {
         btnTerminarVenta = (Button)view.findViewById(R.id.btnterminarcompra);
         txtfolio = (TextView)view.findViewById(R.id.txtfoliocarrito);
 
-        //PARA OBTENER LA HORA ACTUAL
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-        Date date = new Date();
-
-        final String fecha = dateFormat.format(date);
-        Toast.makeText(getContext(),fecha, Toast.LENGTH_SHORT).show();
-
         //PARA SACAR EL ID DEL CLIENTE QUE ESTE SELECCIONADO
         spinnerClientes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -213,9 +206,14 @@ public class CarritoFragment extends Fragment implements Basic {
                     dialogo1.show();
                             //SE MANDA LLAMAR EL PROCEDIMIENTO PARA LA ORDEN
 
+                            //PARA OBTENER LA HORA ACTUAL
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+                            Date date = new Date();
+                            final String fecha = dateFormat.format(date);
+                            nuevoFolio = PUNTOVENTALOGIN+fecha;
 
                             RequestQueue queue = Volley.newRequestQueue(getContext());
-                            String consulta = "CALL procesoOrden('"+nuevoFolio+"',"+IDpuntoVentaComisiones+","+clienteID+");";
+                            String consulta = "CALL procesoOrden('"+nuevoFolio+"',"+IDpuntoVentaComisiones+","+IDpuntoVentaInventario+","+clienteID+");";
                             consulta = consulta.replace(" ", "%20");
                             String cadenaClaveCliente = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
                             String url = SERVER + RUTA + "consultaGeneral.php" + cadenaClaveCliente;
@@ -244,7 +242,7 @@ public class CarritoFragment extends Fragment implements Basic {
 
                                             //Toast.makeText(getContext(), "Hubo erores", Toast.LENGTH_SHORT).show();
                                             RequestQueue queueOrdenDesc = Volley.newRequestQueue(getContext());
-                                            String consultaOrdenDesc = "CALL procesoOrdenDescripcionRutas("+OrdenID+","+usuarioID+","+clienteID+","+
+                                            String consultaOrdenDesc = "CALL procesoOrdenDescripcionRutas("+OrdenID+","+IDpuntoVentaInventario+","+clienteID+","+
                                                     carritoFinal.get(i).getCantidadID()+","+carritoFinal.get(i).getCantidad()+","+
                                                     carritoFinal.get(i).getPrecio()+","+calculoGanancia+",'Articulo');";
                                             consultaOrdenDesc = consultaOrdenDesc.replace(" ", "%20");
