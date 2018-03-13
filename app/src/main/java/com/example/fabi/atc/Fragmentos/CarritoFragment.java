@@ -138,7 +138,7 @@ public class CarritoFragment extends Fragment implements Basic {
             }
         });
 
-        //INICIA LA CONSULTA PARA SACAR EL ULTIMO FOLIO
+        //INICIA LA CONSULTA PARA SACAR EL ID DEL PUNTO DE VENTA DE RUTA DE VENTA
         RequestQueue queuepv = Volley.newRequestQueue(getContext());
         String consulta = "select id from punto_venta WHERE tipo='"+puntoVenta+"';";
         consulta = consulta.replace(" ", "%20");
@@ -204,14 +204,14 @@ public class CarritoFragment extends Fragment implements Basic {
                         }
                     });
                     dialogo1.show();
-                            //SE MANDA LLAMAR EL PROCEDIMIENTO PARA LA ORDEN
 
-                            //PARA OBTENER LA HORA ACTUAL
+                    //PARA OBTENER LA HORA ACTUAL Y GENERAR EL NUEVO FOLIO
                             SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
                             Date date = new Date();
                             final String fecha = dateFormat.format(date);
                             nuevoFolio = PUNTOVENTALOGIN+fecha;
-
+                            txtfolio.setText(nuevoFolio);
+                    //SE MANDA LLAMAR EL PROCEDIMIENTO PARA LA ORDEN
                             RequestQueue queue = Volley.newRequestQueue(getContext());
                             String consulta = "CALL procesoOrden('"+nuevoFolio+"',"+IDpuntoVentaComisiones+","+IDpuntoVentaInventario+","+clienteID+");";
                             consulta = consulta.replace(" ", "%20");
