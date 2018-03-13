@@ -175,7 +175,7 @@ public class Inicio extends Fragment  implements SwipeRefreshLayout.OnRefreshLis
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.carrito) {
-            Fragment fragment = CarritoFragment.newInstance(0);
+            Fragment fragment = CarritoFragment.newInstance(0,"Ruta");
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.content_main,fragment);
             fragmentTransaction.addToBackStack(null);

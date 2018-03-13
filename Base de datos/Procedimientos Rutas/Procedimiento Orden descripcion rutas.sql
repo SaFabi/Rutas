@@ -2,8 +2,10 @@ use marquesada;
 DROP PROCEDURE IF EXISTS procesoOrdenDescripcionRutas;
 /* PROCEDIMIENTO PARA GENERAR LOS DETALLES DE UNA VENTA Y SUS RESPECTIVAS COMISIONES*/
 DELIMITER //
-CREATE PROCEDURE procesoOrdenDescripcionRutas(In ordenID int,In puntoVentaID int ,In clienteID int,In tipoVentaID int,In cantidad int,In precio_final int,In ganancia int, In requerimiento varchar(20))
+CREATE PROCEDURE procesoOrdenDescripcionRutas(In folio varchar(200),In puntoVentaID int ,In clienteID int,In tipoVentaID int,In cantidad int,In precio_final int,In ganancia int, In requerimiento varchar(20))
 	BEGIN
+    /* CONSULTA PARA SACAR EL ID DE LA ORDEN*/
+    SET @ordenid:=(SELECT id FROM orden WHERE folio = folio);
     
 	/* CONSULTA PARA SACAR EL ID DEL ARTICULO SELECCIONADO*/
     SET @articulo := (SELECT a.id from articulo a, cantidad ca WHERE ca.articulo_id =a.id AND ca.id = tipoVentaID);
@@ -28,17 +30,17 @@ CREATE PROCEDURE procesoOrdenDescripcionRutas(In ordenID int,In puntoVentaID int
         
 			IF @precioArticuloCliente is null THEN
 			/* CONSULTA PARA INSERTAR EN ORDEN_DESCRIPCION*/
-            INSERT INTO orden_descripcion(tipoVentaId,cantidad,precio_sugerido,precio_final,ganancia,orden_id,requerimiento_id)VALUES(tipoVentaID,cantidad,0,precio_final,ganancia,ordenID,@requerimientoID);
+            INSERT INTO orden_descripcion(tipoVentaId,cantidad,precio_sugerido,precio_final,ganancia,orden_id,requerimiento_id)VALUES(tipoVentaID,cantidad,0,precio_final,ganancia,@ordenid,@requerimientoID);
 			
 			ELSE 
-            INSERT INTO orden_descripcion(tipoVentaId,cantidad,precio_sugerido,precio_final,ganancia,orden_id,requerimiento_id)VALUES(tipoVentaID,cantidad,@precioArticuloCliente,precio_final,ganancia,ordenID,@requerimientoID);
+            INSERT INTO orden_descripcion(tipoVentaId,cantidad,precio_sugerido,precio_final,ganancia,orden_id,requerimiento_id)VALUES(tipoVentaID,cantidad,@precioArticuloCliente,precio_final,ganancia,@ordenid,@requerimientoID);
             
             END IF;
 		 /* CONSULTA PARA DESCONTAR LAS CANTIDAD DEL INVENTARIO*/
          UPDATE cantidad SET valor = @cantidadExistente -cantidad WHERE id= tipoVentaID;
          
          /*CONSULTA  PARA SACAR EL ID DE LA ORDEN_DESCRIPCION */
-         SET @ordenDesID :=(SELECT id FROM orden_descripcion WHERE orden_id = ordenID);
+         SET @ordenDesID :=(SELECT id FROM orden_descripcion WHERE orden_id = @ordenid);
          
          /*CONSULTA PARA SACAR EL ID DE LA COLOCACION */
          SET @colocacionID :=(SELECT colocacion_id FROM puntoventa_colocacion WHERE puntoVenta_id =puntoVentaID);
@@ -64,8 +66,7 @@ CREATE PROCEDURE procesoOrdenDescripcionRutas(In ordenID int,In puntoVentaID int
         INSERT INTO articulo_comision(total,exito,rango_id,ordenDescripcion_id)VALUES(@comisionTotal,1,@rangoID,@ordenDesID);
 		END IF;
 		END IF;
-		END IF;
- SELECT @ordenDesID,@comisionTotal;   
+		END IF;   
     
 END
 //
