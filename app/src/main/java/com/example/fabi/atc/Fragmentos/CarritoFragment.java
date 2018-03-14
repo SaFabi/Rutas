@@ -55,6 +55,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.IllegalFormatCodePointException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -76,8 +77,9 @@ public class CarritoFragment extends Fragment implements Basic {
     String opcionCompra;
     int calculoGanancia;
     String nuevoFolio;
-    String PUNTOVENTALOGIN;
+    String PUNTOVENTALOGIN = "R1";
     String opcion;
+    int ordenInsertar = 0;
 
     //SACA EL NOMBRE DEL PUNTO DE VENTA DE LA RUTA DE VENTAS
     final String puntoVenta =rutasObj.sacarPuntoVenta(PUNTOVENTALOGIN);
@@ -146,7 +148,7 @@ public class CarritoFragment extends Fragment implements Basic {
         String consulta = "select id from punto_venta WHERE tipo='"+puntoVenta+"';";
         consulta = consulta.replace(" ", "%20");
         String cadenaClaveCliente = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
-        String url = SERVER + RUTA + "consultaGeneral.php" + cadenaClaveCliente;
+        final String url = SERVER + RUTA + "consultaGeneral.php" + cadenaClaveCliente;
         Log.i("info", url);
 
         JsonArrayRequest requestFolio = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
@@ -288,7 +290,7 @@ public class CarritoFragment extends Fragment implements Basic {
 
         }
         //CONSULTA PARA LLENAR EL SPINNER CON LOS CLIENTES
-        RequestQueue queueClientes = Volley.newRequestQueue(getContext());
+        final RequestQueue queueClientes = Volley.newRequestQueue(getContext());
         String consultaClientes = "select cl.id, cc.numero "+
                 " from cliente cl, clave_cliente cc, punto_venta pv"+
                 " where cc.cliente_id = cl.id"+
@@ -298,12 +300,13 @@ public class CarritoFragment extends Fragment implements Basic {
         String cadenaClientes = "?host=" + HOST + "&db="+DB+ "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaClientes;
         String urlClientes = SERVER + RUTA + "consultaGeneral.php" + cadenaClientes;
         Log.i("info", urlClientes);
-        JsonArrayRequest requestClaveCliente = new JsonArrayRequest(Request.Method.GET, urlClientes, null, new Response.Listener<JSONArray>() {
+        final JsonArrayRequest requestClaveCliente = new JsonArrayRequest(Request.Method.GET, urlClientes, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 progressDialog.hide();
                 spinnerAdapter= new spinnerAdapter(getContext(), Modelo.ListaSpinner(response));
                 spinnerClientes.setAdapter(spinnerAdapter);
+
 
             }
         }, new Response.ErrorListener() {
@@ -314,6 +317,10 @@ public class CarritoFragment extends Fragment implements Basic {
         });
         //TERMINA LA CONSULTA PARA LLENAR EL SPINNER CON LOS CLIENTES DE ESA RUTA
         queueClientes.add(requestClaveCliente);
+        if (opcionCompra.equals("Cliente")|| opcionCompra.equals("Pedido")){
+                spinnerClientes.setSelection(clienteID);
+        }
+
 //---------------------------------------------PARA TERMINAR LA VENTA-----------------------------------------------------------//
         btnTerminarVenta.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -329,7 +336,7 @@ public class CarritoFragment extends Fragment implements Basic {
                         dialogo1.setPositiveButton("SI", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                //CONSULTA PARA EJECUTAR EL PROCEDIMIENTO DE ORDEN_COMPLETA
+                                //CONSULTA PARA EJECUTAR EL PROCEDIMIENTO DE ORDEN_COMPLETA CONTADO
                                 RequestQueue queueOrdCon = Volley.newRequestQueue(getContext());
                                 String consulta = "CALL terminarVentaContadoClientes"+OrdenID+");";
                                 consulta = consulta.replace(" ", "%20");
@@ -367,13 +374,39 @@ public class CarritoFragment extends Fragment implements Basic {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         int abonoInicial =(Integer.parseInt(cantidadAbono.getText().toString()));
-                                        //CONSULTA PARA EJECUTAR EL PROCEDIMIENTO DE ORDEN_COMPLETA
+                                        //CONSULTA PARA EJECUTAR EL PROCEDIMIENTO DE ORDEN_COMPLETA CREDITO
                                         RequestQueue queueOrdCre = Volley.newRequestQueue(getContext());
                                         String consulta = "CALL terminarVentaCreditoClientes"+OrdenID+");";
                                         consulta = consulta.replace(" ", "%20");
                                         String cadenaClaveCliente = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
                                         String url = SERVER + RUTA + "consultaGeneral.php" + cadenaClaveCliente;
                                         Log.i("info", url);
+                                        JsonArrayRequest requestCre = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                                            @Override
+                                            public void onResponse(JSONArray response) {
+                                                AlertDialog.Builder terminoVenta = new AlertDialog.Builder(getContext());
+                                                terminoVenta.setIcon(R.drawable.app_icono);
+                                                terminoVenta.setMessage("Se completó la venta");
+                                                terminoVenta.setCancelable(false);
+                                                terminoVenta.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                                        txtfolio.setText("");
+                                                        carritoFinal.clear();
+                                                        listView.setAdapter(null);
+                                                    }
+                                                });
+                                                terminoVenta.show();
+
+                                            }
+                                        }, new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+
+                                            }
+                                        });
+                                        //TERMINA EL PROCESO DE LA ORDEN A CREDITO
+                                        queueOrdCre.add(requestCre);
 
 
 
@@ -383,19 +416,272 @@ public class CarritoFragment extends Fragment implements Basic {
                             }
                         });
                         dialogo1.show();
-
-
-
                         break;
+                    //SI ENTRA POR EL FRAGMENTO DE CLIENTES
                     case "Cliente":
+                        //VERIFICA QUE HAYA PRODUCTOS AGREGADOS
+                        if (carritoFinal.size() >0){
+                            //INSERTAR LA ORDEN Y GENERAR EL FOLIO
+                            do {
+                                //PARA OBTENER LA HORA ACTUAL Y GENERAR EL NUEVO FOLIO
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+                                Date date = new Date();
+                                final String fecha = dateFormat.format(date);
+                                nuevoFolio = PUNTOVENTALOGIN + fecha;
+                                txtfolio.setText(nuevoFolio);
+                                //SE MANDA LLAMAR EL PROCEDIMIENTO PARA LA ORDEN
+                                RequestQueue queueOrden = Volley.newRequestQueue(getContext());
+                                String consulta = "CALL procesoOrdenClientes('" + nuevoFolio + "'," + IDpuntoVentaInventario + "," + clienteID + ");";
+                                consulta = consulta.replace(" ", "%20");
+                                String cadenaClaveCliente = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+                                String url = SERVER + RUTA + "consultaGeneral.php" + cadenaClaveCliente;
+                                Log.i("info", url);
+                                JsonArrayRequest requestOrden = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                                    @Override
+                                    public void onResponse(JSONArray response) {
+                                        ordenInsertar = 1;
+
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+
+                                    }
+                                });
+                                //TERMINA EL PROCEDIMIENTO DE LA ORDEN
+                                queueOrden.add(requestOrden);
+                            }while (ordenInsertar == 0);
+
+                            //INICIA EL PROCEDIMIENTO DE ORDEN_DESCRIPCION
+                            for (int i= 0 ; i<carritoFinal.size();i++){
+                                calculoGanancia = Integer.parseInt(carritoFinal.get(i).getCantidad()) * Integer.parseInt(carritoFinal.get(i).getPrecio());
+                                RequestQueue queueOrdenDesc = Volley.newRequestQueue(getContext());
+                                String consultaOrdenDesc = "CALL procesoOrdenDescripcionClientes('"+nuevoFolio+"',"+IDpuntoVentaInventario+","+clienteID+","+
+                                        carritoFinal.get(i).getCantidadID()+","+carritoFinal.get(i).getCantidad()+","+
+                                        carritoFinal.get(i).getPrecio()+","+calculoGanancia+",'Articulo');";
+                                consultaOrdenDesc = consultaOrdenDesc.replace(" ", "%20");
+                                String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaOrdenDesc;
+                                String urlOrdenDesc = SERVER + RUTA + "consultaGeneral.php" + cadena;
+                                Log.i("info", urlOrdenDesc);
+                                JsonArrayRequest requestOrdenDesc = new JsonArrayRequest(Request.Method.GET, urlOrdenDesc, null, new Response.Listener<JSONArray>() {
+                                    @Override
+                                    public void onResponse(JSONArray response) {
+                                        AlertDialog.Builder terminoVenta = new AlertDialog.Builder(getContext());
+                                        terminoVenta.setIcon(R.drawable.app_icono);
+                                        terminoVenta.setMessage("Se completó el pedido");
+                                        terminoVenta.setCancelable(false);
+                                        terminoVenta.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                txtfolio.setText("");
+                                                carritoFinal.clear();
+                                                listView.setAdapter(null);
+                                            }
+                                        });
+                                        terminoVenta.show();
+
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+
+                                    }
+                                });
+                                //TERMINA EL PROCEDIMIENTO DE ORDEN DESCRIPCION
+                                queueOrdenDesc.add(requestOrdenDesc);
+                            }
+
+
+                        }else{
+                            //MANDA UN ALERT SI NO HAY NADA EN EL CARRITO
+                        AlertDialog.Builder articulosMensaje = new AlertDialog.Builder(getContext());
+                            articulosMensaje.setIcon(R.drawable.cancelar);
+                            articulosMensaje.setMessage("No hay articulos en el carrito de compras");
+                            articulosMensaje.setCancelable(false);
+                            articulosMensaje.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+
+                                }
+                            });
+                            articulosMensaje.show();
+                        }
                         break;
+
+                    //SI ENTRA POR EL FRAGMENTO DE RUTAS
                     case "Ruta":
+                        //VERIFICA QUE EL CARRITO TENGA PRODUCTOS AGREGADOS
+                        if (carritoFinal.size() > 0){
+                            ordenInsertar =0;
+                            do {
+                                //PARA OBTENER LA HORA ACTUAL Y GENERAR EL NUEVO FOLIO
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+                                Date date = new Date();
+                                final String fecha = dateFormat.format(date);
+                                nuevoFolio = PUNTOVENTALOGIN + fecha;
+                                txtfolio.setText(nuevoFolio);
+                                //SE MANDA LLAMAR EL PROCEDIMIENTO PARA LA ORDEN
+                                RequestQueue queueOrdenRutas = Volley.newRequestQueue(getContext());
+                                String consulta = "CALL procesoOrden('"+nuevoFolio+"',"+IDpuntoVentaComisiones+","+IDpuntoVentaInventario+","+clienteID+");";
+                                consulta = consulta.replace(" ", "%20");
+                                String cadenaClaveCliente = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
+                                String url = SERVER + RUTA + "consultaGeneral.php" + cadenaClaveCliente;
+                                Log.i("info", url);
+                                JsonArrayRequest  requestOrdenRutas = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                                    @Override
+                                    public void onResponse(JSONArray response) {
+                                        ordenInsertar = 1;
+
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+
+                                    }
+                                });
+                                //TERMINA EL PROCEDIMIENTO DE ORDEN
+                                queueOrdenRutas.add(requestOrdenRutas);
+                            }while(ordenInsertar == 0);
+                            //INICIA EL CICLO PARA RECORRER EL ARREGLO DEL CARRITO Y SE MANDA LLAMAR EL PROCESO DE ORDEN DESCRIPCION
+                            for (int i = 0;i<carritoFinal.size();i++){
+                                calculoGanancia = Integer.parseInt(carritoFinal.get(i).getCantidad()) * Integer.parseInt(carritoFinal.get(i).getPrecio());
+                                RequestQueue queueOrdenDescRutas = Volley.newRequestQueue(getContext());
+                                String consultaOrdenDesc = "CALL procesoOrdenDescripcionRutas('"+nuevoFolio+"',"+IDpuntoVentaInventario+","+clienteID+","+
+                                        carritoFinal.get(i).getCantidadID()+","+carritoFinal.get(i).getCantidad()+","+
+                                        carritoFinal.get(i).getPrecio()+","+calculoGanancia+",'Articulo');";
+                                consultaOrdenDesc = consultaOrdenDesc.replace(" ", "%20");
+                                String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaOrdenDesc;
+                                String urlOrdenDesc = SERVER + RUTA + "consultaGeneral.php" + cadena;
+                                Log.i("info", urlOrdenDesc);
+                                JsonArrayRequest requestOrdenDescRutas = new JsonArrayRequest(Request.Method.GET, urlOrdenDesc, null, new Response.Listener<JSONArray>() {
+                                    @Override
+                                    public void onResponse(JSONArray response) {
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+
+                                    }
+                                });
+                                queueOrdenDescRutas.add(requestOrdenDescRutas);
+
+                                //VERIFICA SI LA VENTA ES DE CONTADO O CREDITO
+                                AlertDialog.Builder alertTipoventa = new AlertDialog.Builder(getContext());
+                                alertTipoventa.setCancelable(false);
+                                alertTipoventa.setIcon(R.drawable.app_icono);
+                                alertTipoventa.setMessage("¿La venta sera a Contado?");
+                                alertTipoventa.setPositiveButton("SI", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        //EJECUTA EL PROCEDIMIENTO PARA TERMINAR LA VENTA AL CONTADO
+                                        RequestQueue queueRutasContado = Volley.newRequestQueue(getContext());
+                                        String consultaContado = "CALL terminarVentaContado("+OrdenID+");";
+                                        consultaContado = consultaContado.replace(" ","%20");
+                                        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaContado;
+                                        String urlContado = SERVER + RUTA + "consultaGeneral.php" + cadena;
+                                        Log.i("info", urlContado);
+                                        JsonArrayRequest requestRutasContado= new JsonArrayRequest(Request.Method.GET, urlContado, null, new Response.Listener<JSONArray>() {
+                                            @Override
+                                            public void onResponse(JSONArray response) {
+                                                AlertDialog.Builder terminoVenta = new AlertDialog.Builder(getContext());
+                                                terminoVenta.setIcon(R.drawable.app_icono);
+                                                terminoVenta.setMessage("Se completó la venta");
+                                                terminoVenta.setCancelable(false);
+                                                terminoVenta.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                                        txtfolio.setText("");
+                                                        carritoFinal.clear();
+                                                        listView.setAdapter(null);
+                                                    }
+                                                });
+                                                terminoVenta.show();
+
+                                            }
+                                        }, new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+
+                                            }
+                                        });
+                                        //TERMINA EL PROCEDIMIENTO DE VENTA DE CONTADO
+                                        queueRutasContado.add(requestRutasContado);
+                                    }
+                                });
+                                alertTipoventa.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        AlertDialog.Builder abonos = new AlertDialog.Builder(getContext());
+                                        abonos.setIcon(R.drawable.app_icono);
+                                        final EditText cantidadAbono = new EditText(getContext());
+                                        cantidadAbono.setText("0");
+                                        abonos.setMessage("Abono Inicial");
+                                        cantidadAbono.setInputType(InputType.TYPE_CLASS_NUMBER);
+                                        abonos.setCancelable(false);
+                                        abonos.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                RequestQueue queueRutasCredito = Volley.newRequestQueue(getContext());
+                                                String consultaCredito = "CALL terminarVentaCredito("+OrdenID+","+Integer.parseInt(cantidadAbono.getText().toString())+");";
+                                                consultaCredito = consultaCredito.replace(" ","%20");
+                                                String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaCredito;
+                                                String urlContado = SERVER + RUTA + "consultaGeneral.php" + cadena;
+                                                Log.i("info", urlContado);
+                                                JsonArrayRequest requestRutasCredito= new JsonArrayRequest(Request.Method.GET, urlContado, null, new Response.Listener<JSONArray>() {
+                                                    @Override
+                                                    public void onResponse(JSONArray response) {
+                                                        AlertDialog.Builder terminoVenta = new AlertDialog.Builder(getContext());
+                                                        terminoVenta.setIcon(R.drawable.app_icono);
+                                                        terminoVenta.setMessage("Se completó la venta");
+                                                        terminoVenta.setCancelable(false);
+                                                        terminoVenta.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                                txtfolio.setText("");
+                                                                carritoFinal.clear();
+                                                                listView.setAdapter(null);
+                                                            }
+                                                        });
+                                                        terminoVenta.show();
+
+                                                    }
+                                                }, new Response.ErrorListener() {
+                                                    @Override
+                                                    public void onErrorResponse(VolleyError error) {
+
+                                                    }
+                                                });
+                                                //TERMINA EL PROCEDIMIENTO DE VENTA DE CONTADO
+                                                queueRutasCredito.add(requestRutasCredito);
+
+                                            }
+                                        });
+                                        abonos.show();
+
+                                    }
+                                });
+                                alertTipoventa.show();
+
+
+                            }
+
+                        }else{
+                            //MANDA UN ALERT SI NO HAY NADA EN EL CARRITO
+                            AlertDialog.Builder articulosMensaje = new AlertDialog.Builder(getContext());
+                            articulosMensaje.setIcon(R.drawable.cancelar);
+                            articulosMensaje.setMessage("No hay articulos en el carrito de compras");
+                            articulosMensaje.setCancelable(false);
+                            articulosMensaje.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                }
+                            });
+                            articulosMensaje.show();
+                        }
                         break;
                 }
-
             }
         });
         return view;
     }
-
 }

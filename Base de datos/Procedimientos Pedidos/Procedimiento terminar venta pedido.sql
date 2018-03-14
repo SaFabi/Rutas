@@ -1,5 +1,5 @@
 use marquesada;
-DROP PROCEDURE IF EXISTS terminarVentaContado;
+DROP PROCEDURE IF EXISTS terminarVentaContadoClientes;
 
 /*PROCEDIMIENTO PARA TERMINAR UNA VENTA A CONTADO*/
 DELIMITER //

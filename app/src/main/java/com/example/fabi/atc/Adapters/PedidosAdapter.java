@@ -64,7 +64,7 @@ public class PedidosAdapter extends BaseAdapter {
         btnTerminarVenta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment fragment = CarritoFragment.newInstance(getItem(i).getOrdenID());
+                Fragment fragment = CarritoFragment.newInstance(getItem(i).getOrdenID(),"Pedido");
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.content_main,fragment);
                 fragmentTransaction.addToBackStack(null);
