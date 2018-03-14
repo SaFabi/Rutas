@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.icu.util.Calendar;
+import android.icu.util.GregorianCalendar;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -80,6 +81,8 @@ public class CarritoFragment extends Fragment implements Basic {
     String PUNTOVENTALOGIN = "R1";
     String opcion;
     int ordenInsertar = 0;
+    int hora,minutos,segundos,milisegundos;
+    String fecha;
 
     //SACA EL NOMBRE DEL PUNTO DE VENTA DE LA RUTA DE VENTAS
     final String puntoVenta =rutasObj.sacarPuntoVenta(PUNTOVENTALOGIN);
@@ -91,6 +94,8 @@ public class CarritoFragment extends Fragment implements Basic {
     TextView txtMonto;
     Button btnTerminarVenta;
     TextView txtfolio;
+    Calendar c = new GregorianCalendar();
+
 
     //ADAPTERS
     spinnerAdapter spinnerAdapter;
@@ -317,7 +322,7 @@ public class CarritoFragment extends Fragment implements Basic {
         });
         //TERMINA LA CONSULTA PARA LLENAR EL SPINNER CON LOS CLIENTES DE ESA RUTA
         queueClientes.add(requestClaveCliente);
-        if (opcionCompra.equals("Cliente")|| opcionCompra.equals("Pedido")){
+        if (opcion.equals("Cliente")|| opcion.equals("Pedido")){
                 spinnerClientes.setSelection(clienteID);
         }
 
@@ -422,13 +427,19 @@ public class CarritoFragment extends Fragment implements Basic {
                         //VERIFICA QUE HAYA PRODUCTOS AGREGADOS
                         if (carritoFinal.size() >0){
                             //INSERTAR LA ORDEN Y GENERAR EL FOLIO
-                            do {
-                                //PARA OBTENER LA HORA ACTUAL Y GENERAR EL NUEVO FOLIO
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-                                Date date = new Date();
-                                final String fecha = dateFormat.format(date);
+                            //do {
+                                hora = c.get(Calendar.HOUR);
+                                minutos = c.get(Calendar.MINUTE);
+                                segundos=c.get(Calendar.SECOND);
+                                milisegundos=c.get(Calendar.MILLISECOND);
+                                fecha=String.valueOf(hora)+String.valueOf(minutos)+String.valueOf(segundos)+String.valueOf(milisegundos);
                                 nuevoFolio = PUNTOVENTALOGIN + fecha;
-                                txtfolio.setText(nuevoFolio);
+
+                                //PARA OBTENER LA HORA ACTUAL Y GENERAR EL NUEVO FOLIO
+                               // SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+                               // Date date = new Date();
+                                //final String fecha = dateFormat.format(date);
+                               // nuevoFolio = PUNTOVENTALOGIN + fecha;
                                 //SE MANDA LLAMAR EL PROCEDIMIENTO PARA LA ORDEN
                                 RequestQueue queueOrden = Volley.newRequestQueue(getContext());
                                 String consulta = "CALL procesoOrdenClientes('" + nuevoFolio + "'," + IDpuntoVentaInventario + "," + clienteID + ");";
@@ -450,7 +461,7 @@ public class CarritoFragment extends Fragment implements Basic {
                                 });
                                 //TERMINA EL PROCEDIMIENTO DE LA ORDEN
                                 queueOrden.add(requestOrden);
-                            }while (ordenInsertar == 0);
+                            //}while (ordenInsertar == 0);
 
                             //INICIA EL PROCEDIMIENTO DE ORDEN_DESCRIPCION
                             for (int i= 0 ; i<carritoFinal.size();i++){
@@ -510,15 +521,24 @@ public class CarritoFragment extends Fragment implements Basic {
 
                     //SI ENTRA POR EL FRAGMENTO DE RUTAS
                     case "Ruta":
+                        Toast.makeText(getContext(),opcion, Toast.LENGTH_SHORT).show();
                         //VERIFICA QUE EL CARRITO TENGA PRODUCTOS AGREGADOS
                         if (carritoFinal.size() > 0){
                             ordenInsertar =0;
-                            do {
+                            //do {
+                            c.setTimeInMillis(System.currentTimeMillis());
+                            Date date = c.getTime();
+                            hora = date.getHours();
+                            minutos = date.getMinutes();
+                            segundos=date.getSeconds();
+                            milisegundos=c.get(Calendar.MILLISECOND);
+                                fecha=String.valueOf(hora)+String.valueOf(minutos)+String.valueOf(segundos)+String.valueOf(milisegundos);
                                 //PARA OBTENER LA HORA ACTUAL Y GENERAR EL NUEVO FOLIO
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-                                Date date = new Date();
-                                final String fecha = dateFormat.format(date);
-                                nuevoFolio = PUNTOVENTALOGIN + fecha;
+                                //SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+                                //Date date = new Date();
+                                //final String fecha = dateFormat.format(date);
+                            Toast.makeText(getContext(),String.valueOf(hora), Toast.LENGTH_SHORT).show();
+                                nuevoFolio =String.valueOf(IDpuntoVentaComisiones) + fecha;
                                 txtfolio.setText(nuevoFolio);
                                 //SE MANDA LLAMAR EL PROCEDIMIENTO PARA LA ORDEN
                                 RequestQueue queueOrdenRutas = Volley.newRequestQueue(getContext());
@@ -541,7 +561,7 @@ public class CarritoFragment extends Fragment implements Basic {
                                 });
                                 //TERMINA EL PROCEDIMIENTO DE ORDEN
                                 queueOrdenRutas.add(requestOrdenRutas);
-                            }while(ordenInsertar == 0);
+                            //}while(ordenInsertar == 0);
                             //INICIA EL CICLO PARA RECORRER EL ARREGLO DEL CARRITO Y SE MANDA LLAMAR EL PROCESO DE ORDEN DESCRIPCION
                             for (int i = 0;i<carritoFinal.size();i++){
                                 calculoGanancia = Integer.parseInt(carritoFinal.get(i).getCantidad()) * Integer.parseInt(carritoFinal.get(i).getPrecio());
