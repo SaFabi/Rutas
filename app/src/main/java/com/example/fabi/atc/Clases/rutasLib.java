@@ -138,7 +138,7 @@ public class rutasLib implements  Basic {
                     final String token = FirebaseInstanceId.getInstance().getToken();
                     //Inicia la peticion
                     RequestQueue queueInsertar = Volley.newRequestQueue(context);
-                    String consultaInsertar = "INSERT INTO token_usuario(token,usuario_id)VALUES('"+token+"',"+rutaID+");";
+                    String consultaInsertar = "INSERT INTO token_puntoventa(token,puntoventa_id)VALUES('"+token+"',"+rutaID+");";
                     consultaInsertar = consultaInsertar.replace(" ", "%20");
                     String cadenaInsertar = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaInsertar;
                     String urlInsertar= SERVER + RUTA + "consultaGeneral.php" + cadenaInsertar;
@@ -184,7 +184,7 @@ public class rutasLib implements  Basic {
                     final String token = FirebaseInstanceId.getInstance().getToken();
                     //Inicia la peticion
                     RequestQueue queueInsertar = Volley.newRequestQueue(context);
-                    String consultaInsertar = "INSERT INTO token_clientes(token,claveCliente_id)VALUES('"+token+"',"+clienteID+");";
+                    String consultaInsertar = "INSERT INTO token_cliente(token,claveCliente_id)VALUES('"+token+"',"+clienteID+");";
                     consultaInsertar = consultaInsertar.replace(" ", "%20");
                     String cadenaInsertar = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaInsertar;
                     String urlInsertar= SERVER + RUTA + "consultaGeneral.php" + cadenaInsertar;
