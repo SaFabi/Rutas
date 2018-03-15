@@ -183,6 +183,7 @@ public class InventarioPersonalAdapter extends BaseAdapter {
                 dialogoCantidad.setIcon(R.drawable.agregar);
                 dialogoCantidad.setTitle("Inserte el precio");
                 cantidad.setInputType(InputType.TYPE_CLASS_NUMBER);
+                cantidad.setText(precio);
                 dialogoCantidad.setView(cantidad);
                 dialogoCantidad.setCancelable(false);
                 dialogoCantidad.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {

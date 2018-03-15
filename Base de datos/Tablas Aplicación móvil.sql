@@ -1,14 +1,16 @@
-CREATE TABLE token_usuarios(
+use marquesada;
+CREATE TABLE token_puntoventa(
 id INT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY ,
 token  VARCHAR(400)  NOT NULL,
-usuario_id  INT NOT NULL
+puntoVenta_id INT NOT NULL REFERENCES punto_venta.id ON UPDATE CASCADE
 );
 
-CREATE TABLE token_clientes(
-id int UNSIGNED auto_increment not null primary key,
-token varchar(400)not null,
-claveCliente_id int not null
+CREATE TABLE token_cliente(
+id INT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY ,
+token VARCHAR(400)  NOT NULL,
+claveCliente_id INT NOT NULL REFERENCES clave_cliente.id ON UPDATE CASCADE
 );
+
 
 CREATE TABLE buzon_sugerencia( 	
 		id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,

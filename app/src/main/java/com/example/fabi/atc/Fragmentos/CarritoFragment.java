@@ -391,7 +391,7 @@ public class CarritoFragment extends Fragment implements Basic {
                                             @Override
                                             public void onResponse(JSONArray response) {
                                                 AlertDialog.Builder terminoVenta = new AlertDialog.Builder(getContext());
-                                                terminoVenta.setIcon(R.drawable.app_icono);
+                                                terminoVenta.setIcon(R.drawable.aceptar);
                                                 terminoVenta.setMessage("Se completó la venta");
                                                 terminoVenta.setCancelable(false);
                                                 terminoVenta.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
@@ -479,7 +479,7 @@ public class CarritoFragment extends Fragment implements Basic {
                                     @Override
                                     public void onResponse(JSONArray response) {
                                         AlertDialog.Builder terminoVenta = new AlertDialog.Builder(getContext());
-                                        terminoVenta.setIcon(R.drawable.app_icono);
+                                        terminoVenta.setIcon(R.drawable.aceptar);
                                         terminoVenta.setMessage("Se completó el pedido");
                                         terminoVenta.setCancelable(false);
                                         terminoVenta.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
@@ -562,14 +562,15 @@ public class CarritoFragment extends Fragment implements Basic {
                                 });
                                 //TERMINA EL PROCEDIMIENTO DE ORDEN
                                 queueOrdenRutas.add(requestOrdenRutas);
+
                             //}while(ordenInsertar == 0);
                             //INICIA EL CICLO PARA RECORRER EL ARREGLO DEL CARRITO Y SE MANDA LLAMAR EL PROCESO DE ORDEN DESCRIPCION
-                            for (int i = 0;i<carritoFinal.size();i++){
+                            for (int i = 0;i<carritoFinal.size();i++) {
                                 calculoGanancia = Integer.parseInt(carritoFinal.get(i).getCantidad()) * Integer.parseInt(carritoFinal.get(i).getPrecio());
                                 RequestQueue queueOrdenDescRutas = Volley.newRequestQueue(getContext());
-                                String consultaOrdenDesc = "CALL procesoOrdenDescripcionRutas('"+nuevoFolio+"',"+IDpuntoVentaInventario+","+clienteID+","+
-                                        carritoFinal.get(i).getCantidadID()+","+carritoFinal.get(i).getCantidad()+","+
-                                        carritoFinal.get(i).getPrecio()+","+calculoGanancia+",'Articulo');";
+                                String consultaOrdenDesc = "CALL procesoOrdenDescripcionRutas('" + nuevoFolio + "'," + IDpuntoVentaInventario + "," + clienteID + "," +
+                                        carritoFinal.get(i).getCantidadID() + "," + carritoFinal.get(i).getCantidad() + "," +
+                                        carritoFinal.get(i).getPrecio() + "," + calculoGanancia + ",'Articulo');";
                                 consultaOrdenDesc = consultaOrdenDesc.replace(" ", "%20");
                                 String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaOrdenDesc;
                                 String urlOrdenDesc = SERVER + RUTA + "consultaGeneral.php" + cadena;
@@ -585,6 +586,7 @@ public class CarritoFragment extends Fragment implements Basic {
                                     }
                                 });
                                 queueOrdenDescRutas.add(requestOrdenDescRutas);
+                            }
 
                                 //VERIFICA SI LA VENTA ES DE CONTADO O CREDITO
                                 AlertDialog.Builder alertTipoventa = new AlertDialog.Builder(getContext());
@@ -605,7 +607,7 @@ public class CarritoFragment extends Fragment implements Basic {
                                             @Override
                                             public void onResponse(JSONArray response) {
                                                 AlertDialog.Builder terminoVenta = new AlertDialog.Builder(getContext());
-                                                terminoVenta.setIcon(R.drawable.app_icono);
+                                                terminoVenta.setIcon(R.drawable.aceptar);
                                                 terminoVenta.setMessage("Se completó la venta");
                                                 terminoVenta.setCancelable(false);
                                                 terminoVenta.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
@@ -640,6 +642,7 @@ public class CarritoFragment extends Fragment implements Basic {
                                         abonos.setMessage("Abono Inicial");
                                         cantidadAbono.setInputType(InputType.TYPE_CLASS_NUMBER);
                                         abonos.setCancelable(false);
+                                        abonos.setView(cantidadAbono);
                                         abonos.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -653,7 +656,7 @@ public class CarritoFragment extends Fragment implements Basic {
                                                     @Override
                                                     public void onResponse(JSONArray response) {
                                                         AlertDialog.Builder terminoVenta = new AlertDialog.Builder(getContext());
-                                                        terminoVenta.setIcon(R.drawable.app_icono);
+                                                        terminoVenta.setIcon(R.drawable.aceptar);
                                                         terminoVenta.setMessage("Se completó la venta");
                                                         terminoVenta.setCancelable(false);
                                                         terminoVenta.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
@@ -684,7 +687,7 @@ public class CarritoFragment extends Fragment implements Basic {
                                     }
                                 });
                                 alertTipoventa.show();
-                            }
+
 
                         }else{
                             //MANDA UN ALERT SI NO HAY NADA EN EL CARRITO

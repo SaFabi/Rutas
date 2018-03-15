@@ -55,7 +55,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
     //FRAGMENTO PROBADO, MUESTRA LAS OPCIONES DE LOS REPORTES DISPONIBLES
 
     //VARIABLES
-    String puntoVentaLogin;
+    String puntoVentaLogin = "R1";
     String puntoVentaVentas;
     ArrayList<Modelo> modelo;
     String fechaActual;
@@ -132,6 +132,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
 
         spinner.setAdapter(spinnerSencilloAdapter);
 
+        //LLENA EL LISTVIEW CON LA OPCION SELECCIONADA DEL SPINNER Y CON LA FECHA ACTUAL
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(final AdapterView<?> adapterView, View view, int i, long l) {
@@ -154,8 +155,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                 "and ord.puntoVenta_id=pv.id " +
                                 "and pv.tipo='" + puntoVentaVentas +
                                 "' and tac.total>0" +
-                                " and DATE(ord.fecha)>" + "'" + fechaInicial + "'" +
-                                " and DATE(ord.fecha)<" + "'" + fechaFinal + "'";
+                                " and DATE(ord.fecha)=" + "'" + fechaActual + "'";
                         consulta = consulta.replace(" ", "%20");
                         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
                         final String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
@@ -176,8 +176,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                         "and ord.puntoVenta_id=pv.id " +
                                         "and pv.tipo='" + puntoVentaVentas +
                                         "' and tac.total>0" +
-                                        " and DATE(ord.fecha)>" + "'" + fechaInicial + "'" +
-                                        " and DATE(ord.fecha)<" + "'" + fechaFinal + "'";
+                                        " and DATE(ord.fecha)=" + "'" + fechaActual + "'";
                                 consultatotal = consultatotal.replace(" ", "%20");
                                 String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultatotal;
                                 final String urlTotal = SERVER + RUTA + "consultaGeneral.php" + cadena;
@@ -201,7 +200,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                         }
 
                                         // Toast.makeText(getContext(),puntoVenta, Toast.LENGTH_SHORT).show();
-                                        if (puntoVenta != null) {
+                                        if (puntoVenta == null) {
                                             edtMonto.setText("TOTAL: $0.0");
                                             //SE ASIGNA EL RESULTADO DE LA CONSULTA EN EL EDITTEXT
 
@@ -252,8 +251,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                 "and cc.cliente_id =cli.id " +
                                 " and pv.tipo='" + puntoVentaVentas +
                                 "' and ordc.total>0" +
-                                " and DATE(ord.fecha)>" + "'" + fechaInicial + "'" +
-                                " and DATE(ord.fecha)<" + "'" + fechaFinal + "'";
+                                " and DATE(ord.fecha)=" + "'" + fechaInicial + "'";
                         consultaVentas = consultaVentas.replace(" ", "%20");
                         String cadenaVentas = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaVentas;
                         final String urlVentas = SERVER + RUTA + "consultaGeneral.php" + cadenaVentas;
@@ -274,8 +272,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                         "and ord.puntoVenta_id = pv.id " +
                                         " and pv.tipo='" + puntoVentaVentas +
                                         "' and ordc.total>0" +
-                                        " and DATE(ord.fecha)>" + "'" + fechaInicial + "'" +
-                                        " and DATE(ord.fecha)<" + "'" + fechaFinal + "'";
+                                        " and DATE(ord.fecha)=" + "'" + fechaInicial + "'";
                                 consultatotal = consultatotal.replace(" ", "%20");
                                 String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultatotal;
                                 final String urlTotal = SERVER + RUTA + "consultaGeneral.php" + cadena;
@@ -300,7 +297,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                             puntoVenta = null;
                                         }
                                         //Toast.makeText(getContext(),puntoVenta, Toast.LENGTH_SHORT).show();
-                                        if (puntoVenta.equals("")) {
+                                        if (puntoVenta == null) {
                                             edtMonto.setText("TOTAL: $0.0");
                                             //SE ASIGNA EL RESULTADO DE LA CONSULTA  A UN EDITTEXT
 
@@ -550,7 +547,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
 
                                     }
                                     //Toast.makeText(getContext(),puntoVenta, Toast.LENGTH_SHORT).show();
-                                    if (puntoVenta != null) {
+                                    if (puntoVenta == null) {
                                         edtMonto.setText("TOTAL: $0.0");
 
                                     } else {

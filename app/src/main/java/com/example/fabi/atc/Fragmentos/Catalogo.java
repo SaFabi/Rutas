@@ -167,7 +167,7 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
 
            @Override
            public boolean onMenuItemActionCollapse(MenuItem item) {
-               inventarioPersonalAdapter.setFilter(lista);
+               //inventarioPersonalAdapter.setFilter(lista);
                return true;
            }
        });
