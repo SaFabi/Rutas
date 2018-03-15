@@ -4,8 +4,9 @@ DROP PROCEDURE IF EXISTS procesoOrdenDescripcionRutas;
 DELIMITER //
 CREATE PROCEDURE procesoOrdenDescripcionRutas(In folio varchar(200),In puntoVentaID int ,In clienteID int,In tipoVentaID int,In cantidad int,In precio_final int,In ganancia int, In requerimiento varchar(20))
 	BEGIN
+    
     /* CONSULTA PARA SACAR EL ID DE LA ORDEN*/
-    SET @ordenid:=(SELECT id FROM orden WHERE folio = folio);
+    SET @ordenid := (SELECT o.id FROM orden o WHERE o.folio = folio);
     
 	/* CONSULTA PARA SACAR EL ID DEL ARTICULO SELECCIONADO*/
     SET @articulo := (SELECT a.id from articulo a, cantidad ca WHERE ca.articulo_id =a.id AND ca.id = tipoVentaID);
@@ -37,10 +38,10 @@ CREATE PROCEDURE procesoOrdenDescripcionRutas(In folio varchar(200),In puntoVent
             
             END IF;
 		 /* CONSULTA PARA DESCONTAR LAS CANTIDAD DEL INVENTARIO*/
-         UPDATE cantidad SET valor = @cantidadExistente -cantidad WHERE id= tipoVentaID;
+         UPDATE cantidad SET valor = @cantidadExistente - cantidad WHERE id= tipoVentaID;
          
          /*CONSULTA  PARA SACAR EL ID DE LA ORDEN_DESCRIPCION */
-         SET @ordenDesID :=(SELECT id FROM orden_descripcion WHERE orden_id = @ordenid);
+         SET @ordenDesID :=(SELECT id FROM orden_descripcion WHERE orden_id = @ordenid ORDER BY id DESC);
          
          /*CONSULTA PARA SACAR EL ID DE LA COLOCACION */
          SET @colocacionID :=(SELECT colocacion_id FROM puntoventa_colocacion WHERE puntoVenta_id =puntoVentaID);
@@ -66,7 +67,9 @@ CREATE PROCEDURE procesoOrdenDescripcionRutas(In folio varchar(200),In puntoVent
         INSERT INTO articulo_comision(total,exito,rango_id,ordenDescripcion_id)VALUES(@comisionTotal,1,@rangoID,@ordenDesID);
 		END IF;
 		END IF;
-		END IF;   
+		END IF;  
+        
+	SELECT @ordenid;
     
 END
 //

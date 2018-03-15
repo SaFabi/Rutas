@@ -5,7 +5,7 @@ DELIMITER //
 CREATE PROCEDURE procesoOrdenDescripcionClientes(In folio varchar(200),In puntoVentaID int ,In clienteID int,In tipoVentaID int,In cantidad int,In precio_final int,In ganancia int, In requerimiento varchar(20))
 	BEGIN
     /* CONSULTA PARA SACAR EL ID DE LA ORDEN*/
-    SET @ordenid:=(SELECT id FROM orden WHERE folio = folio);
+    SET @ordenid:=(SELECT o.id FROM orden o WHERE o.folio = folio);
     
 	/* CONSULTA PARA SACAR EL ID DEL ARTICULO SELECCIONADO*/
     SET @articulo := (SELECT a.id from articulo a, cantidad ca WHERE ca.articulo_id =a.id AND ca.id = tipoVentaID);

@@ -68,7 +68,7 @@ public class CarritoFragment extends Fragment implements Basic {
 
     //VARIABLES
     int IDpuntoVentaComisiones;
-    int IDpuntoVentaInventario;
+    int IDpuntoVentaInventario=usuarioID;
     int OrdenID;
     double precioUnitario;
     double Montototal;
@@ -119,8 +119,9 @@ public class CarritoFragment extends Fragment implements Basic {
         if (getArguments() != null) {
             opcion = getArguments().getString("opcion");
             OrdenID = getArguments().getInt("ordenID");
-            IDpuntoVentaInventario = getArguments().getInt("IDpuntoVentaInventario");
+            //IDpuntoVentaInventario = getArguments().getInt("IDpuntoVentaInventario");
             PUNTOVENTALOGIN = getArguments().getString("puntoVentaLogin");
+            clienteID = getArguments().getInt("clienteID");
         }
     }
     @Override
@@ -595,7 +596,7 @@ public class CarritoFragment extends Fragment implements Basic {
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         //EJECUTA EL PROCEDIMIENTO PARA TERMINAR LA VENTA AL CONTADO
                                         RequestQueue queueRutasContado = Volley.newRequestQueue(getContext());
-                                        String consultaContado = "CALL terminarVentaContado("+OrdenID+");";
+                                        String consultaContado = "CALL terminarVentaContado('"+nuevoFolio+"');";
                                         consultaContado = consultaContado.replace(" ","%20");
                                         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaContado;
                                         String urlContado = SERVER + RUTA + "consultaGeneral.php" + cadena;
@@ -613,6 +614,7 @@ public class CarritoFragment extends Fragment implements Basic {
                                                         txtfolio.setText("");
                                                         carritoFinal.clear();
                                                         listView.setAdapter(null);
+                                                        txtMonto.setText("");
                                                     }
                                                 });
                                                 terminoVenta.show();
@@ -642,7 +644,7 @@ public class CarritoFragment extends Fragment implements Basic {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
                                                 RequestQueue queueRutasCredito = Volley.newRequestQueue(getContext());
-                                                String consultaCredito = "CALL terminarVentaCredito("+OrdenID+","+Integer.parseInt(cantidadAbono.getText().toString())+");";
+                                                String consultaCredito = "CALL terminarVentaCredito('"+nuevoFolio+"',"+Integer.parseInt(cantidadAbono.getText().toString())+");";
                                                 consultaCredito = consultaCredito.replace(" ","%20");
                                                 String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaCredito;
                                                 String urlContado = SERVER + RUTA + "consultaGeneral.php" + cadena;
@@ -660,6 +662,7 @@ public class CarritoFragment extends Fragment implements Basic {
                                                                 txtfolio.setText("");
                                                                 carritoFinal.clear();
                                                                 listView.setAdapter(null);
+                                                                txtMonto.setText("");
                                                             }
                                                         });
                                                         terminoVenta.show();
@@ -681,8 +684,6 @@ public class CarritoFragment extends Fragment implements Basic {
                                     }
                                 });
                                 alertTipoventa.show();
-
-
                             }
 
                         }else{
