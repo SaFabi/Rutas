@@ -140,9 +140,6 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.Ayuda) {
 
 
-        } else if (id == R.id.Contacto) {
-
-
         }else if (id == R.id.InventarioG) {
             miFragment = new ContenedorInventarioGeneral();
             fragmentSeleccionado = true;

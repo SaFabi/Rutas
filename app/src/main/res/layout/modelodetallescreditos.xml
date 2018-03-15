@@ -15,10 +15,8 @@
         android:padding="@dimen/margen_padding"
         android:layout_margin="@dimen/margen_margin"
         >
-
         <TextView
             android:id="@+id/tipoArticulo"
-            android:layout_toEndOf="@id/img"
             android:textSize="@dimen/titulos_H1"
             android:text="Tipo Articulo"
             android:textColor="@color/primaryText"
@@ -37,7 +35,6 @@
             android:textColor="@color/secondarText"/>
         <TextView
             android:id="@+id/modelo"
-            android:layout_toEndOf="@id/img"
             android:textSize="15dp"
             android:layout_marginTop="10dp"
             android:layout_below="@id/marca"
@@ -51,12 +48,14 @@
             android:textSize="18dp"
             android:text="Cantidad"
             android:id="@+id/Cantidad"
-            android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:layout_margin="@dimen/margen_margin"
-            android:textColor="@color/primaryText"/>
+            android:textColor="@color/primaryText"
+            android:layout_marginLeft="@dimen/margen_margin"
+            android:layout_marginRight="@dimen/margen_margin"
+            android:layout_alignBottom="@+id/tipoArticulo"
+            android:layout_alignParentEnd="true" />
 
         <TextView
             android:id="@+id/monto"
@@ -69,10 +68,5 @@
             android:layout_height="wrap_content"
             android:textColor="@color/primaryText"
             android:textStyle="bold"/>
-
-
-
-
-
     </RelativeLayout>
 </android.support.v7.widget.CardView>
