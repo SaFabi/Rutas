@@ -32,6 +32,7 @@ import com.example.fabi.atc.Clases.Basic;
 import com.example.fabi.atc.Clases.Modelo;
 import com.example.fabi.atc.Clases.ModeloClientes;
 import com.example.fabi.atc.Clases.ModeloPedidos;
+import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
 
 import org.json.JSONArray;
@@ -41,6 +42,8 @@ public class PedidosFragment extends Fragment implements Basic {
     //FRAGMENTO PROBADO.MUETSRA LA LISTA DE LOS PEDIDOS QUE LOS CLIENTES REALIZAN
     // VARIABLES
     int pedidoID;
+    String puntoVentaLogin;
+    String puntoVentaVentas;
 
     //CONTROLES
     ListView listView;
@@ -48,6 +51,7 @@ public class PedidosFragment extends Fragment implements Basic {
 
     //ADAPTERS
     PedidosAdapter pedidosAdapter;
+    rutasLib rutasObj= new rutasLib();
 
 
     public PedidosFragment() {
@@ -74,6 +78,7 @@ public class PedidosFragment extends Fragment implements Basic {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_pedidos, container, false);
+        puntoVentaVentas = rutasObj.sacarPuntoVenta(puntoVentaLogin);
 
         //MUESTRA EL MENU DE OPCIONES EN LA TOOLBAR
         setHasOptionsMenu(true);
@@ -111,8 +116,8 @@ public class PedidosFragment extends Fragment implements Basic {
         " and od.orden_id = o.id "+
         " and o.cliente_id = cli.id"+
         " and cc.cliente_id=cli.id"+
-        " and o.puntoVenta_id ="+usuarioID+
-        " and od.precio_final * od.cantidad > 0"  +
+        " and pv.tipo ='"+puntoVentaVentas+
+        "' and od.precio_final * od.cantidad > 0"  +
         " order by o.fecha desc;";
         consulta = consulta.replace(" ", "%20");
         String cadenaClaveCliente = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;

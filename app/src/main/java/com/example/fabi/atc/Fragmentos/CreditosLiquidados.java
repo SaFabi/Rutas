@@ -31,6 +31,7 @@ import com.example.fabi.atc.Clases.Basic;
 import com.example.fabi.atc.Clases.Modelo;
 import com.example.fabi.atc.Clases.ModeloClientes;
 import com.example.fabi.atc.Clases.ModeloCreditos;
+import com.example.fabi.atc.Clases.rutasLib;
 import com.example.fabi.atc.R;
 
 import org.json.JSONArray;
@@ -49,8 +50,11 @@ public class CreditosLiquidados extends Fragment implements Basic {
     //ADAPTERS
     spinnerAdapter spinnerAdapter;
     CreditosLiquidadosAdapter adapter;
+    rutasLib rutasObj = new rutasLib();
 
     //VARIABLES
+    String puntoVentaLogin;
+    String puntoVentaVentas;
     int claveCliente;
     String puntoVenta;
     int ordenID;
@@ -80,6 +84,8 @@ public class CreditosLiquidados extends Fragment implements Basic {
         txtPunVenta = (TextView)vista.findViewById(R.id.puntoVentaCreditosLiquidados);
         spinnerClaves = (Spinner)vista.findViewById(R.id.spinnerClavesCreditosLiquidados);
         listView = (ListView)vista.findViewById(R.id.CreditoClientesCreditosLiquidados);
+        puntoVentaVentas = rutasObj.sacarPuntoVenta(puntoVentaLogin);
+        txtPunVenta.setText(puntoVentaVentas);
         spinnerClaves.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -99,8 +105,8 @@ public class CreditosLiquidados extends Fragment implements Basic {
                         " and ord.puntoVenta_id = pv.id"+
                         " and ord.cliente_id = cli.id"+
                         " and cc.cliente_id =cli.id"+
-                        " and pv.id="+usuarioID+
-                        " and cre.total>0"+
+                        " and pv.tipo='"+puntoVentaVentas+
+                        "' and cre.total>0"+
                         " and cre.estado=0"+
                         " and cli.id="+claveCliente; ;
                 consultaCreditos = consultaCreditos.replace(" ", "%20");
@@ -126,62 +132,22 @@ public class CreditosLiquidados extends Fragment implements Basic {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-        //PARA SELECCIONAR EL TIPO DE PUNTO DE VENTA
-        //Se declara el progress dialog para ejecutar despues la consulta
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("En Proceso");
         progressDialog.setMessage("Un momento...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.show();
-
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-        String consulta = "select tipo from punto_venta where id="+usuarioID;
-        consulta = consulta.replace(" ", "%20");
-        String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
-        String url = SERVER + RUTA + "consultaGeneral.php" + cadena;
-
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                progressDialog.hide();
-
-                JSONObject jsonObject;
-                try {
-                    jsonObject = response.getJSONObject(0);
-
-                }catch (Exception e){
-                    jsonObject = new JSONObject();
-                }
-                try {
-                    puntoVenta = jsonObject.getString("0");
-
-                }catch (Exception e){
-
-                    puntoVenta = null;
-                }
-                if (puntoVenta != null){
-                    txtPunVenta.setText(puntoVenta);
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-        queue.add(request);
         //PARA LA CONSULTA DE LAS CLAVES DE LOS CLIENTES EN EL SPINNER
         RequestQueue queueClaveCliente = Volley.newRequestQueue(getContext());
         String consultaClaveCliente = "select cl.id, cc.numero "+
                 " from cliente cl, clave_cliente cc, punto_venta pv"+
                 " where cc.cliente_id = cl.id"+
                 " and  cc.puntoVenta_id = pv.id"+
-                " and pv.id ="+usuarioID;
+                " and pv.tipo ='"+puntoVentaVentas+"'";
         consultaClaveCliente = consultaClaveCliente.replace(" ", "%20");
         String cadenaClaveCliente = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consultaClaveCliente;
         String urlClaves = SERVER + RUTA + "consultaGeneral.php" + cadenaClaveCliente;
-        Log.i("info", url);
+        Log.i("info", urlClaves);
         JsonArrayRequest requestClaveCliente = new JsonArrayRequest(Request.Method.GET, urlClaves, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {

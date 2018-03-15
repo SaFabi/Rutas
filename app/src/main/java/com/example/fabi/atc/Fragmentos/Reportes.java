@@ -55,6 +55,8 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
     //FRAGMENTO PROBADO, MUESTRA LAS OPCIONES DE LOS REPORTES DISPONIBLES
 
     //VARIABLES
+    String puntoVentaLogin;
+    String puntoVentaVentas;
     ArrayList<Modelo> modelo;
     String fechaActual;
     ListView listView;
@@ -72,6 +74,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
 
     //ADAPTERS
     ReportesAdapter adapter;
+    rutasLib rutasObj = new rutasLib();
 
     public Reportes() {
     }
@@ -107,6 +110,7 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
         spinner = (Spinner) view.findViewById(R.id.spinnerReportes);
         listView = (ListView) view.findViewById(R.id.listReportes);
         edtMonto = (TextView) view.findViewById(R.id.edttotalcomisiones);
+        puntoVentaVentas = rutasObj.sacarPuntoVenta(puntoVentaLogin);
 
         //PARA OBTENER LA FECHA ACTUAL
         final Calendar c = Calendar.getInstance();
@@ -148,8 +152,8 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                 "from totalarticulo_comision tac,orden ord,punto_venta pv " +
                                 "where tac.orden_id=ord.id " +
                                 "and ord.puntoVenta_id=pv.id " +
-                                "and pv.id=" + usuarioID +
-                                " and tac.total>0" +
+                                "and pv.tipo='" + puntoVentaVentas +
+                                "' and tac.total>0" +
                                 " and DATE(ord.fecha)>" + "'" + fechaInicial + "'" +
                                 " and DATE(ord.fecha)<" + "'" + fechaFinal + "'";
                         consulta = consulta.replace(" ", "%20");
@@ -170,8 +174,8 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                         "from totalarticulo_comision tac,orden ord,punto_venta pv " +
                                         "where tac.orden_id=ord.id " +
                                         "and ord.puntoVenta_id=pv.id " +
-                                        "and pv.id=" + usuarioID +
-                                        " and tac.total>0" +
+                                        "and pv.tipo='" + puntoVentaVentas +
+                                        "' and tac.total>0" +
                                         " and DATE(ord.fecha)>" + "'" + fechaInicial + "'" +
                                         " and DATE(ord.fecha)<" + "'" + fechaFinal + "'";
                                 consultatotal = consultatotal.replace(" ", "%20");
@@ -246,8 +250,8 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                 "and ord.puntoVenta_id = pv.id " +
                                 "and ord.cliente_id = cli.id " +
                                 "and cc.cliente_id =cli.id " +
-                                " and pv.id=" + usuarioID +
-                                " and ordc.total>0" +
+                                " and pv.tipo='" + puntoVentaVentas +
+                                "' and ordc.total>0" +
                                 " and DATE(ord.fecha)>" + "'" + fechaInicial + "'" +
                                 " and DATE(ord.fecha)<" + "'" + fechaFinal + "'";
                         consultaVentas = consultaVentas.replace(" ", "%20");
@@ -268,8 +272,8 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                         "from orden ord, orden_completa ordc, punto_venta pv " +
                                         "where ordc.orden_id = ord.id " +
                                         "and ord.puntoVenta_id = pv.id " +
-                                        " and pv.id=" + usuarioID +
-                                        " and ordc.total>0" +
+                                        " and pv.tipo='" + puntoVentaVentas +
+                                        "' and ordc.total>0" +
                                         " and DATE(ord.fecha)>" + "'" + fechaInicial + "'" +
                                         " and DATE(ord.fecha)<" + "'" + fechaFinal + "'";
                                 consultatotal = consultatotal.replace(" ", "%20");
@@ -393,8 +397,8 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                             "from totalarticulo_comision tac,orden ord,punto_venta pv " +
                             "where tac.orden_id=ord.id " +
                             "and ord.puntoVenta_id=pv.id " +
-                            "and pv.id=" + usuarioID +
-                            " and tac.total>0" +
+                            "and pv.tipo='" + puntoVentaVentas +
+                            "' and tac.total>0" +
                             " and DATE(ord.fecha)>" + "'" + fechaInicial + "'" +
                             " and DATE(ord.fecha)<" + "'" + fechaFinal + "'";
                     consulta = consulta.replace(" ", "%20");
@@ -418,8 +422,8 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                     "from totalarticulo_comision tac,orden ord,punto_venta pv " +
                                     "where tac.orden_id=ord.id " +
                                     "and ord.puntoVenta_id=pv.id " +
-                                    "and pv.id=" + usuarioID +
-                                    " and tac.total>0" +
+                                    "and pv.tipo='" + puntoVentaVentas +
+                                    "' and tac.total>0" +
                                     " and DATE(ord.fecha)>" + "'" + fechaInicial + "'" +
                                     " and DATE(ord.fecha)<" + "'" + fechaFinal + "'";
                             consultatotal = consultatotal.replace(" ", "%20");
@@ -493,8 +497,8 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                             "and ord.puntoVenta_id = pv.id " +
                             "and ord.cliente_id = cli.id " +
                             "and cc.cliente_id =cli.id " +
-                            " and pv.id=" + usuarioID +
-                            " and ordc.total>0" +
+                            " and pv.tipo='" + puntoVentaVentas +
+                            "' and ordc.total>0" +
                             " and DATE(ord.fecha)>" + "'" + fechaInicial + "'" +
                             " and DATE(ord.fecha)<" + "'" + fechaFinal + "'";
                     consulta = consulta.replace(" ", "%20");
@@ -517,8 +521,8 @@ public class Reportes extends Fragment implements Basic,SearchView.OnQueryTextLi
                                     "from orden ord, orden_completa ordc, punto_venta pv " +
                                     "where ordc.orden_id = ord.id " +
                                     "and ord.puntoVenta_id = pv.id " +
-                                    " and pv.id=" + usuarioID +
-                                    " and ordc.total>0" +
+                                    " and pv.tipo='" + puntoVentaVentas +
+                                    "' and ordc.total>0" +
                                     " and DATE(ord.fecha)>" + "'" + fechaInicial + "'" +
                                     " and DATE(ord.fecha)<" + "'" + fechaFinal + "'";
                             consultatotalVentas = consultatotalVentas.replace(" ", "%20");

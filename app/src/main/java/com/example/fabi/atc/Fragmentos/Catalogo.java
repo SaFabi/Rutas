@@ -107,17 +107,19 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
 
         //Inicia la peticion
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String consulta = "select ca.id,ma.nombre,mo.nombre,a.precio,ca.valor " +
-                "from marca ma, modelo mo, articulo a, punto_venta pv, cantidad ca, tipo_articulo ta " +
-                "where a.modelo_id=mo.id " +
-                "and mo.marca_id=ma.id " +
-                "and ca.puntoVenta_id=pv.id " +
-                "and ca.articulo_id=a.id " +
-                "and a.tipoArticulo_id=ta.id " +
-                "and pv.id = "+usuarioID+
-                " and ta.nombre='Teléfono' "+
-                "and ca.valor >0 "+
-                "order by ma.nombre asc ";
+        String consulta = "select ca.id,ma.nombre,mo.nombre,prec.precio_minimo,ca.valor"+
+                " from marca ma, modelo mo, articulo a, punto_venta pv, cantidad ca, tipo_articulo ta,colocacion co,precio_colocacion prec"+
+                " where a.modelo_id=mo.id"+
+                " and mo.marca_id=ma.id"+
+                " and ca.puntoVenta_id=pv.id"+
+                " and ca.articulo_id=a.id"+
+                " and a.tipoArticulo_id=ta.id"+
+                " and prec.colocacion_id=co.id"+
+                " and prec.articulo_id = a.id"+
+                " and pv.id ="+usuarioID+
+                " and ta.nombre='Teléfono'"+
+                " and ca.valor >0"+
+                " order by ma.nombre asc ";
         consulta = consulta.replace(" ", "%20");
         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
         url = SERVER + RUTA + "consultaGeneral.php" + cadena;
@@ -246,16 +248,19 @@ public class Catalogo extends Fragment  implements SearchView.OnQueryTextListene
     public void onRefresh() {
         //Inicia la peticion
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String consulta = "select ca.id,ma.nombre,mo.nombre,a.precio,ca.valor " +
-                "from marca ma, modelo mo, articulo a, punto_venta pv, cantidad ca, tipo_articulo ta " +
-                "where a.modelo_id=mo.id " +
-                "and mo.marca_id=ma.id " +
-                "and ca.puntoVenta_id=pv.id " +
-                "and ca.articulo_id=a.id " +
-                "and a.tipoArticulo_id=ta.id " +
-                "and pv.id = "+usuarioID+" and ta.nombre='Teléfono' "+
-                "and ca.valor >0 "+
-                "order by ma.nombre asc ";
+        String consulta = "select ca.id,ma.nombre,mo.nombre,prec.precio_minimo,ca.valor"+
+        " from marca ma, modelo mo, articulo a, punto_venta pv, cantidad ca, tipo_articulo ta,colocacion co,precio_colocacion prec"+
+        " where a.modelo_id=mo.id"+
+        " and mo.marca_id=ma.id"+
+        " and ca.puntoVenta_id=pv.id"+
+        " and ca.articulo_id=a.id"+
+        " and a.tipoArticulo_id=ta.id"+
+        " and prec.colocacion_id=co.id"+
+        " and prec.articulo_id = a.id"+
+        " and pv.id ="+usuarioID+
+        " and ta.nombre='Teléfono'"+
+        " and ca.valor >0"+
+        " order by ma.nombre asc ";
         consulta = consulta.replace(" ", "%20");
         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
         url = SERVER + RUTA + "consultaGeneral.php" + cadena;
