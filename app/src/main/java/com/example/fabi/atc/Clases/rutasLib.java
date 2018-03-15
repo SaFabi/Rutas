@@ -125,7 +125,7 @@ public class rutasLib implements  Basic {
     public void verificarTokenUsuario(final int rutaID, final Context context){
         //Inicia la peticion
         RequestQueue queue = Volley.newRequestQueue(context);
-        String consulta = "SELECT id FROM token_usuarios WHERE usuario_id="+rutaID;
+        String consulta = "SELECT id FROM token_puntoventa WHERE puntoventa_id="+rutaID;
         consulta = consulta.replace(" ", "%20");
         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
         String url= SERVER + RUTA + "consultaGeneral.php" + cadena;
@@ -171,7 +171,7 @@ public class rutasLib implements  Basic {
     public void verificarTokenCliente(final int clienteID, final Context context){
         //Inicia la peticion
         RequestQueue queue = Volley.newRequestQueue(context);
-        String consulta = "SELECT id FROM token_clientes WHERE claveCliente_id="+clienteID;
+        String consulta = "SELECT id FROM token_cliente WHERE claveCliente_id="+clienteID;
         consulta = consulta.replace(" ", "%20");
         String cadena = "?host=" + HOST + "&db=" + DB + "&usuario=" + USER + "&pass=" + PASS + "&consulta=" + consulta;
         String url= SERVER + RUTA + "consultaGeneral.php" + cadena;
